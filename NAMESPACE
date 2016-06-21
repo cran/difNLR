@@ -1,0 +1,17 @@
+S3method(plot,difNLR)
+S3method(print,difNLR)
+S3method(fitted,difNLR)
+S3method(predict,difNLR)
+
+# Export all names
+exportPattern(".")
+
+# Import all packages listed as Imports or Depends
+import(
+  ggplot2,
+  gridExtra
+)
+
+
+importFrom("methods", "is")
+importFrom("stats", "deriv3", "na.omit", "nls", "p.adjust", "pf", "qf", "quantile", "setNames")
