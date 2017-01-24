@@ -4,31 +4,47 @@
 \alias{startNLR}
 \title{Calculates starting values for \code{difNLR} function.}
 \usage{
-startNLR(data, group, parameterization = "IRT")
+startNLR(Data, group, model, parameterization = "IRT")
 }
 \arguments{
-\item{data}{numeric: a matrix or data.frame of binary data.}
+\item{Data}{numeric: a matrix or data.frame of binary data.}
 
-\item{group}{numeric: binary vector of group membership. "0" for reference group, "1" for focal group.}
+\item{group}{numeric: binary vector of group membership.
+"0" for reference group, "1" for focal group.}
 
-\item{parameterization}{character: parameterization of regression coefficients. Possible options are \code{"IRT"} (Item response theory, default option) and \code{"LR"} (Logistic regression)}
+\item{model}{character: generalized logistic regression model
+to be fitted. See \strong{Details}.}
+
+\item{parameterization}{character: parameterization of regression
+coefficients. Possible options are \code{"IRT"} (Item response theory,
+default option) and \code{"LR"} (Logistic regression)}
 }
 \value{
 A data.frame containing rows representing items and 5 columns representing parameters of \code{difNLR} model. First column represents discrimination (a), second difficulty (b), third guessing (c), fourth difference in discrimination between reference and focal group (aDif) and fifth difference in difficulty between reference and focal group (bDif).
 }
 \description{
-Calculates starting values for \code{difNLR} function based on linear approximation.
+Calculates starting values for \code{difNLR} function based
+on linear approximation.
+}
+\details{
+The options of \code{model} are as follows: \code{Rasch} for one-parameter logistic model with
+discrimination parameter fixed on value 1 for both groups, \code{1PL} for one-parameter logistic
+model with discrimination parameter fixed for both groups, \code{2PL} for logistic regression model,
+\code{3PLcg} for three-parameter logistic regression model with fixed guessing for both groups,
+\code{3PLdg} for three-parameter logistic regression model with fixed inattention for both groups, or
+\code{4PLcgdg} for four-parameter logistic regression model with fixed guessing and inattention
+parameter for both groups.
 }
 \examples{
 \dontrun{
 # loading data based on GMAT
 data(GMAT)
 
-data  <- GMAT[, colnames(GMAT) != "group"]
+Data  <- GMAT[, colnames(GMAT) != "group"]
 group <- GMAT[, "group"]
 
-# starting values
-startNLR(data, group)
+# starting values for 3PL model
+startNLR(Data, group, model = "3PL")
 }
 }
 \author{
