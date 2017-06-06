@@ -13,19 +13,6 @@ data(difMedicalkey)
 The \code{difMedicalkey} is a vector of factors representing correct answers of
 \code{difMedicaltest} data set.
 }
-\author{
-Adela Drabinova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
-adela.drabinova@gmail.com \cr
-
-Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
-
-Karel Zvara \cr
-Faculty of Mathematics and Physics, Charles University \cr
-}
 \references{
 Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis).
 
@@ -35,5 +22,14 @@ Non-Linear Regression, Technical Report, V-1229, \url{http://hdl.handle.net/1110
 \seealso{
 \code{\link{difMedical}}, \code{\link{difMedicaltest}}
 }
-\keyword{datasets}
+\author{
+Adela Drabinova \cr
+Institute of Computer Science, The Czech Academy of Sciences \cr
+Faculty of Mathematics and Physics, Charles University \cr
+adela.drabinova@gmail.com \cr
 
+Patricia Martinkova \cr
+Institute of Computer Science, The Czech Academy of Sciences \cr
+martinkova@cs.cas.cz \cr
+}
+\keyword{datasets}

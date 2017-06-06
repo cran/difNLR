@@ -18,6 +18,7 @@
 #' See \strong{Details}.
 #' @param alpha numeric: significance level (default is 0.05).
 #' @param x an object of 'ddfMLR' class
+#' @param object an object of 'ddfMLR' class
 #' @param item either character ("all"), or numeric vector, or single number
 #'corresponding to column indicators. See \strong{Details}.
 #' @param title string: title of plot.
@@ -67,6 +68,12 @@
 #'   \item{\code{df}}{the degress of freedom of likelihood ratio test.}
 #'   \item{\code{group}}{the vector of group membership.}
 #'   \item{\code{Data}}{the data matrix.}
+#'   \item{\code{llM0}}{log-likelihood of null model.}
+#'   \item{\code{llM1}}{log-likelihood of alternative model.}
+#'   \item{\code{AICM0}}{AIC of null model.}
+#'   \item{\code{AICM1}}{AIC of alternative model.}
+#'   \item{\code{BICM0}}{BIC of null model.}
+#'   \item{\code{BICM1}}{BIC of alternative model.}
 #'   }
 #'
 #' @author
@@ -85,7 +92,7 @@
 #' # loading data based on GMAT
 #' data(GMATtest, GMATkey)
 #'
-#' Data  <- GMATtest[, colnames(GMATtest) != "group"]
+#' Data  <- GMATtest[, 1:20]
 #' group <- GMATtest[, "group"]
 #' key <- GMATkey
 #'
@@ -104,6 +111,11 @@
 #' plot(x, item = 1)
 #' plot(x, item = x$DDFitems)
 #' plot(x, item = "all")
+#'
+#' # AIC, BIC, logLik
+#' AIC(x)
+#' BIC(x)
+#' logLik(x)
 #' }
 #' @keywords DDF
 #' @export
@@ -152,15 +164,16 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both",
 
     GROUP <- as.numeric(as.factor(GROUP) == focal.name)
 
-    df <- data.frame(DATA, GROUP)
+    df <- data.frame(DATA, GROUP, check.names = F)
     df <- df[complete.cases(df), ]
 
     GROUP <- df[, "GROUP"]
     DATA <- df[, colnames(df) != "GROUP"]
 
-    PROV <- MLR(DATA, GROUP, key = key, type = type,
-                p.adjust.method = p.adjust.method,
-                alpha = alpha)
+    PROV <- suppressWarnings(MLR(DATA, GROUP, key = key, type = type,
+                                 p.adjust.method = p.adjust.method,
+                                 alpha = alpha))
+
     STATS <- PROV$Sval
     ADJ.PVAL <- PROV$adjusted.pval
     se.m1 <- lapply(lapply(PROV$cov.m1, diag), sqrt)
@@ -181,7 +194,6 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both",
       mlrSE <- se.m1
       }
 
-
     RES <- list(Sval = STATS,
                 mlrPAR = mlrPAR,
                 mlrSE = mlrSE,
@@ -193,7 +205,10 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both",
                 type = type, p.adjust.method = p.adjust.method,
                 pval = PROV$pval, adj.pval = PROV$adjusted.pval, df = PROV$df,
                 adjusted.p = NULL,
-                group = GROUP, Data = DATA, key = key)
+                group = GROUP, Data = DATA, key = key,
+                llM0 = PROV$ll.m0, llM1 = PROV$ll.m1,
+                AICM0 = PROV$AIC.m0, AICM1 = PROV$AIC.m1,
+                BICM0 = PROV$BIC.m0, BICM1 = PROV$BIC.m1)
 
     class(RES) <- "ddfMLR"
     return(RES)
@@ -237,7 +252,7 @@ print.ddfMLR <- function (x, ...){
     colnames(tab) <- c("Chisq-value", "P-value", "Adj. P-value", "")
   }
 
-  rownames(tab) <- paste("Item", 1:length(x$adj.pval))
+  rownames(tab) <- colnames(x$Data)
 
   print(tab, quote = F, digits = 4, zero.print = F)
   cat("\nSignif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
@@ -253,12 +268,9 @@ print.ddfMLR <- function (x, ...){
     switch(x$type, both = cat("\n\nItems detected as DDF items:"),
            udif = cat("\n\nItems detected as uniform DDF items:"),
            nudif = cat("\n\nItems detected as non-uniform DDF items:"))
-    cat("\n", paste("Item ", x$DDFitems, "\n", sep = ""))
+    cat("\n", paste(colnames(x$Data)[x$DDFitems], "\n", sep = ""))
   }
 }
-
-
-
 
 #' @rdname ddfMLR
 #' @export
@@ -286,8 +298,6 @@ plot.ddfMLR <- function(x, item = "all", title, ...){
     items <- item
   }
 
-
-
   score <- c(scale(unlist(CTT::score(x$Data, x$key))))
   sq <- seq(min(score), max(score), by = 0.1)
   sqR <- as.matrix(data.frame(1, sq, 0, 0))
@@ -298,14 +308,14 @@ plot.ddfMLR <- function(x, item = "all", title, ...){
     if (!missing(title)){
       TITLE <- title
     } else {
-      TITLE <- paste("Item", i)
+      TITLE <- colnames(x$Data)[i]
     }
 
     if(ncol(x$mlrPAR[[i]]) == 2)
       x$mlrPAR[[i]] <- as.matrix(data.frame(x$mlrPAR[[i]], 0, 0))
     prR <- prF <- c()
-    for (j in 1:nrow(x$mlrPAR[[i]])){
 
+    for (j in 1:nrow(x$mlrPAR[[i]])){
       prR <- rbind(prR, exp(x$mlrPAR[[i]][j, ] %*% t(sqR)))
       prF <- rbind(prF, exp(x$mlrPAR[[i]][j, ] %*% t(sqF)))
     }
@@ -325,7 +335,7 @@ plot.ddfMLR <- function(x, item = "all", title, ...){
                       prF[, (nrow(x$mlrPAR[[i]])+2):ncol(prF)], "F")
     hvR <- data.frame(hvR, score = sq)
     hvF <- data.frame(hvF, score = sq)
-    colnames(hvR) <- colnames(hvF) <- c(x$key[i], rownames(x$mlrPAR[[i]]), "group", "score")
+    colnames(hvR) <- colnames(hvF) <- c(paste(x$key[i]), rownames(x$mlrPAR[[i]]), "group", "score")
     hv <- rbind(hvR, hvF)
 
     df <- reshape2::melt(hv, id = c("score", "group"))
@@ -342,6 +352,8 @@ plot.ddfMLR <- function(x, item = "all", title, ...){
     df2$answ <- relevel(df2$Var1, ref = paste(x$key[i]))
     df2$group <- as.factor(df2$group)
 
+    df$variable <- relevel(df$variable, ref = paste(x$key[i]))
+
     plot_CC[[i]] <-  ggplot() +
       geom_line(data = df,
                 aes_string(x = "score" , y = "value",
@@ -353,17 +365,17 @@ plot.ddfMLR <- function(x, item = "all", title, ...){
                  alpha = 0.5, shape = 21) +
 
       ylim(0, 1) +
-      labs(title = paste("Item", i),
-           x = "Standardized Total Score",
-           y = "Probability of Answer") +
+      ggtitle(TITLE) +
+      labs(x = "Standardized total score",
+           y = "Probability of answer") +
       scale_linetype_discrete(name = "Group", labels = c("Reference", "Focal")) +
       scale_size_continuous(name = "Counts")  +
       scale_colour_discrete(name = "Answer", breaks = df2$answ) +
       scale_fill_discrete(guide = F) +
-
       theme_bw() +
       theme(axis.line  = element_line(colour = "black"),
-            text = element_text(size = 14),
+            text = element_text(size = 11),
+            plot.title = element_text(size = 11, face = "bold", vjust = 1.5),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             panel.background = element_blank(),
@@ -372,10 +384,41 @@ plot.ddfMLR <- function(x, item = "all", title, ...){
             legend.background = element_blank(),
             legend.box = "horizontal",
             legend.key = element_rect(colour = "white"),
-            plot.title = element_text(face = "bold"),
-            legend.key.width = unit(1, "cm"))
+            legend.key.width = unit(0.8, "cm"),
+            legend.key.height = unit(0.5, "cm"),
+            legend.spacing.x = unit(-0.05, "cm"))
 
   }
-
+  plot_CC <- Filter(Negate(function(i) is.null(unlist(i))), plot_CC)
   return(plot_CC)
+}
+
+#' @rdname ddfMLR
+#' @export
+coef.ddfMLR <- function(object, ...){
+  return(object$mlrPAR)
+}
+
+#' @rdname ddfMLR
+#' @export
+logLik.ddfMLR <- function(object, ...){
+  m <- length(object$mlrPAR)
+  LL <- ifelse(1:m %in% object$DIFitems, object$llM0, object$llM1)
+  return(LL)
+}
+
+#' @rdname ddfMLR
+#' @export
+AIC.ddfMLR <- function(object, ...){
+  m <- length(object$mlrPAR)
+  AIC <- ifelse(1:m %in% object$DDFitems, object$AICM0, object$AICM1)
+  return(AIC)
+}
+
+#' @rdname ddfMLR
+#' @export
+BIC.ddfMLR <- function(object, ...){
+  m <- length(object$mlrPAR)
+  BIC <- ifelse(1:m %in% object$DDFitems, object$BICM0, object$BICM1)
+  return(BIC)
 }

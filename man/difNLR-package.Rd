@@ -2,26 +2,45 @@
 % Please edit documentation in R/difNLR-package.R
 \docType{package}
 \name{difNLR-package}
-\alias{_PACKAGE}
 \alias{difNLR-package}
-\title{Detection of Dichotomous Differential Item Functioning (DIF) and Differential Distractor Functioning (DDF) by Non-Linear Regression Models}
+\alias{_PACKAGE}
+\title{Detection of Differential Item Functioning (DIF) and Differential Distractor Functioning (DDF) by Non-Linear Regression Models}
 \description{
-The difNLR package containts DIF detection method based on Non-Linear
-Regression. Both uniform and non-uniform DIF effects can be detected when considering
+The difNLR package containts DIF detection method based on non-linear
+regression. Both uniform and non-uniform DIF effects can be detected when considering
 one focal group. DIF detection method is based either on likelihood-ratio test, or on F-test
-of submodel. Package also offers DDF detection method based on Multinomial Log-linear Regression
+of submodel. Package also offers DDF detection method based on multinomial log-linear regression
 model.
 }
 \details{
 Package: difNLR\cr
 Type: Package\cr
-Version: 1.0.0\cr
-Date: 2017-01-19\cr
-Depends: R (>= 3.2.2), CTT, ggplot2, methods, nnet, reshape2, stats\cr
+Version: 1.0.2\cr
+Date: 2017-06-06\cr
+Depends: R (>= 3.2.2), CTT, ggplot2 (>= 2.2.1), methods, nnet, reshape2, stats\cr
 License: GPL-3\cr
+BugReports: https://github.com/drabinova/difNLR/issues
 }
 \note{
 This package was supported by grant funded by Czech Science foundation under number GJ15-15856Y.
+}
+\references{
+Drabinova, A. and Martinkova P. (2016). Detection of Differenctial Item Functioning Based on Non-Linear Regression, Technical Report, V-1229, \url{http://hdl.handle.net/11104/0259498}.
+
+Kingston, N., Leary, L., and Wightman, L. (1985). An Exploratory Study of the Applicability of Item Response Theory Methods to the Graduate Management Admission Test. ETS Research Report Series, 1985(2) : 1-64.
+
+Martinkova, P., Drabinova, A., Liaw Y.-L., Sanders E. A., McFarland J. L., Price R. M. (2016). Using DIF Analysis to Reveal Potential Equity Gaps in Conceptual Assessments. In review.
+
+Swaminathan, H. and Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures. Journal of Educational Measurement, 27, 361-370.
+
+Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis).
+}
+\seealso{
+Useful links:
+\itemize{
+  \item Report bugs at \url{https://github.com/drabinova/difNLR/issues}
+}
+
 }
 \author{
 Adela Drabinova \cr
@@ -36,15 +55,3 @@ martinkova@cs.cas.cz \cr
 Karel Zvara \cr
 Faculty of Mathematics and Physics, Charles University \cr
 }
-\references{
-Drabinova, A. and Martinkova P. (2016). Detection of Differenctial Item Functioning Based on Non-Linear Regression, Technical Report, V-1229, \url{http://hdl.handle.net/11104/0259498}.
-
-Kingston, N., Leary, L., and Wightman, L. (1985). An Exploratory Study of the Applicability of Item Response Theory Methods to the Graduate Management Admission Test. ETS Research Report Series, 1985(2) : 1-64.
-
-Martinkova, P., Drabinova, A., Liaw Y.-L., Sanders E. A., McFarland J. L., Price R. M. (2016). Using DIF Analysis to Reveal Potential Equity Gaps in Conceptual Assessments. In review.
-
-Swaminathan, H. and Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures. Journal of Educational Measurement, 27, 361-370.
-
-Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis).
-}
-

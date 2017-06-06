@@ -90,7 +90,7 @@ The \code{p.adjust.method} is a character for \code{p.adjust} function from the
 # loading data based on GMAT
 data(GMAT)
 
-Data  <- GMAT[, colnames(GMAT) != "group"]
+Data  <- GMAT[, 1:20]
 group <- GMAT[, "group"]
 
 # Testing both DIF effects using LR test (default)
@@ -109,6 +109,14 @@ NLR(Data, group, model = "3PLcg", type = "udif")
 NLR(Data, group, model = "3PLcg", type = "nudif")
 }
 }
+\references{
+Drabinova, A. and Martinkova P. (2016). Detection of Differenctial Item Functioning Based on Non-Linear Regression, Technical Report, V-1229, \url{http://hdl.handle.net/11104/0259498}.
+
+Swaminathan, H. and Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures. Journal of Educational Measurement, 27, 361-370.
+}
+\seealso{
+\code{\link[stats]{p.adjust}}
+}
 \author{
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -122,13 +130,4 @@ martinkova@cs.cas.cz \cr
 Karel Zvara \cr
 Faculty of Mathematics and Physics, Charles University \cr
 }
-\references{
-Drabinova, A. and Martinkova P. (2016). Detection of Differenctial Item Functioning Based on Non-Linear Regression, Technical Report, V-1229, \url{http://hdl.handle.net/11104/0259498}.
-
-Swaminathan, H. and Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures. Journal of Educational Measurement, 27, 361-370.
-}
-\seealso{
-\code{\link[stats]{p.adjust}}
-}
 \keyword{DIF}
-

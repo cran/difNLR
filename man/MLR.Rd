@@ -32,6 +32,12 @@ A list with the following arguments:
   \item{\code{par.m1}}{the estimates of alternative model.}
   \item{\code{cov.m0}}{the estimates of covariance structure of null model.}
   \item{\code{cov.m1}}{the estimates of covariance structure of alternative model.}
+  \item{\code{ll.m0}}{log-likelihood of m0 model.}
+  \item{\code{ll.m1}}{log-likelihood of m1 model.}
+  \item{\code{AIC.m0}}{AIC of m0 model.}
+  \item{\code{AIC.m1}}{AIC of m1 model.}
+  \item{\code{BIC.m0}}{BIC of m0 model.}
+  \item{\code{BIC.m1}}{BIC of m1 model.}
   }
 }
 \description{
@@ -58,7 +64,7 @@ The \code{p.adjust.method} is a character for \code{p.adjust} function from the
 # loading data based on GMAT
 data(GMATtest, GMATkey)
 
-Data  <- GMATtest[, colnames(GMATtest) != "group"]
+Data  <- GMATtest[, 1:20]
 group <- GMATtest[, "group"]
 key <- GMATkey
 
@@ -72,6 +78,9 @@ MLR(Data, group, key, type = "udif")
 MLR(Data, group, key, type = "nudif")
 }
 }
+\seealso{
+\code{\link[stats]{p.adjust}}
+}
 \author{
 Adela Drabinova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -82,8 +91,4 @@ Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 martinkova@cs.cas.cz \cr
 }
-\seealso{
-\code{\link[stats]{p.adjust}}
-}
 \keyword{DDF}
-

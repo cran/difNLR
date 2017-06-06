@@ -148,7 +148,7 @@
 #' # loading data based on GMAT
 #' data(GMAT)
 #'
-#' Data  <- GMAT[, colnames(GMAT) != "group"]
+#' Data  <- GMAT[, 1:20]
 #' group <- GMAT[, "group"]
 #'
 #' # Testing both DIF effects using likelihood-ratio test and
@@ -266,7 +266,7 @@ difNLR <- function(Data, group, focal.name, model,
 
     GROUP <- as.numeric(as.factor(GROUP) == focal.name)
 
-    df <- data.frame(DATA, GROUP)
+    df <- data.frame(DATA, GROUP, check.names = F)
     df <- df[complete.cases(df), ]
 
     GROUP <- df[, "GROUP"]
@@ -274,11 +274,6 @@ difNLR <- function(Data, group, focal.name, model,
 
     if (is.null(start)) {
       start <- startNLR(DATA, GROUP, model)
-      # start <- switch(type,
-      #                 both = start,
-      #                 nudif = start,
-      #                 udif = start[, -4])
-
     } else {
       if (ncol(start) != 5 & type != "udif")
         stop("'start' must be data frame or matrix with 5 columns",
@@ -291,31 +286,27 @@ difNLR <- function(Data, group, focal.name, model,
              call. = FALSE)
     }
 
-    PROV <- NLR(DATA, GROUP, model = model, type = type, start = start,
+    PROV <- suppressWarnings(NLR(DATA, GROUP, model = model, type = type, start = start,
                 p.adjust.method = p.adjust.method, test = test,
-                alpha = alpha)
+                alpha = alpha))
     STATS <- PROV$Sval
     ADJ.PVAL <- PROV$adjusted.pval
     significant <- which(ADJ.PVAL < alpha)
+
+    nlrPAR <- nlrSE <- structure(data.frame(matrix(0, ncol = ncol(PROV$par.m0), nrow = nrow(PROV$par.m0))),
+                                 .Names = colnames(PROV$par.m0))
+    nlrPAR[, colnames(PROV$par.m1)] <- PROV$par.m1
+    nlrSE[, colnames(PROV$par.m1)] <- PROV$se.m1
+
     if (length(significant) > 0) {
       DIFitems <- significant
-      nlrPAR <- nlrSE <- structure(data.frame(matrix(0, ncol = ncol(PROV$par.m0), nrow = nrow(PROV$par.m0))),
-                                   .Names = colnames(PROV$par.m0))
-
-      nlrPAR[, colnames(PROV$par.m1)] <- PROV$par.m1
-      nlrSE[, colnames(PROV$par.m1)] <- PROV$se.m1
-
       for (idif in 1:length(DIFitems)) {
         nlrPAR[DIFitems[idif], ] <- PROV$par.m0[DIFitems[idif], ]
         nlrSE[DIFitems[idif], ] <- PROV$se.m0[DIFitems[idif], ]
       }
-
     } else {
       DIFitems <- "No DIF item detected"
-      nlrPAR <- PROV$par.m1
-      nlrSE <- PROV$se.m1
     }
-
 
     RES <- list(Sval = STATS,
                 nlrPAR = nlrPAR, nlrSE = nlrSE,
@@ -391,7 +382,8 @@ print.difNLR <- function (x, ...){
                             "LR" = c("Chisq-value", "P-value", "Adj. P-value", ""))
   }
 
-  rownames(tab) <- paste("Item", 1:length(x$adj.pval))
+  # rownames(tab) <- paste("Item", 1:length(x$adj.pval))
+  rownames(tab) <- colnames(x$Data)
 
   print(tab, quote = F, digits = 4, zero.print = F)
   cat("\nSignif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
@@ -407,7 +399,7 @@ print.difNLR <- function (x, ...){
     switch(x$type, both = cat("\n\nItems detected as DIF items:"),
            udif = cat("\n\nItems detected as uniform DIF items:"),
            nudif = cat("\n\nItems detected as non-uniform DIF items:"))
-    cat("\n", paste("Item ", x$DIF, "\n", sep = ""))
+    cat("\n", paste(colnames(x$Data)[x$DIFitems], "\n", sep = ""))
   }
 }
 
@@ -437,7 +429,7 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
     }
 
     if(missing(title)){
-      title <- "Non-Linear Regression DIF Detection \n with None Multiple Comparison Correction"
+      title <- "Non-linear regression DIF detection \n with none multiple comparison correction"
     }
     n <- nrow(x$Data)
     Sval_critical <- switch(x$test,
@@ -527,9 +519,7 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
                 call. = FALSE)
       }
     }
-    if (!missing(title)){
-      TITLE <- title
-    }
+
 
     ### functions
     gNLR <- deriv3( ~ (c + cDif * g) + ((d + dDif * g) - (c + cDif * g)) /
@@ -559,8 +549,10 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
       rownames(hv) <- 1:dim(hv)[1]
       hv$size <- c(table(xR), table(xF))
 
-      if (missing(title)){
-        TITLE <- paste("Item", i)
+      if (!missing(title)){
+        TITLE <- title
+      } else {
+        TITLE <- colnames(x$Data)[i]
       }
 
       if (dim(x$nlrPAR)[2] != 8){
@@ -613,19 +605,13 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
                       theme(legend.box.just = "left",
                             legend.justification = c(1, 0),
                             legend.position = c(0.97, 0.03),
-                            # legend.margin = margin(0, "lines"),
                             legend.box = "vertical",
-                            # legend.key.size = unit(0.9, "cm"),
-                            # legend.key.height = unit(0.8, "line"),
                             legend.text.align = 0,
                             legend.title.align = 0,
-                            legend.key = element_rect(colour = "white"))
+                            legend.key = element_rect(colour = "white"),
+                            legend.spacing.y = unit(-0.05, "cm"))
     }
-
     plot_CC <- Filter(Negate(function(i) is.null(unlist(i))), plot_CC)
-    # names(plot_CC) <- paste("Item", items)
-    # class(plot_CC)
-
     return(plot_CC)
   }
   ### checking input
@@ -805,7 +791,6 @@ AIC.difNLR <- function(object, ...){
   AIC <- ifelse(1:m %in% object$DIFitems, object$AICM0, object$AICM1)
   return(AIC)
 }
-
 
 #' @rdname difNLR
 #' @export

@@ -19,19 +19,6 @@ as differently functioning (Vlckova, 2014). A correct answer is coded as 1 and i
 answer as 0. The column \code{gender} represents gender of students, where 0 represents
 males (reference group) and 1 represents females (focal group).
 }
-\author{
-Adela Drabinova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-Faculty of Mathematics and Physics, Charles University \cr
-adela.drabinova@gmail.com \cr
-
-Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
-
-Karel Zvara \cr
-Faculty of Mathematics and Physics, Charles University \cr
-}
 \references{
 Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis).
 
@@ -41,5 +28,14 @@ Non-Linear Regression, Technical Report, V-1229, \url{http://hdl.handle.net/1110
 \seealso{
 \code{\link{difMedicaltest}}, \code{\link{difMedicalkey}}
 }
-\keyword{datasets}
+\author{
+Adela Drabinova \cr
+Institute of Computer Science, The Czech Academy of Sciences \cr
+Faculty of Mathematics and Physics, Charles University \cr
+adela.drabinova@gmail.com \cr
 
+Patricia Martinkova \cr
+Institute of Computer Science, The Czech Academy of Sciences \cr
+martinkova@cs.cas.cz \cr
+}
+\keyword{datasets}
