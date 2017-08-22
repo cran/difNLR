@@ -3,18 +3,129 @@
 *  Changes and Developments in the difNLR Package  *
 *                                                  *
 ****************************************************
+
 ----------------------------------------
-- Changes in difNLR 1.0.3 (2017-06-15) -
+- Changes in difNLR 1.1.0 (2017-08-21) -
+----------------------------------------
+
+*** THIS IS A CRAN VERSION ***
+
+MINOR UPDATES
+
+  o Bug in plot.difNLR was fixed.
+  o README file was updated.
+  o Package documentation was updated.
+  o Default value for 'constraints' arguments in 'NLR()' and 'formulaNLR()'
+    functions were set to 'NULL'.
+  o Default starting values were added into 'NLR()' function
+    by 'startNLR()' function.
+
+----------------------------------------
+- Changes in difNLR 1.0.8 (2017-08-14) -
 ----------------------------------------
 
 MAJOR UPDATES
 
-  o Bug of plot.ddfMLR() for nonuniform DDF was fixed.
+  o Several bugs were fixed:
+    - 'difNLR()' function can handle 'Data' with one column.
+    - 'startNLR()' now works when 'match' argument is set.
+    - Check input condition was fixed in 'formulaNLR()' function.
+    - Delta method in 'NLR()' function.
+  o Function 'startNLR()' was mildly updated.
+
+
+----------------------------------------
+- Changes in difNLR 1.0.7 (2017-08-10) -
+----------------------------------------
+
+MAJOR UPDATES
+
+  o Item purification was implemented into 'ddfMLR()' function.
+  o Anchor items were implemented into 'ddfMLR()' function.
+  o Anchor items were implemented into 'MLR()' function.
+
+MINOR UPDATES
+
+  o Minor bug in 'logLik.ddfMLR()' function was fixed.
+  o Documentation of 'difNLR()' was updated.
+
+----------------------------------------
+- Changes in difNLR 1.0.6 (2017-08-09) -
+----------------------------------------
+
+MAJOR UPDATES
+
+  o Item purification was implemented into 'difNLR()' function.
+  o Anchor items were implemented into 'difNLR()' function.
+  o Anchor items were implemented into 'NLR()' function.
+
+MINOR UPDATES
+
+  o README file was updated.
+
+----------------------------------------
+- Changes in difNLR 1.0.5 (2017-08-09) -
+----------------------------------------
+
+MAJOR UPDATES
+
+  o Datasets 'difMedical', 'difMedicaltest' and 'difMedicalkey'
+    were renamed. Now they are 'MSATB', 'MSATBtest' and 'MSATBkey'
+    from Medical School Admission Test in Biology.
+
+
+MINOR UPDATES
+
+  o LazyData is now available.
+  o References were updated.
+  o README file updated.
+
+----------------------------------------
+- Changes in difNLR 1.0.4 (2017-08-08) -
+----------------------------------------
+
+MAJOR UPDATES
+
+  o New function 'formulaNLR()' was implemented. Function
+    returns formula for NLR model for 11 predefined models and 4
+    predefined DIF types to test. Model and DIF type can be also
+    specified with constraints on parameters a, b, c and d.
+  o Function 'NLR()' now handles 11 predefined models and 4
+    predefined DIF types to test. Model and DIF type can be also
+    specified with constraints on parameters a, b, c and d.
+  o Function 'startNLR()' was edited to return starting
+    parameters with different parameterization. It was also mildly
+    changed to correspond to new version of 'NLR()' function.
+  o Function 'difNLR()' can now handle also total score or other
+    user-specified matching score.
+  o Function 'constrNLR()' is no longer part of the 'difNLR'
+    package.
+
+
+MINOR UPDATES
+
+  o References were updated.
+  o Some minor bugs were fixed:
+      - Items are no longer renamed by 'difNLR()' and 'ddfMLR()' functions.
+      - Starting values are now correctly checked in 'difNLR()' function.
+  o 'msm' package is now used for delta method in 'difNLR()' function
+
+----------------------------------------
+- Changes in difNLR 1.0.3 (2017-06-15) -
+----------------------------------------
+
+*** THIS IS A CRAN VERSION ***
+
+MAJOR UPDATES
+
+  o Bug of 'plot.ddfMLR()' for non-uniform DDF was fixed.
   o References were updated.
 
 ----------------------------------------
 - Changes in difNLR 1.0.2 (2017-06-06) -
 ----------------------------------------
+
+*** THIS IS A CRAN VERSION ***
 
 MAJOR UPDATES
 
@@ -38,6 +149,8 @@ MINOR UPDATES
 ----------------------------------------
 - Changes in difNLR 1.0.0 (2017-01-10) -
 ----------------------------------------
+
+*** THIS IS A CRAN VERSION ***
 
 MAJOR UPDATES
 
@@ -79,6 +192,8 @@ MINOR UPDATES
 ----------------------------------------
 - Changes in difNLR 0.2.0 (2016-11-09) -
 ----------------------------------------
+
+*** THIS IS A CRAN VERSION ***
 
 MAJOR UPDATES
 
