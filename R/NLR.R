@@ -1,4 +1,4 @@
-#' Non-Linear Regression DIF statistic
+#' Non-Linear Regression DIF statistic.
 #'
 #' @aliases NLR
 #'
@@ -10,6 +10,8 @@
 #' @param group numeric: binary vector of group membership. \code{"0"} for reference group, \code{"1"} for focal group.
 #' @param model character: generalized logistic regression model to be fitted. See \strong{Details}.
 #' @param constraints character: which parameters should be the same for both groups. Default value is \code{NULL}. See \strong{Details}.
+#' @param method character: what method should be used for estimation of parameters in \code{model}. The options are
+#' \code{"nls"} for non-linear least squares (default) and \code{"likelihood"} for maximum likelihood method.
 #' @param match specifies matching criterion. Can be either \code{"zscore"} (default, standardized total score),
 #' \code{"score"} (total test score), or vector of the same length as number of observations in \code{Data}. See \strong{Details}.
 #' @param anchor a vector of integers specifying which items are currently considered as anchor (DIF free) items. By
@@ -23,9 +25,14 @@
 #' @param test character: test to be performed for DIF detection (either \code{"LR"} (default), or \code{"F"}).
 #' See \strong{Details}.
 #' @param alpha numeric: significance level (default is 0.05).
+#' @param initboot logical: in case of convergence issues, should be starting values recalculated based on
+#' bootstraped samples? (default is \code{TRUE}). See \strong{Details}.
+#' @param nrBo numeric: the maximal number of iterations for calculation of starting values using
+#' bootstraped samples (default is 20).
 #'
-#' @usage NLR(Data, group, model, constraints = NULL, type = "both", match = "zscore",
-#' anchor = 1:ncol(Data), start, p.adjust.method = "none", test = "LR", alpha = 0.05)
+#' @usage NLR(Data, group, model, constraints = NULL, type = "both", method = "nls",
+#' match = "zscore", anchor = 1:ncol(Data), start, p.adjust.method = "none", test = "LR",
+#' alpha = 0.05, initboot = T, nrBo = 20)
 #'
 #' @details
 #' DIF detection procedure based on Non-Linear Regression is the extension
@@ -35,11 +42,15 @@
 #' ("1" correct, "0" incorrect) and columns correspond to the items.
 #' The \code{group} must be a vector of the same length as \code{nrow(data)}.
 #'
-#' The unconstrained form of 4PL generalized logistic regression model for probability of correct answer (i.e., y = 1) is
+#' The unconstrained form of 4PL generalized logistic regression model for probability of
+#' correct answer (i.e., y = 1) is
+#'
 #' P(y = 1) = (c + cDif*g) + (d + dDif*g - c - cDif*g)/(1 + exp(-(a + aDif*g)*(x - b - bDif*g))),
-#' where x is standardized total score (also called Z-score) and g is group membership. Parameters a, b, c and d
-#' are discrimination, difficulty, guessing and inattention. Parameters aDif, bDif, cDif and dDif
-#' then represetn differences between two groups in discrimination, difficulty, guessing and inattention.
+#'
+#' where x is standardized total score (also called Z-score) and g is group membership.
+#' Parameters a, b, c and d are discrimination, difficulty, guessing and inattention.
+#' Parameters aDif, bDif, cDif and dDif then represent differences between two groups in
+#' discrimination, difficulty, guessing and inattention.
 #'
 #' This 4PL model can be further constrained by \code{model} and \code{constraints} arguments.
 #' The arguments \code{model} and \code{constraints} can be also combined.
@@ -73,16 +84,21 @@
 #' total test score (\code{"score"}), or any other continuous or discrete variable of the same length as number of observations
 #' in \code{Data}. Matching criterion is used in \code{NLR} function as a covariate in non-linear regression model.
 #'
-#' The \code{start} is a matrix with a number of rows equal to number of items and with 8 columns.
-#' First 4 columns represent parameters (a, b, c, d) of generalized logistic regression model
-#' for reference group. Last 4 columns represent differences of parameters (aDif, bDif, cDif, dDif)
-#' of generalized logistic regression model between reference and focal group.  If not specified, starting
-#' values are calculated with \code{startNLR} function.
+#' The \code{start} is a list with as many elements as number of items. Each element is a named numeric
+#' vector representing initial values for parameter estimation. Specifically, parameters
+#' a, b, c, and d are initial values for discrimination, difficulty, guessing and inattention
+#' for reference group. Parameters aDif, bDif, cDif and dDif are then differences in these
+#' parameters between reference and focal group. If not specified, starting
+#' values are calculated with \code{\link[difNLR]{startNLR}} function.
 #'
 #' The \code{p.adjust.method} is a character for \code{p.adjust} function from the
 #' \code{stats} package. Possible values are \code{"holm"}, \code{"hochberg"},
 #' \code{"hommel"}, \code{"bonferroni"}, \code{"BH"}, \code{"BY"}, \code{"fdr"},
 #' \code{"none"}.
+#'
+#' In case of convergence issues, with an option \code{initboot = TRUE}, the starting values are
+#' re-calculated based on bootstraped samples. Newly calculated initial values are applied only to
+#' items/models with convergence issues.
 #'
 #' In case that model considers difference in guessing or inattention parameter, the different parameterization is
 #' used and parameters with standard errors are recalculated by delta method. However, covariance matrices stick with
@@ -105,16 +121,18 @@
 #'   \item{\code{conv.fail.which}}{the indicators of the items which did not converge.}
 #'   \item{\code{ll.m0}}{log-likelihood of m0 model.}
 #'   \item{\code{ll.m1}}{log-likelihood of m1 model.}
-#'   \item{\code{AIC.m0}}{AIC of m0 model.}
-#'   \item{\code{AIC.m1}}{AIC of m1 model.}
-#'   \item{\code{BIC.m0}}{BIC of m0 model.}
-#'   \item{\code{BIC.m1}}{BIC of m1 model.}
+#'   \item{\code{startBo0}}{the binary matrix. Columns represents iterations of initial values
+#'   recalculations, rows represents items. The value of 0 means no convergence issue in m0 model,
+#'   1 means convergence issue in m0 model.}
+#'   \item{\code{startBo1}}{the binary matrix. Columns represents iterations of initial values
+#'   recalculations, rows represents items. The value of 0 means no convergence issue in m1 model,
+#'   1 means convergence issue in m1 model.}
 #' }
 #' @author
 #' Adela Drabinova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' adela.drabinova@gmail.com \cr
+#' drabinova@cs.cas.cz \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -125,10 +143,7 @@
 #'
 #' @references
 #' Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
-#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement. Accepted.
-#'
-#' Drabinova, A. & Martinkova P. (2016). Detection of Differenctial Item Functioning Based on Non-Linear Regression,
-#' Technical Report, V-1229, \url{http://hdl.handle.net/11104/0259498}.
+#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517.
 #'
 #' Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
 #' Journal of Educational Measurement, 27, 361-370.
@@ -164,16 +179,19 @@
 #' # to test difference in b
 #' NLR(Data, group, model = "4PL", constraints = "ac", type = "b")
 #'
+#' # using maximum likelihood estimation method
+#' NLR(Data, group, model = "3PLcg", method = "likelihood")
 #' }
 #' @keywords DIF
 #' @export
-#' @importFrom stats AIC BIC logLik
+#' @importFrom stats logLik
 #' @importFrom msm deltamethod
 
 
 NLR <- function(Data, group, model, constraints = NULL, type = "both",
-                match = "zscore", anchor = 1:ncol(Data),
-                start, p.adjust.method = "none", test = "LR", alpha = 0.05){
+                method = "nls", match = "zscore", anchor = 1:ncol(Data),
+                start, p.adjust.method = "none", test = "LR", alpha = 0.05,
+                initboot = T, nrBo = 20){
 
   if (match[1] == "zscore"){
     x <- scale(apply(as.data.frame(Data[, anchor]), 1, sum))
@@ -190,159 +208,239 @@ NLR <- function(Data, group, model, constraints = NULL, type = "both",
     }
   }
 
-  if (missing(start)){
-    if (model %in% c("3PLc", "3PL", "3PLd", "4PLcgd", "4PLd", "4PLcdg", "4PLc", "4PL")){
-      parameterization <- "alternative"
-      start <- startNLR(Data, group, model, match = x, parameterization = parameterization)
-    } else {
-      parameterization <- "classic"
-      start <- startNLR(Data, group, model, match = x, parameterization = parameterization)
-    }
-  }
-
   m <- ncol(Data)
   n <- nrow(Data)
 
-
-  if (model %in% c("3PLc", "3PL", "3PLd", "4PLcgd", "4PLd", "4PLcdg", "4PLc", "4PL")){
-    parameterization <- "alternative"
-  } else {
-    parameterization <- "classic"
+  if (length(model) == 1){
+    model <- rep(model, m)
+  }
+  if (is.null(constraints)){
+    constraints <- as.list(rep(NA, m))
+  }
+  if (length(constraints) == 1){
+      constraints <- rep(constraints, m)
+  }
+  if (length(type) == 1){
+    type <- rep(type, m)
   }
 
-  M <- formulaNLR(model = model, type = type, constraints, parameterization = parameterization)
-  m0 <- lapply(1:m, function(i) tryCatch(nls(formula = M$M0$formula,
-                                             data = data.frame(y = Data[, i], g = group, x = x),
-                                             algorithm = "port",
-                                             start = start[i, M$M0$parameters],
-                                             lower = M$M0$lower,
-                                             upper = M$M0$upper),
-                                         error = function(e){cat("ERROR : ", conditionMessage(e), "\n")},
-                                         finally = ""))
+  parameterization <- ifelse(model %in% c("3PLc", "3PL", "3PLd", "4PLcgd", "4PLd", "4PLcdg",
+                                          "4PLc", "4PL"),
+                             "alternative",
+                             "classic")
+  if (missing(start)){
+    start <- startNLR(Data, group, model, match = x, parameterization = parameterization)
+  } else {
+    if (is.null(start)){
+      start <- startNLR(Data, group, model, match = x, parameterization = parameterization)
+    } else {
+      for (i in 1:m){
+        if (parameterization[i] == "alternative"){
+          start[[i]]["cDif"] <- start[[i]]["c"] + start[[i]]["cDif"]
+          start[[i]]["dDif"] <- start[[i]]["d"] + start[[i]]["dDif"]
+          names(start[[i]]) <- c("a", "b", "cR", "dR", "aDif", "bDif", "cF", "dF")
+        } else {
+          names(start[[i]]) <- c("a", "b", "c", "d", "aDif", "bDif", "cDif", "dDif")
+        }
+      }
+    }
+  }
 
-  m1 <- lapply(1:m, function(i) tryCatch(nls(formula = M$M1$formula,
-                                             data = data.frame(y = Data[, i], g = group, x = x),
-                                             algorithm = "port",
-                                             start = start[i, M$M1$parameters],
-                                             lower = M$M1$lower,
-                                             upper = M$M1$upper),
-                                         error = function(e){cat("ERROR : ", conditionMessage(e), "\n")},
-                                         finally = ""))
+
+  M <- lapply(1:m,
+              function(i) formulaNLR(model = model[i],
+                                     type = type[i],
+                                     constraints = constraints[[i]],
+                                     parameterization = parameterization[i]))
+
+  m0 <- lapply(1:m, function(i) estimNLR(y = Data[, i], match = x, group = group,
+                                         formula = M[[i]]$M0$formula,
+                                         method = method,
+                                         start = structure(start[[i]][M[[i]]$M0$parameters],
+                                                           names = M[[i]]$M0$parameters),
+                                         lower = M[[i]]$M0$lower,
+                                         upper = M[[i]]$M0$upper))
+  m1 <- lapply(1:m, function(i) estimNLR(y = Data[, i], match = x, group = group,
+                                         formula = M[[i]]$M1$formula,
+                                         method = method,
+                                         start = structure(start[[i]][M[[i]]$M1$parameters],
+                                                           names = M[[i]]$M1$parameters),
+                                         lower = M[[i]]$M1$lower,
+                                         upper = M[[i]]$M1$upper))
   # convergence failures
   cfM0 <- unlist(lapply(m0, is.null)); cfM1 <- unlist(lapply(m1, is.null))
   conv.fail <- sum(cfM0, cfM1)
   conv.fail.which <- which(cfM0 | cfM1)
 
+  # using starting values for bootstraped samples
+
+  if (initboot){
+    startM0 <- startM1 <- start
+    startBo0 <- rep(0, m); startBo1 <- rep(0, m)
+    startBo0[which(cfM0)] <- 1; startBo1[which(cfM1)] <- 1
+    for (i in 1:nrBo){
+      if (conv.fail > 0){
+        samp <- sample(1:nrow(Data), size = nrow(Data), replace = T)
+        startalt <- startNLR(Data[samp, ], group[samp], model, match = x,
+                             parameterization = parameterization)
+        if (sum(cfM0) > 0){
+          startM0[which(cfM0)] <- startalt[which(cfM0)]
+          m0[which(cfM0)] <- lapply(which(cfM0), function(i) estimNLR(y = Data[, i], match = x, group = group,
+                                                                      formula = M[[i]]$M0$formula,
+                                                                      method = method,
+                                                                      start = structure(startM0[[i]][M[[i]]$M0$parameters],
+                                                                                        names = M[[i]]$M0$parameters),
+                                                                      lower = M[[i]]$M0$lower,
+                                                                      upper = M[[i]]$M0$upper))
+          cfM0 <- unlist(lapply(m0, is.null))
+          startBo0 <- cbind(startBo0, rep(0, m))
+          startBo0[which(cfM0), i+1] <- 1
+        }
+        if (sum(cfM1) > 0){
+          startM1[which(cfM1)] <- startalt[which(cfM1)]
+          m1[which(cfM1)] <- lapply(which(cfM1), function(i) estimNLR(y = Data[, i], match = x, group = group,
+                                                                      formula = M[[i]]$M1$formula,
+                                                                      method = method,
+                                                                      start = structure(startM1[[i]][M[[i]]$M1$parameters],
+                                                                                        names = M[[i]]$M1$parameters),
+                                                                      lower = M[[i]]$M1$lower,
+                                                                      upper = M[[i]]$M1$upper))
+          cfM1 <- unlist(lapply(m1, is.null))
+          startBo1 <- cbind(startBo1, rep(0, m))
+          startBo1[which(cfM1), i+1] <- 1
+
+        }
+        conv.fail <- sum(cfM0, cfM1)
+        conv.fail.which <- which(cfM0 | cfM1)
+      } else {
+        break
+      }
+    }
+  } else {
+    startBo0 <- startBo1 <- NULL
+  }
+  if (i > 1)
+    message("Starting values were calculated based on bootstraped samples. ")
+
+
   if (conv.fail > 0) {
-    warning("Convergence failure")
+    warning(paste("Convergence failure in item", conv.fail.which, "\n"))
   }
   # test
   if (test == "F"){
     pval <- Fval <- rep(NA, m)
+    n0 <- sapply(1:m, function(i) length(M[[i]]$M0$parameters))
+    n1 <- sapply(1:m, function(i) length(M[[i]]$M1$parameters))
 
-    df <- c(length(M$M0$parameters) - length(M$M1$parameters), n -  length(M$M0$parameters))
-    Fval[which(!(cfM1 | cfM0))] <- sapply(which(!(cfM1 |  cfM0)),
-                                          function(l) ((m1[[l]]$m$deviance() - m0[[l]]$m$deviance())/df[1])/(m0[[l]]$m$deviance()/df[2]))
-    pval[which(!(cfM1 | cfM0))] <- sapply(which(!(cfM1 | cfM0)),
-                                          function(l) (1 - pf(Fval[l], df[1], df[2])))
+    df <- cbind(n0 - n1, n - n0)
+
+    RSS0 <- rep(NA, m); RSS1 <- rep(NA, m)
+    RSS0[which(!(cfM1 | cfM0))]  <- sapply(which(!(cfM1 | cfM0)), function(l) sum(residuals(m0[[l]])^2))
+    RSS1[which(!(cfM1 | cfM0))]  <- sapply(which(!(cfM1 | cfM0)), function(l) sum(residuals(m1[[l]])^2))
+
+    Fval <- ((RSS1 - RSS0)/df[, 1])/(RSS0/df[, 2])
+    pval <- 1 - pf(Fval, df[, 1], df[, 2])
   } else {
     pval <- LRval <- rep(NA, m)
 
-    df <- length(M$M0$parameters) - length(M$M1$parameters)
+    n0 <- sapply(1:m, function(i) length(M[[i]]$M0$parameters))
+    n1 <- sapply(1:m, function(i) length(M[[i]]$M1$parameters))
+
+    df <- n0 - n1
+
     LRval[which(!(cfM1 | cfM0))] <- sapply(which(!(cfM1 |  cfM0)),
                                            function(l) -2 * c(logLik(m1[[l]]) - logLik(m0[[l]])))
     pval[which(!(cfM1 | cfM0))] <- sapply(which(!(cfM1 | cfM0)),
-                                          function(l) (1 - pchisq(LRval[l], df)))
+                                          function(l) (1 - pchisq(LRval[l], df[l])))
   }
   # likelihood
-  ll.m0 <- ll.m1 <- lapply(1:m, function(i) NA)
-  ll.m0[which(!cfM0)] <- lapply(m0[which(!cfM0)], logLik)
-  ll.m1[which(!cfM1)] <- lapply(m1[which(!cfM1)], logLik)
+  ll.m0 <- ll.m1 <- rep(NA, m)
+  ll.m0[which(!cfM0)] <- sapply(m0[which(!cfM0)], logLik)
+  ll.m1[which(!cfM1)] <- sapply(m1[which(!cfM1)], logLik)
   # adjusted p-values
   adjusted.pval <- p.adjust(pval, method = p.adjust.method)
   # parameters
-  par.m1 <- se.m1 <- structure(data.frame(matrix(NA, nrow = m, ncol = length(M$M1$parameters))),
-                               .Names = M$M1$parameters)
-  par.m0 <- se.m0 <- structure(data.frame(matrix(NA, nrow = m, ncol = length(M$M0$parameters))),
-                               .Names = M$M0$parameters)
+  par.m1 <- se.m1 <- lapply(1:m, function(i) structure(rep(NA, length(M[[i]]$M1$parameters)),
+                                                       names = M[[i]]$M1$parameters))
 
-  if (dim(par.m1)[2] == 1){
-    par.m1[which(!cfM1), ] <- sapply(m1[which(!cfM1)], coef)
-    par.m1 <- structure(data.frame(par.m1), names = unique(names(par.m1)))
-  } else {
-    par.m1[which(!cfM1), ] <- t(sapply(m1[which(!cfM1)], coef))
-  }
-  par.m0[which(!cfM0), ] <- t(sapply(m0[which(!cfM0)], coef))
+  par.m0 <- se.m0 <- lapply(1:m, function(i) structure(rep(NA, length(M[[i]]$M0$parameters)),
+                                                       names = M[[i]]$M0$parameters))
+  par.m1[which(!cfM1)] <- lapply(m1[which(!cfM1)], coef)
+  par.m0[which(!cfM0)] <- lapply(m0[which(!cfM0)], coef)
 
   # covariance structure
-  cov.m0 <- cov.m1 <- lapply(1:m, function(i) NA)
+  cov.m0 <- cov.m1 <- as.list(rep(NA, m))
   cov.m1[which(!cfM1)] <- lapply(m1[which(!cfM1)], vcov)
   cov.m0[which(!cfM0)] <- lapply(m0[which(!cfM0)], vcov)
-
   # se
-  if (dim(par.m1)[2] == 1){
-    se.m1[which(!cfM1), ] <- sqrt(sapply(cov.m1[which(!cfM1)], diag))
-    se.m1 <- structure(data.frame(se.m1), names = unique(names(se.m1)))
-  } else {
-    se.m1[which(!cfM1), ] <- sqrt(t(sapply(cov.m1[which(!cfM1)], diag)))
-  }
-  se.m0[which(!cfM0), ] <- sqrt(t(sapply(cov.m0[which(!cfM0)] , diag)))
+  se.m1[which(!cfM1)] <- lapply(cov.m1[which(!cfM1)] , diag)
+  se.m0[which(!cfM0)] <- lapply(cov.m0[which(!cfM0)] , diag)
 
   # delta method
-  if ("cR" %in% colnames(par.m0)){
-    if ("cF" %in% colnames(par.m0)){
-      cDif0 <- par.m0$cF - par.m0$cR
-      se.cDif0 <- lapply(1:m, function(i) deltamethod(~ x2 - x1, par.m0[i, c("cR", "cF")],
-                                                      cov.m0[[i]][c("cR", "cF"), c("cR", "cF")]))
-      par.m0$cF <- cDif0
-      se.m0$cF <- se.cDif0
-      colnames(par.m0)[colnames(par.m0) == "cF"] <- colnames(se.m0)[colnames(se.m0) == "cF"] <- "cDif"
+  for (i in 1:m){
+    if ("cR" %in% names(par.m0[[i]])){
+      if ("cF" %in% names(par.m0[[i]])){
+        cDif0 <- par.m0[[i]]['cF'] - par.m0[[i]]['cR']
+
+        if (!cfM0[i]){
+          se.cDif0 <- deltamethod(~ x2 - x1, par.m0[[i]][c("cR", "cF")],
+                                  cov.m0[[i]][c("cR", "cF"), c("cR", "cF")])
+          se.m0[[i]]['cF'] <- se.cDif0
+        }
+        par.m0[[i]]['cF'] <- cDif0
+
+        names(par.m0[[i]])[names(par.m0[[i]]) == "cF"] <- names(se.m0[[i]])[names(se.m0[[i]]) == "cF"] <- "cDif"
+      }
+      names(par.m0[[i]])[names(par.m0[[i]]) == "cR"] <- names(se.m0[[i]])[names(se.m0[[i]]) == "cR"] <- "c"
     }
-    colnames(par.m0)[colnames(par.m0) == "cR"] <- colnames(se.m0)[colnames(se.m0) == "cR"] <- "c"
-  }
-  if ("dR" %in% colnames(par.m0)){
-    if ("dF" %in% colnames(par.m0)){
-      dDif0 <- par.m0$dF - par.m0$dR
-      se.dDif0 <- lapply(1:m, function(i) deltamethod(~ x2 - x1, par.m0[i, c("dR", "dF")],
-                                                      cov.m0[[i]][c("dR", "dF"), c("dR", "dF")]))
-      par.m0$dF <- dDif0
-      se.m0$dF <- se.dDif0
-      colnames(par.m0)[colnames(par.m0) == "dF"] <- colnames(se.m0)[colnames(se.m0) == "dF"] <- "dDif"
+    if ("dR" %in% names(par.m0[[i]])){
+      if ("dF" %in% names(par.m0[[i]])){
+        cDif0 <- par.m0[[i]]['dF'] - par.m0[[i]]['dR']
+
+        if (!cfM0[i]){
+          se.cDif0 <- deltamethod(~ x2 - x1, par.m0[[i]][c("dR", "dF")],
+                                  cov.m0[[i]][c("dR", "dF"), c("dR", "dF")])
+          se.m0[[i]]['dF'] <- se.cDif0
+        }
+        par.m0[[i]]['dF'] <- cDif0
+
+        names(par.m0[[i]])[names(par.m0[[i]]) == "dF"] <- names(se.m0[[i]])[names(se.m0[[i]]) == "dF"] <- "dDif"
+      }
+      names(par.m0[[i]])[names(par.m0[[i]]) == "dR"] <- names(se.m0[[i]])[names(se.m0[[i]]) == "dR"] <- "d"
     }
-    colnames(par.m0)[colnames(par.m0) == "dR"] <- colnames(se.m0)[colnames(se.m0) == "dR"] <- "d"
-  }
-  if ("cR" %in% colnames(par.m1)){
-    if ("cF" %in% colnames(par.m1)){
-      cDif1 <- par.m1$cF - par.m1$cR
-      se.cDif1 <- lapply(1:m, function(i) deltamethod(~ x2 - x1, par.m1[i, c("cR", "cF")],
-                                                       cov.m1[[i]][c("cR", "cF"), c("cR", "cF")]))
-      par.m1$cF <- cDif1
-      se.m1$cF <- se.cDif1
-      colnames(par.m1)[colnames(par.m1) == "cF"] <- colnames(se.m1)[colnames(se.m1) == "cF"] <- "cDif"
+    if ("cR" %in% names(par.m1[[i]])){
+      if ("cF" %in% names(par.m1[[i]])){
+        cDif1 <- par.m1[[i]]['cF'] - par.m1[[i]]['cR']
+
+        if (!cfM1[i]){
+          se.cDif1 <- deltamethod(~ x2 - x1, par.m1[[i]][c("cR", "cF")],
+                                  cov.m1[[i]][c("cR", "cF"), c("cR", "cF")])
+          se.m1[[i]]['cF'] <- se.cDif1
+        }
+        par.m1[[i]]['cF'] <- cDif1
+
+        names(par.m1[[i]])[names(par.m1[[i]]) == "cF"] <- names(se.m1[[i]])[names(se.m1[[i]]) == "cF"] <- "cDif"
+      }
+      names(par.m1[[i]])[names(par.m1[[i]]) == "cR"] <- names(se.m1[[i]])[names(se.m1[[i]]) == "cR"] <- "c"
     }
-    colnames(par.m1)[colnames(par.m1) == "cR"] <- colnames(se.m1)[colnames(se.m1) == "cR"] <- "c"
-  }
-  if ("dR" %in% colnames(par.m1)){
-    if ("dF" %in% colnames(par.m1)){
-      dDif1 <- par.m1$dF - par.m1$dR
-      se.dDif1 <- lapply(1:m, function(i) deltamethod(~ x2 - x1, par.m1[i, c("dR", "dF")],
-                                                       cov.m1[[i]][c("dR", "dF"), c("dR", "dF")]))
-      par.m1$dF <- dDif1
-      se.m1$dF <- se.dDif1
-      colnames(par.m1)[colnames(par.m1) == "dF"] <- colnames(se.m1)[colnames(se.m1) == "dF"] <- "dDif"
+    if ("dR" %in% names(par.m1[[i]])){
+      if ("dF" %in% names(par.m1[[i]])){
+        cDif1 <- par.m1[[i]]['dF'] - par.m1[[i]]['dR']
+
+        if (!cfM1[i]){
+          se.cDif1 <- deltamethod(~ x2 - x1, par.m1[[i]][c("dR", "dF")],
+                                  cov.m1[[i]][c("dR", "dF"), c("dR", "dF")])
+          se.m1[[i]]['dF'] <- se.cDif1
+        }
+        par.m1[[i]]['dF'] <- cDif1
+
+        names(par.m1[[i]])[names(par.m1[[i]]) == "dF"] <- names(se.m1[[i]])[names(se.m1[[i]]) == "dF"] <- "dDif"
+      }
+      names(par.m1[[i]])[names(par.m1[[i]]) == "dR"] <- names(se.m1[[i]])[names(se.m1[[i]]) == "dR"] <- "d"
     }
-    colnames(par.m1)[colnames(par.m1) == "dR"] <- colnames(se.m1)[colnames(se.m1) == "dR"] <- "d"
   }
 
-  rownames(par.m1) <- rownames(par.m0) <- rownames(se.m1) <- rownames(se.m0) <- colnames(Data)
-
-  AIC.m0 <- AIC.m1 <- lapply(1:m, function(i) NA)
-  AIC.m0[which(!cfM0)] <- lapply(m0[which(!cfM0)], AIC)
-  AIC.m1[which(!cfM1)] <- lapply(m1[which(!cfM1)], AIC)
-
-  BIC.m0 <- BIC.m1 <- lapply(1:m, function(i) NA)
-  BIC.m0[which(!cfM0)] <- lapply(m0[which(!cfM0)], BIC)
-  BIC.m1[which(!cfM1)] <- lapply(m1[which(!cfM1)], BIC)
+  names(par.m1) <- names(par.m0) <- names(se.m1) <- names(se.m0) <- colnames(Data)
 
   results <- list(Sval = switch(test, "F" = Fval, "LR" = LRval),
                   pval = pval, adjusted.pval = adjusted.pval,
@@ -351,7 +449,6 @@ NLR <- function(Data, group, model, constraints = NULL, type = "both",
                   par.m1 = par.m1, se.m1 = se.m1, cov.m1 = cov.m1,
                   conv.fail = conv.fail, conv.fail.which = conv.fail.which,
                   ll.m0 = ll.m0, ll.m1 = ll.m1,
-                  AIC.m0 = AIC.m0, AIC.m1 = AIC.m1,
-                  BIC.m0 = BIC.m0, BIC.m1 = BIC.m1 )
+                  startBo0 = startBo0, startBo1 = startBo1)
   return(results)
 }

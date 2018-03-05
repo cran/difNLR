@@ -3,6 +3,165 @@
 *  Changes and Developments in the difNLR Package  *
 *                                                  *
 ****************************************************
+----------------------------------------
+- Changes in difNLR 1.2.1 (2018-03-01) -
+----------------------------------------
+
+* Version 1.2.1 is CRAN version.
+* It includes version 1.2.0.-1. - 1.2.0.-7.
+
+
+1.2.0.-7. (2018-02-27)
+MAJOR UPDATES
+  o Argument 'start' in 'difNLR()' function is now item-specific. The input is
+    correctly checked.
+  o In case that some items do not converge, starting values are recalculated
+    from bootstraped sample and problematic models are fitted again. This is done
+    20 times at most.
+    The options were added into 'difNLR()' and 'NLR()' functions.
+  o Argument 'constraints' in 'difNLR()' function is now item-specific.
+
+MINOR UPDATES
+  o Minor bug fixing:
+    - Typos were fixed in 'print()' method for 'difNLR' class.
+  o Title was shorten.
+  o Description of package was updated.
+  o Description file was updated, reference was added.
+  o README file was updated.
+  o CITATION file was updated.
+
+1.2.0.-6. (2018-02-26)
+MAJOR UPDATES
+  o S3 methods for 'difNLR' class are now properly describedm, especially,
+    'plot.difNLR()' and 'predict.difNLR()'.
+  o 'difNLR()' documentation was improved.
+  o Bug fixing:
+    - S3 methods for class 'difNLR' can now properly handle items with
+      convergence issues.
+    - 'NLR()' now detects DIF correctly with F test.
+
+MINOR UPDATES
+  o Typos were fixed.
+
+1.2.0.-5. (2018-02-20)
+MAJOR UPDATES
+  o 'print()', 'plot()','fitted()', 'predict()', 'logLik()', 'AIC()', 'BIC()'
+    and 'residuals()' for 'difNLR' class now handles item specific arguments
+    ('model', 'type' and 'constraints').
+  o 'residuals' for 'difNLR' class now uses argument 'item'.
+  o Bug fixing:
+    - Checking inputs in 'difNLR' was fixed and improved.
+    - Fixing degrees of freedom and p-values calculations in 'NLR()'.
+    - Fixing parameters, SE and covariances calculations in 'NLR()'.
+    - S3 methods for 'difNLR' class can now handle convergence issues.
+
+MINOR UPDATES
+  o Documentation of 'difNLR-package' was updated.
+  o Syntax in 'plot()' and 'residuals()' for 'difNLR' was slightly improved.
+  o 'logLik()' for 'difNLR' now returns list of 'logLik' class values.
+
+1.2.0.-4. (2018-02-19)
+MAJOR UPDATES
+  o Function 'startNLR()' now handles item-specific arguments ('model' and
+    'parameterization'). Its output is now in the form of list. It can be
+    simplified with argument 'simplify' into table when all parameterizations
+    are the same.
+  o Function 'NLR()' now handles item-specific arguments ('model', 'type' and
+    'constraints').
+  o Function 'difNLR()' now handles item-specific arguments ('model', 'type'
+    and 'constraints').
+MINOR UPDATES
+  o README file was updated.
+
+1.2.0.-3. (2018-02-19)
+MAJOR UPDATES
+  o Bug fixing:
+    - Starting values in input of 'estimNLR()' in 'NLR()' are now properly
+      named.
+    - Bug in alternative parameterization for testing differences in parameters
+      c and d in function 'formulaNLR()' was fixed.
+MINOR UPDATES
+  o Descriptions of 'formulaNLR()' and 'estimNLR()' were improved.
+
+1.2.0.-2. (2018-02-15)
+MAJOR UPDATES
+  o Function 'genNLR()' can now also generate nominal data based on
+    model specified in 'ddfMLR()'.
+  o Argument 'parameters' in 'genNLR()' is no longer applicable.
+  o Arguments 'a', 'b', 'c', 'd' were added into 'genNLR()' as parameters -
+    discrimination, difficulty, guessing, inattention
+  o Function 'genNLR()' can now also generate different underlying
+    distributions for reference and focal group with arguments 'mu' and 'sigma'.
+MINOR UPDATES
+  o Email address of maintainer was changed.
+
+1.2.0.-1. (2018-02-14)
+MAJOR UPDATES
+  o New function 'estimNLR()' to estimate parameters of NLR models
+    was added. This function uses non-linear least squares or maximum
+    likelihood method.
+  o Function 'NLR()' now uses 'estimNLR()' for estimation of models
+    parameters.
+  o Function 'difNLR()' can now estimate models parameters with also maximum
+    likelihood method.
+  o Iteratively reweighted least squares (IRLS) method was added into 'estimNLR()'
+    function. This option is not fully functional.
+  o Bugs fixing:
+    - Bug in 'plot()' for 'ddfMLR' class in matching criterion was fixed.
+    - Bug in 'NLR()' was fixed. User-specified starting values are now
+      available.
+    - Bug in 'startNLR()' was fixed. Function runs even if there are not
+      unique cuts for total scores/match.
+    - Bug in log-likelihood calculation in 'estimNLR()' was fixed.
+MINOR UPDATES
+  o Some preparation for new estimation methods for F test in 'NLR()' was done.
+  o Convergence failure warning is now item specific.
+  o Warning and error messages were improved.
+
+
+----------------------------------------
+- Changes in difNLR 1.1.3 (2018-02-06) -
+----------------------------------------
+
+MAJOR UPDATES
+
+  o Bugs fixing:
+    - Bug in delta method in 'NLR()' function was fixed.
+    - Bug in 'match' argument in 'difNLR()' function was fixed.
+    - Bug in one dimensional 'Data' in 'difNLR()' function was fixed.
+  o Specification of upper and lower asymptotes in
+    'startNLR()' function was improved.
+  o Functions 'ddfMLR()' and 'MLR()' can now handle also total score
+    or other user-specified matching criterion.
+  o S3 functions 'plot()' for class 'ddfMLR' can also handle total score
+    or other user-specified matching criterion.
+
+MINOR UPDATES
+
+  o New auxiliary function 'checkInterval()' was added.
+  o Size of labs and title was unified in graphical outputs of functions
+    'difNLR()' and 'ddfMLR()'.
+
+
+----------------------------------------
+- Changes in difNLR 1.1.2 (2017-12-12) -
+----------------------------------------
+
+MAJOR UPDATES
+
+  o CITATION file was added with reference to relevant paper.
+  o Bug when loading group by group identificator was fixed.
+  o Condition to check dimension of complete cases data was added.
+  o Function 'residuals.difNLR()' was added.
+  o S3 functions 'AIC()' and 'BIC()' for 'difNLR' class were
+    updated.
+  o S3 functions 'plot()', 'fitted()' and 'predict()' for 'difNLR' class
+    can now handle also other matching criterions than 'zscore'.
+
+MINOR UPDATES
+
+  o Reference lists were updated.
+  o README file was updated.
 
 ----------------------------------------
 - Changes in difNLR 1.1.1 (2017-08-28) -
