@@ -79,7 +79,9 @@
 #'
 #' The \code{model} can be specified in more detail with \code{constraints} argument which specifies what
 #' parameters should be fixed for both groups. For example, choice \code{"ad"} means that discrimination (a) and
-#' inattention (d) are fixed for both groups and other parameters (b and c) are not.
+#' inattention (d) are fixed for both groups and other parameters (b and c) are not. The arguments
+#' \code{model} and \code{constraints} can be also item specific if they take a form of vector, where
+#' each element correspond to one item. The \code{NA} value for \code{constraints} means no constraints.
 #'
 #' The \code{type} corresponds to type of DIF to be tested. Possible values are
 #' \code{"both"} to detect any DIF caused by difference in difficulty or discrimination (i.e., uniform and/or non-uniform),
@@ -87,7 +89,8 @@
 #' \code{"nudif"} to detect only non-uniform DIF (i.e., difference in discrimination a), or
 #' \code{"all"} to detect DIF caused by difference caused by any parameter that can differed between groups. The \code{type}
 #' of DIF can be also specified in more detail by using combination of parameters a, b, c and d. For example, with an option
-#' \code{"c"} for 4PL model only the difference in parameter c is tested.
+#' \code{"c"} for 4PL model only the difference in parameter c is tested. The \code{type} argument is
+#' also item specific.
 #'
 #' Argument \code{match} represents the matching criterion. It can be either the standardized test score (default, \code{"zscore"}),
 #' total test score (\code{"score"}), or any other continuous or discrete variable of the same length as number of observations
@@ -104,7 +107,7 @@
 #' \code{"bonferroni"}, \code{"BH"}, \code{"BY"}, \code{"fdr"}, \code{"none"}.
 #'
 #' The \code{start} is a list with as many elements as number of items. Each element is a named numeric
-#' vector representing initial values for parameter estimation. Specifically, parameters
+#' vector of length 8 representing initial values for parameter estimation. Specifically, parameters
 #' a, b, c, and d are initial values for discrimination, difficulty, guessing and inattention
 #' for reference group. Parameters aDif, bDif, cDif and dDif are then differences in these
 #' parameters between reference and focal group. If not specified, starting
@@ -198,7 +201,8 @@
 #'
 #' @references
 #' Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
-#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517.
+#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
+#' \url{https://doi.org/10.1111/jedm.12158}.
 #'
 #' Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
 #' Journal of Educational Measurement, 27, 361-370.
@@ -447,7 +451,7 @@ difNLR <- function(Data, group, focal.name, model, constraints, type = "both", m
         types <- as.list(rep(NA, ncol(DATA)))
         wht <- !(type %in% c("udif", "nudif", "both", "all"))
         types[wht] <- unlist(strsplit(type[wht], split = ""))
-        if (any(sapply(1:ncol(DATA), function(i) length(intersect(types[[i]], constraints[[i]]))) > 0)){
+        if (any(sapply(1:ncol(DATA), function(i) (all(!is.na(constraints[[i]])) & (types[[i]] %in% constraints[[i]]))))){
           stop("The difference in constrained parameters cannot be tested.")
         }
       }
@@ -530,8 +534,8 @@ difNLR <- function(Data, group, focal.name, model, constraints, type = "both", m
                                     match = match, start = start, p.adjust.method = p.adjust.method, test = test,
                                     alpha = alpha, initboot = initboot, nrBo = nrBo))
       stats1 <- prov1$Sval
-      adj.pval1 <- prov1$adjusted.pval
-      significant1 <- which(adj.pval1 < alpha)
+      pval1 <- prov1$pval
+      significant1 <- which(pval1 < alpha)
 
       if (length(significant1) == 0) {
         PROV <- prov1
@@ -564,8 +568,8 @@ difNLR <- function(Data, group, focal.name, model, constraints, type = "both", m
                                             match = match, anchor = nodif, start = start, p.adjust.method = p.adjust.method,
                                             test = test, alpha = alpha, initboot = initboot, nrBo = nrBo))
               stats2 <- prov2$Sval
-              adj.pval2 <- prov2$adjusted.pval
-              significant2 <- which(adj.pval2 < alpha)
+              pval2 <- prov2$pval
+              significant2 <- which(pval2 < alpha)
               if (length(significant2) == 0)
                 dif2 <- NULL
               else dif2 <- significant2
@@ -586,7 +590,7 @@ difNLR <- function(Data, group, focal.name, model, constraints, type = "both", m
         }
         PROV <- prov2
         STATS <- stats2
-        significant1 <- significant2
+        significant1 <- which(PROV$adjusted.pval < alpha)
         nlrPAR <- nlrSE <- lapply(1:length(PROV$par.m0),
                                   function(i) structure(rep(0, length(PROV$par.m0[[i]])),
                                                         names = names(PROV$par.m0[[i]])))
@@ -605,12 +609,9 @@ difNLR <- function(Data, group, focal.name, model, constraints, type = "both", m
           DIFitems <- "No DIF item detected"
         }
       }
-      if (is.null(difPur) == FALSE) {
-        ro <- co <- NULL
-        for (ir in 1:nrow(difPur)) ro[ir] <- paste("Step", ir - 1, sep = "")
-        for (ic in 1:ncol(difPur)) co[ic] <- paste("Item", ic, sep = "")
-        rownames(difPur) <- ro
-        colnames(difPur) <- co
+      if (!is.null(difPur)) {
+        rownames(difPur) <- paste("Step", 0:(nrow(difPur) - 1), sep = "")
+        colnames(difPur) <- colnames(DATA)
       }
 
       if (any(!(type %in% c("udif", "nudif", "both", "all")))){
@@ -631,13 +632,14 @@ difNLR <- function(Data, group, focal.name, model, constraints, type = "both", m
                   llM0 = PROV$ll.m0, llM1 = PROV$ll.m1)
     }
     if (PROV$conv.fail > 0) {
-      warning(paste("Convergence failure in item", PROV$conv.fail.which, "\n"))
+      warning(paste("Convergence failure in item", PROV$conv.fail.which, "\n"), call. = F)
     }
     if (purify){
       if (!noLoop){
         warning(paste("Item purification process not converged after ",
                       nrPur, ifelse(nrPur <= 1, " iteration.", " iterations."), "\n",
-                      "Results are based on last iteration of the item purification.\n", sep = ""))
+                      "Results are based on last iteration of the item purification.\n", sep = ""),
+                call. = F)
       }
     }
     class(RES) <- "difNLR"

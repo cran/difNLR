@@ -143,7 +143,8 @@
 #'
 #' @references
 #' Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
-#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517.
+#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
+#' \url{https://doi.org/10.1111/jedm.12158}.
 #'
 #' Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
 #' Journal of Educational Measurement, 27, 361-370.
@@ -312,19 +313,25 @@ NLR <- function(Data, group, model, constraints = NULL, type = "both",
         }
         conv.fail <- sum(cfM0, cfM1)
         conv.fail.which <- which(cfM0 | cfM1)
+
+        if (conv.fail > 0) {
+          warning(paste("Convergence failure in item", conv.fail.which, "\n",
+                        "Trying re-calculate starting values based on bootstraped samples. "),
+                  call. = F)
+        }
       } else {
         break
       }
     }
   } else {
     startBo0 <- startBo1 <- NULL
+    i = 1
   }
   if (i > 1)
     message("Starting values were calculated based on bootstraped samples. ")
 
-
   if (conv.fail > 0) {
-    warning(paste("Convergence failure in item", conv.fail.which, "\n"))
+    warning(paste("Convergence failure in item", conv.fail.which, "\n"), call. = F)
   }
   # test
   if (test == "F"){

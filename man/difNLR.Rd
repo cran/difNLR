@@ -191,7 +191,9 @@ or \code{4PL} for 4PL model.
 
 The \code{model} can be specified in more detail with \code{constraints} argument which specifies what
 parameters should be fixed for both groups. For example, choice \code{"ad"} means that discrimination (a) and
-inattention (d) are fixed for both groups and other parameters (b and c) are not.
+inattention (d) are fixed for both groups and other parameters (b and c) are not. The arguments
+\code{model} and \code{constraints} can be also item specific if they take a form of vector, where
+each element correspond to one item. The \code{NA} value for \code{constraints} means no constraints.
 
 The \code{type} corresponds to type of DIF to be tested. Possible values are
 \code{"both"} to detect any DIF caused by difference in difficulty or discrimination (i.e., uniform and/or non-uniform),
@@ -199,7 +201,8 @@ The \code{type} corresponds to type of DIF to be tested. Possible values are
 \code{"nudif"} to detect only non-uniform DIF (i.e., difference in discrimination a), or
 \code{"all"} to detect DIF caused by difference caused by any parameter that can differed between groups. The \code{type}
 of DIF can be also specified in more detail by using combination of parameters a, b, c and d. For example, with an option
-\code{"c"} for 4PL model only the difference in parameter c is tested.
+\code{"c"} for 4PL model only the difference in parameter c is tested. The \code{type} argument is
+also item specific.
 
 Argument \code{match} represents the matching criterion. It can be either the standardized test score (default, \code{"zscore"}),
 total test score (\code{"score"}), or any other continuous or discrete variable of the same length as number of observations
@@ -216,7 +219,7 @@ package. Possible values are \code{"holm"}, \code{"hochberg"}, \code{"hommel"},
 \code{"bonferroni"}, \code{"BH"}, \code{"BY"}, \code{"fdr"}, \code{"none"}.
 
 The \code{start} is a list with as many elements as number of items. Each element is a named numeric
-vector representing initial values for parameter estimation. Specifically, parameters
+vector of length 8 representing initial values for parameter estimation. Specifically, parameters
 a, b, c, and d are initial values for discrimination, difficulty, guessing and inattention
 for reference group. Parameters aDif, bDif, cDif and dDif are then differences in these
 parameters between reference and focal group. If not specified, starting
@@ -312,7 +315,8 @@ logLik(x); logLik(x, item = 1)
 }
 \references{
 Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
-Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517.
+Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
+\url{https://doi.org/10.1111/jedm.12158}.
 
 Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
 Journal of Educational Measurement, 27, 361-370.
