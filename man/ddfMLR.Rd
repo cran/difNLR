@@ -3,23 +3,22 @@
 \name{ddfMLR}
 \alias{ddfMLR}
 \alias{print.ddfMLR}
-\alias{plot.ddfMR}
-\alias{print.ddfMLR}
 \alias{plot.ddfMLR}
 \alias{coef.ddfMLR}
 \alias{logLik.ddfMLR}
 \alias{AIC.ddfMLR}
 \alias{BIC.ddfMLR}
-\title{Performs DDF detection using Multinomial Log-linear Regression model.}
+\title{DDF detection for nominal data.}
 \usage{
 ddfMLR(Data, group, focal.name, key, type = "both", match = "zscore", anchor = NULL,
-purify = FALSE, nrIter = 10, alpha = 0.05, p.adjust.method = "none")
+purify = FALSE, nrIter = 10, p.adjust.method = "none", parametrization = "irt",
+alpha = 0.05)
 
 \method{print}{ddfMLR}(x, ...)
 
-\method{plot}{ddfMLR}(x, item = "all", title, ...)
+\method{plot}{ddfMLR}(x, item = "all", title, group.names, ...)
 
-\method{coef}{ddfMLR}(object, ...)
+\method{coef}{ddfMLR}(object, SE = FALSE, simplify = FALSE, ...)
 
 \method{logLik}{ddfMLR}(object, item = "all", ...)
 
@@ -39,34 +38,43 @@ focal group}
 
 \item{key}{character: the answer key. See \strong{Details}.}
 
-\item{type}{character: type of DDF to be tested (either "both" (default), "udif", or "nudif").
+\item{type}{character: type of DDF to be tested (either \code{"both"} (default), \code{"udif"}, or \code{"nudif"}).
 See \strong{Details}.}
 
 \item{match}{specifies matching criterion. Can be either \code{"zscore"} (default, standardized total score),
-\code{"score"} (total test score), or vector of the same length as number of observations in "Data". See \strong{Details}.}
+\code{"score"} (total test score), or vector of the same length as number of observations in \code{Data}. See \strong{Details}.}
 
 \item{anchor}{Either \code{NULL} (default) or a vector of item names or item identifiers specifying which items are
-currently considered as anchor (DIF free) items. Argument is ignored if \code{match} is not \code{"zscore"} or \code{"score"}.}
+currently considered as anchor (DDF free) items. Argument is ignored if \code{match} is not \code{"zscore"} or \code{"score"}.}
 
 \item{purify}{logical: should the item purification be applied? (default is \code{FALSE}). See \strong{Details}.}
 
 \item{nrIter}{numeric: the maximal number of iterations in the item purification (default is 10).}
 
-\item{alpha}{numeric: significance level (default is 0.05).}
-
 \item{p.adjust.method}{character: method for multiple comparison correction.
 See \strong{Details}.}
+
+\item{parametrization}{character: parametrization of regression coefficients. Possible options are
+\code{"irt"} (default) and \code{"classic"}. See \strong{Details}.}
+
+\item{alpha}{numeric: significance level (default is 0.05).}
 
 \item{x}{an object of 'ddfMLR' class}
 
 \item{...}{other generic parameters for \code{print} or \code{plot} functions.}
 
-\item{item}{either character ("all"), or numeric vector, or single number
-corresponding to column indicators. See \strong{Details}.}
+\item{item}{numeric or character: either the vector of column indicator (number or column name) or \code{'all'}
+(default) for all items. See \strong{Details}.}
 
 \item{title}{string: title of plot.}
 
+\item{group.names}{character: names of reference and focal group.}
+
 \item{object}{an object of 'ddfMLR' class}
+
+\item{SE}{logical: should be standard errors also returned? (default is \code{FALSE}).}
+
+\item{simplify}{logical: should the result be simplified to a matrix? (default is \code{FALSE}).}
 }
 \value{
 A list of class 'ddfMLR' with the following arguments:
@@ -78,12 +86,12 @@ A list of class 'ddfMLR' with the following arguments:
   \item{\code{parM1}}{the estimates of alternative model.}
   \item{\code{alpha}}{numeric: significance level.}
   \item{\code{DDFitems}}{either the column indicators of the items which were detected as DDF, or \code{"No DDF item detected"}.}
-  \item{\code{type}}{character: type of DIF that was tested.}
+  \item{\code{type}}{character: type of DDF that was tested.}
   \item{\code{purification}}{\code{purify} value.}
   \item{\code{nrPur}}{number of iterations in item purification process. Returned only if \code{purify}
   is \code{TRUE}.}
-  \item{\code{difPur}}{a binary matrix with one row per iteration of item purification and one column per item.
-  "1" in i-th row and j-th column means that j-th item was identified as DIF in i-1-th iteration. Returned only
+  \item{\code{ddfPur}}{a binary matrix with one row per iteration of item purification and one column per item.
+  "1" in i-th row and j-th column means that j-th item was identified as DDF in i-1-th iteration. Returned only
   if \code{purify} is \code{TRUE}.}
   \item{\code{conv.puri}}{logical indicating whether item purification process converged before the maximal number
   \code{nrIter} of iterations. Returned only if \code{purify} is \code{TRUE}.}
@@ -94,6 +102,7 @@ A list of class 'ddfMLR' with the following arguments:
   \item{\code{group}}{the vector of group membership.}
   \item{\code{Data}}{the data matrix.}
   \item{\code{match}}{matching criterion.}
+  \item{\code{group.names}}{levels of grouping variable.}
   \item{\code{llM0}}{log-likelihood of null model.}
   \item{\code{llM1}}{log-likelihood of alternative model.}
   \item{\code{AICM0}}{AIC of null model.}
@@ -103,15 +112,16 @@ A list of class 'ddfMLR' with the following arguments:
   }
 }
 \description{
-Performs DDF detection procedure based on Multinomial Log-linear Regression model and
-likelihood ratio test of submodel.
+Performs DDF detection procedure for nominal data based on multinomial
+log-linear regression model and likelihood ratio test of submodel.
 }
 \details{
-DDF detection procedure based on Multinomial Log-linear model.
+Performs DDF detection procedure for nominal data based on multinomial
+log-linear regression model and likelihood ratio test of submodel.
 
-The \code{Data} is a matrix whose rows represents examinee unscored answers and
+The \code{Data} is a matrix which rows represents examinee unscored answers and
 columns correspond to the items. The \code{group} must be either a vector of the same
-length as \code{nrow(data)} or column indicator of \code{Data}. The \code{key} must be
+length as \code{nrow(Data)} or column indicator of \code{Data}. The \code{key} must be
 a vector of correct answers corresponding to columns of \code{Data}.
 
 The \code{type} corresponds to type of DDF to be tested. Possible values are \code{"both"}
@@ -120,9 +130,9 @@ to detect any DDF (uniform and/or non-uniform), \code{"udif"} to detect only uni
 
 Argument \code{match} represents the matching criterion. It can be either the standardized test score (default, \code{"zscore"}),
 total test score (\code{"score"}), or any other continuous or discrete variable of the same length as number of observations
-in \code{Data}. Matching criterion is used in \code{MLR()} function as a covariate in multinomial model.
+in \code{Data}.
 
-A set of anchor items (DIF free) can be specified through the \code{anchor} argument. It need to be a vector of either
+A set of anchor items (DDF free) can be specified through the \code{anchor} argument. It need to be a vector of either
 item names (as specified in column names of \code{Data}) or item identifiers (integers specifying the column number).
 In case anchor items are provided, only these items are used to compute matching criterion \code{match}. If the \code{match}
 argument is not either \code{"zscore"} or \code{"score"}, \code{anchor} argument is ignored.  When anchor items are
@@ -131,15 +141,20 @@ provided, purification is not applied.
 The \code{p.adjust.method} is a character for \code{p.adjust} function from the
 \code{stats} package. Possible values are \code{"holm"}, \code{"hochberg"},
 \code{"hommel"}, \code{"bonferroni"}, \code{"BH"}, \code{"BY"}, \code{"fdr"}, \code{"none"}.
+See also \code{\link[stats]{p.adjust}} for more information.
 
-The output of the ddfMLR is displayed by the \code{print.ddfMLR} function.
+Argument \code{parametrization} is a character which specifies parametrization of regression parameters. Default option
+is \code{"irt"} which returns IRT parametrization (difficulty-discrimination). Option \code{"classic"} returns
+intercept-slope parametrization with effect of group membership and interaction with matching criterion.
 
-The characteristic curve for item specified in \code{item} option can be plotted. For default
-option \code{"all"} of item, characteristic curves of all converged items are plotted.
-The drawn curves represent best model.
+The output of the \code{ddfMLR} function is displayed by the \code{print.ddfMLR} function.
+
+The characteristic curve for item specified in \code{item} option can be plotted. \code{item} can be
+column indicator (numeric or character - column name) or \code{"all"} (default). For option \code{"all"},
+characteristic curves of all converged items are plotted. The drawn curves represent best model.
 
 Missing values are allowed but discarded for item estimation. They must be coded as \code{NA}
-for both, \code{data} and \code{group} parameters.
+for both, \code{Data} and \code{group} parameters.
 }
 \examples{
 \dontrun{
@@ -167,25 +182,35 @@ ddfMLR(Data, group, focal.name = 1, key, type = "nudif")
 # Testing both DDF effects with total score as matching criterion
 ddfMLR(Data, group, focal.name = 1, key, match = "score")
 
+# Testing both DDF effects using classic parametrization
+ddfMLR(Data, group, focal.name = 1, key, parametrization = "classic")
+
 # Graphical devices
 plot(x, item = 1)
+plot(x, item = 1, group.names = c("Group 1", "Group 2"))
 plot(x, item = x$DDFitems)
 plot(x, item = "all")
 
-# AIC, BIC, logLik
-AIC(x)
-BIC(x)
-logLik(x)
+# AIC, BIC, log-likelihood
+AIC(x); BIC(x); logLik(x)
+# AIC, BIC, log-likelihood for the first item
+AIC(x, item = 1); BIC(x, item = 1); logLik(x, item = 1)
+
+# estimates
+coef(x)
+coef(x, SE = TRUE)
+coef(x, SE = TRUE, simplify = TRUE)
 }
+
 }
 \seealso{
-\code{\link[stats]{p.adjust}}
+\code{\link[stats]{p.adjust}} \code{\link[nnet]{multinom}}
 }
 \author{
-Adela Drabinova \cr
+Adela Hladka (nee Drabinova) \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-drabinova@cs.cas.cz \cr
+hladka@cs.cas.cz \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

@@ -80,6 +80,7 @@ startNLR(Data, group,
                    rep("3PL", 5), rep("4PL", 5)))
 
 }
+
 }
 \references{
 Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
@@ -90,10 +91,10 @@ Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54
 \code{\link[difNLR]{difNLR}}
 }
 \author{
-Adela Drabinova \cr
+Adela Hladka (nee Drabinova) \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-drabinova@cs.cas.cz \cr
+hladka@cs.cas.cz \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

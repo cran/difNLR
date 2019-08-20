@@ -45,6 +45,7 @@ predict(x, item = 1)
 predict(x, item = 1, match = 0, group = 1)
 predict(x, item = 1, match = 0, group = 0)
 }
+
 }
 \references{
 Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
@@ -57,10 +58,10 @@ Journal of Educational Measurement, 27, 361-370.
 \code{\link[difNLR]{difNLR}}
 }
 \author{
-Adela Drabinova \cr
+Adela Hladka (nee Drabinova) \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-drabinova@cs.cas.cz \cr
+hladka@cs.cas.cz \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

@@ -11,10 +11,10 @@
 #' @usage checkInterval(x, vec)
 #'
 #' @author
-#' Adela Drabinova \cr
+#' Adela Hladka (nee Drabinova) \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' drabinova@cs.cas.cz \cr
+#' hladka@cs.cas.cz \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -26,8 +26,8 @@
 #' checkInterval(x = 1.5, vec = c(0, 1))
 #' checkInterval(x = -0.5, vec = c(0, 1))
 #' }
+#'
 #' @export
-
 checkInterval <- function(x, vec){
   ifelse(x >= vec[1] & x <= vec[2], x,
          ifelse(x > vec[2], vec[2], vec[1]))

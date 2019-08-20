@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{difNLR}(x, plot.type = "cc", item = "all",
   col = c("dodgerblue2", "goldenrod2"), shape = 21, size = 0.8,
-  linetype = c(2, 1), title, ...)
+  linetype = c(2, 1), title, group.names, ...)
 }
 \arguments{
 \item{x}{an object of "difNLR" class}
@@ -25,6 +25,8 @@
 \item{linetype}{numeric: single number, or vector of two numbers representing line type in plot for reference and focal group.}
 
 \item{title}{string: title of plot.}
+
+\item{group.names}{character: names of reference and focal group.}
 
 \item{...}{other generic parameters for \code{plot()} function.}
 }
@@ -48,11 +50,11 @@ data(GMAT)
 Data  <- GMAT[, 1:20]
 group <- GMAT[, "group"]
 
-# Testing both DIF effects using likelihood-ratio test and
+# testing both DIF effects using likelihood-ratio test and
 # 3PL model with fixed guessing for groups
 (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
 
-# Graphical devices
+# graphical devices
 plot(x)
 plot(x, item = x$DIFitems)
 plot(x, plot.type = "stat")
@@ -69,10 +71,10 @@ Journal of Educational Measurement, 27, 361-370.
 \code{\link[difNLR]{difNLR}}
 }
 \author{
-Adela Drabinova \cr
+Adela Hladka (nee Drabinova) \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-drabinova@cs.cas.cz \cr
+hladka@cs.cas.cz \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

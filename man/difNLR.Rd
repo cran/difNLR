@@ -3,7 +3,6 @@
 \name{difNLR}
 \alias{difNLR}
 \alias{print.difNLR}
-\alias{print.difNLR}
 \alias{fitted.difNLR}
 \alias{coef.difNLR}
 \alias{logLik.difNLR}
@@ -11,7 +10,7 @@
 \alias{BIC.difNLR}
 \alias{residuals.difNLR}
 \alias{resid.difNLR}
-\title{Performs DIF detection using Non-Linear Regression method.}
+\title{DIF detection using non-linear regression method.}
 \usage{
 difNLR(Data, group, focal.name, model, constraints, type = "both", method = "nls",
 match = "zscore", anchor = NULL, purify = FALSE, nrIter = 10, test = "LR", alpha = 0.05,
@@ -21,7 +20,7 @@ p.adjust.method = "none", start, initboot = T, nrBo = 20)
 
 \method{fitted}{difNLR}(object, item = "all", ...)
 
-\method{coef}{difNLR}(object, ...)
+\method{coef}{difNLR}(object, SE = FALSE, simplify = FALSE, ...)
 
 \method{logLik}{difNLR}(object, item = "all", ...)
 
@@ -46,13 +45,14 @@ focal group}
 \item{constraints}{character: which parameters should be the same for both groups. See \strong{Details}.}
 
 \item{type}{character: type of DIF to be tested. Possible values are \code{"both"} (default), \code{"udif"},
-\code{"nudif"}, \code{"all"}, or combination of parameters "a", "b", "c" and "d". See \strong{Details}.}
+\code{"nudif"}, \code{"all"}, or combination of parameters \code{"a"}, \code{"b"}, \code{"c"} and \code{"d"}.
+See \strong{Details}.}
 
 \item{method}{character: method used to estimate parameters. The options are \code{"nls"} for non-linear least
 squares (default) and \code{"likelihood"} for maximum likelihood method.}
 
 \item{match}{character or numeric: specifies matching criterion. Can be either \code{"zscore"} (default, standardized total score),
-\code{"score"} (total test score), or numeric vector of the same length as number of observations in "Data". See \strong{Details}.}
+\code{"score"} (total test score), or numeric vector of the same length as number of observations in \code{Data}. See \strong{Details}.}
 
 \item{anchor}{Either \code{NULL} (default) or a vector of item names or item identifiers specifying which items are
 currently considered as anchor (DIF free) items. Argument is ignored if \code{match} is not \code{"zscore"} or \code{"score"}.
@@ -82,10 +82,14 @@ bootstraped samples (default is 20).}
 
 \item{...}{other generic parameters for S3 methods.}
 
-\item{object}{an object of "difNLR" class}
+\item{object}{an object of 'difNLR' class}
 
 \item{item}{either character (\code{"all"}), or numeric vector, or single number
 corresponding to column indicators.}
+
+\item{SE}{logical: should be standard errors also returned? (default is \code{FALSE}).}
+
+\item{simplify}{logical: should the result be simplified to a matrix? (default is \code{FALSE}).}
 }
 \value{
 The \code{difNLR()} function returns an object of class \code{"difNLR"}. The output
@@ -151,8 +155,9 @@ Object of class \code{"difNLR"} is a list with the following components:
 }
 }
 \description{
-Performs DIF detection procedure based on non-linear regression model (generalized logistic
-regression) and either likelihood-ratio or F test of submodel.
+Performs DIF detection procedure for dichotomous data based on non-linear
+regression model (generalized logistic regression) and either likelihood-ratio or F test
+of submodel.
 }
 \details{
 DIF detection procedure based on non-linear regression is the extension of logistic regression
@@ -285,10 +290,13 @@ difNLR(Data, group, focal.name = 1, model = "3PLcg", method = "likelihood")
 # Graphical devices
 plot(x)
 plot(x, item = x$DIFitems)
+plot(x, item = 1, group.names = c("Group 1", "Group 2"))
 plot(x, plot.type = "stat")
 
 # Coefficients
 coef(x)
+coef(x, SE = T)
+coef(x, SE = T, simplify = T)
 
 # Fitted values
 fitted(x)
@@ -306,10 +314,10 @@ predict(x, item = 1)
 predict(x, item = 1, match = 0, group = 1)
 predict(x, item = 1, match = 0, group = 0)
 
-# AIC, BIC, logLik
-AIC(x); AIC(x, item = 1)
-BIC(x); BIC(x, item = 1)
-logLik(x); logLik(x, item = 1)
+# AIC, BIC, log-likelihood
+AIC(x); BIC(x); logLik(x)
+# AIC, BIC, log-likelihood for the first item
+AIC(x, item = 1); BIC(x, item = 1); logLik(x, item = 1)
 }
 
 }
@@ -322,13 +330,13 @@ Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning 
 Journal of Educational Measurement, 27, 361-370.
 }
 \seealso{
-\code{\link[stats]{p.adjust}} \code{\link[difNLR]{plot.difNLR}} \code{\link[difNLR]{startNLR}}
+\code{\link[stats]{nls}} \code{\link[stats]{p.adjust}} \code{\link[difNLR]{plot.difNLR}} \code{\link[difNLR]{startNLR}}
 }
 \author{
-Adela Drabinova \cr
+Adela Hladka (nee Drabinova) \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-drabinova@cs.cas.cz \cr
+hladka@cs.cas.cz \cr
 
 Patricia Martinkova \cr
 Institute of Computer Science, The Czech Academy of Sciences \cr

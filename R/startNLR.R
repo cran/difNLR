@@ -45,10 +45,10 @@
 #' with initial values for \code{difNLR} model.
 #'
 #' @author
-#' Adela Drabinova \cr
+#' Adela Hladka (nee Drabinova) \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' drabinova@cs.cas.cz \cr
+#' hladka@cs.cas.cz \cr
 #'
 #' Patricia Martinkova \cr
 #' Institute of Computer Science, The Czech Academy of Sciences \cr
@@ -86,8 +86,8 @@
 #'                    rep("3PL", 5), rep("4PL", 5)))
 #'
 #' }
+#'
 #' @export
-
 startNLR <- function(Data, group, model, match = "zscore", parameterization = "alternative",
                      simplify = F){
   if (missing(model)) {

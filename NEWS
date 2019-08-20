@@ -5,6 +5,151 @@
 ****************************************************
 
 ----------------------------------------
+- Changes in difNLR 1.3.0 (2019-08-19) -
+----------------------------------------
+
+* Version 1.3.0 is CRAN version.
+* It includes version 1.2.3 - 1.2.8.-4.
+
+MINOR CHANGES
+  o Some typos fixed in print.difNLR()
+  o Authors' details were updated.
+  o CITATION file was updated.
+
+------------------------------------------
+- Changes in difNLR 1.2.8-4 (2019-08-09) -
+------------------------------------------
+
+MINOR CHANGES
+  o Typos fixed in print.ddfORD() and print.ddfMLR().
+  o Matching criterion for plot.ddfORD() uses anchor items.
+
+------------------------------------------
+- Changes in difNLR 1.2.8-3 (2019-08-08) -
+------------------------------------------
+
+BUG FIXING
+  o plot.ddfORD() now works when Data is factor.
+
+MAJOR UPDATES
+  o genNLR() now generates ordinal data using adjacent category
+    logit model with argument itemtype = "ordinal".
+
+------------------------------------------
+- Changes in difNLR 1.2.8-2 (2019-08-07) -
+------------------------------------------
+
+BUG FIXING
+  o plot.ddfORD() now works when items have different scales.
+  o Argument 'anchor' is now used for calculation of matching
+    criterion in function ORD().
+  o IRT parametrization was fixed for ddfORD().
+  o logLik.ddfMLR() now works properly.
+  o anchor items are now used for calculation of matching
+    criterion in plot.ddfORD() and plot.ddfMLR()
+
+MAJOR UPDATES
+  o Names of reference and focal group in plot.difNLR() can be
+    changed with 'group.name' argument.
+
+MINOR CHANGES
+  o Help pages for difNLR(), ddfMLR(), ddfORD(), MLR() and ORD()
+    functions were updated.
+
+------------------------------------------
+- Changes in difNLR 1.2.8-1 (2019-08-06) -
+------------------------------------------
+
+MAJOR UPDATES
+  o IRT parametrization now available in ddfMLR() function with
+    argument 'parametrization'. SE calculated with delta method.
+  o Names of reference and focal group in plot.ddfMLR() can be
+    changed with 'group.name' argument.
+
+----------------------------------------
+- Changes in difNLR 1.2.8 (2019-08-05) -
+----------------------------------------
+
+MAJOR UPDATES
+  o ddfOrd() function was renamed. Now ddfORD().
+  o IRT parametrization now available in ddfORD() function with
+    argument 'parametrization'. SE calculated with delta method.
+  o Names of reference and focal group in plot.ddfORD() can be
+    changed with 'group.name' argument.
+
+MINOR UPDATES
+  o Help page for ddfORD() was updated.
+  o Reference for ddfORD() was added.
+
+----------------------------------------
+- Changes in difNLR 1.2.7 (2019-07-04) -
+----------------------------------------
+
+BUG FIXING
+  o Check for input 'item' in S3 methods for difNLR, ddfMLR and ddfOrd
+    was fixed.
+
+MAJOR UDPATES
+  o S3 methods plot() outputs for difNLR, ddfMLR and ddfOrd were unified.
+
+MINOR UPDATES
+  o Help pages were updated.
+  o README file was updated.
+
+----------------------------------------
+- Changes in difNLR 1.2.6 (2019-07-03) -
+----------------------------------------
+
+MAJOR UDPATES
+  o S3 method plot() for ddfOrd was implemented.
+
+----------------------------------------
+- Changes in difNLR 1.2.5 (2019-07-02) -
+----------------------------------------
+
+MAJOR UPDATES
+  o S3 methods AIC(), BIC(), logLik(), coef() for ddfOrd were implemented.
+  o S3 methods AIC(), BIC(), logLik(), residuals() for difNLR and ddfMLR
+    objects now handle column names as 'item' argument.
+  o S3 method coef() for difNLR and dfMLR object were updated. Their now
+    includes arguments SE (logical) to print standard errors and simplify
+    (logical) whether list of estimates should be simplified into matrix.
+
+MINOR UPDATES
+  o CITATION was updated.
+  o All static DOI links were updated.
+
+----------------------------------------
+- Changes in difNLR 1.2.4 (2019-07-02) -
+----------------------------------------
+
+MAJOR UPDATES
+  o New functions ddfOrd() and ORD() for DDF detection for ordinal data
+    with adjacent and cumulative logistic regression models were added.
+    Output is displayed via S3 method print.ddfOrd()
+
+MINOR UPDATES
+  o Authors' details were updated.
+  o Some typos were fixed.
+  o Helps for ddfMLR(), MLR() and difNLR() were updated.
+
+----------------------------------------
+- Changes in difNLR 1.2.3 (2019-06-20) -
+----------------------------------------
+
+BUG FIXING
+  o plot.ddfMLR() now handles also binary data.
+  o ddfMLR() returns consistently "No DDF item detected" when no DDF
+    item was detected.
+
+MAJOR UPDATES
+  o Matching criterion for plot.ddfMLR() was improved for displaying
+    more smooth curves.
+
+MINOR UPDATES
+  o Authors' details were updated.
+
+----------------------------------------
 - Changes in difNLR 1.2.2 (2018-05-03) -
 ----------------------------------------
 
