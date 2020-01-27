@@ -7,13 +7,13 @@
 estimNLR(y, match, group, formula, method, lower, upper, start)
 }
 \arguments{
-\item{y}{numeric: binary vector. See \strong{Details}.}
+\item{y}{numeric: binary vector of responses.}
 
-\item{match}{numeric: matching criterion. See \strong{Details}.}
+\item{match}{numeric: vector of matching criterion.}
 
 \item{group}{numeric: binary vector of group membership. \code{"0"} for reference group, \code{"1"} for focal group.}
 
-\item{formula}{formula: specification of the model. See \strong{Details}.}
+\item{formula}{formula: specification of the model. Can be obtained by \code{formulaNLR()} function.}
 
 \item{method}{character: method used to estimate parameters. The options are \code{"nls"} for non-linear least
 squares (default) and \code{"likelihood"} for maximum likelihood method.}
@@ -22,19 +22,18 @@ squares (default) and \code{"likelihood"} for maximum likelihood method.}
 
 \item{upper}{numeric: upper bounds for parameters of model specified in \code{formula}.}
 
-\item{start}{numeric: initial parameters. See \strong{Details}.}
+\item{start}{numeric: initial parameters. Can be obtained by \code{startNLR()} function.}
 }
 \description{
 Estimates parameters of non-linear regression models for DIF detection using either
 non-linear least squares or maximum likelihood method.
 }
 \examples{
-\dontrun{
 data(GMAT)
 
 # item 1
-y  <- GMAT[, 1]
-match  <- scale(apply(GMAT[, 1:20], 1, sum))
+y <- GMAT[, 1]
+match <- scale(rowSums(GMAT[, 1:20]))
 group <- GMAT[, "group"]
 
 # formula for 3PL model with the same guessing
@@ -45,9 +44,11 @@ start <- startNLR(GMAT[, 1:20], group, model = "3PLcg", parameterization = "clas
 start <- start[[1]][M$M0$parameters]
 
 # Non-linear least squares
-fitNLSM0 <- estimNLR(y = y, match = match, group = group,
-                     formula = M$M0$formula, method = "nls",
-                     lower = M$M0$lower, upper = M$M0$upper, start = start)
+fitNLSM0 <- estimNLR(
+  y = y, match = match, group = group,
+  formula = M$M0$formula, method = "nls",
+  lower = M$M0$lower, upper = M$M0$upper, start = start
+)
 fitNLSM0
 
 coef(fitNLSM0)
@@ -57,9 +58,11 @@ fitted(fitNLSM0)
 residuals(fitNLSM0)
 
 # Maximum likelihood
-fitLKLM0 <- estimNLR(y = y, match = match, group = group,
-                     formula = M$M0$formula, method = "likelihood",
-                     lower = M$M0$lower, upper = M$M0$upper, start = start)
+fitLKLM0 <- estimNLR(
+  y = y, match = match, group = group,
+  formula = M$M0$formula, method = "likelihood",
+  lower = M$M0$lower, upper = M$M0$upper, start = start
+)
 fitLKLM0
 
 coef(fitLKLM0)
@@ -67,18 +70,15 @@ logLik(fitLKLM0)
 vcov(fitLKLM0)
 fitted(fitLKLM0)
 residuals(fitLKLM0)
-
-}
-
 }
 \author{
 Adela Hladka (nee Drabinova) \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }
 \keyword{DIF}

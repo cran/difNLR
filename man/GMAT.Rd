@@ -3,23 +3,25 @@
 \docType{data}
 \name{GMAT}
 \alias{GMAT}
-\title{Dichotomous Data Set Based on Graduate Management Admission Test with the Same Total Score Distribution for Groups}
-\format{A \code{GMAT} data frame consists of 2,000 observations on the following 22 variables.
-The first 20 columns represent dichotomously scored items of the test. The 21st column is vector
-of group membership; values 0 and 1 refer to reference and focal group. The 22nd column is vector
-representing variable which is intended to be predicted by test.}
+\title{Dichotomous dataset based on GMAT with the same total score distribution for groups.}
+\format{A \code{GMAT} data frame consists of 2,000 observations on the following 22 variables:
+\describe{
+\item{Item1-Item20}{dichotomously scored items of the test}
+\item{group}{group membership vector, \code{"0"} reference group, \code{"1"} focal group}
+\item{criterion}{continuous critetion intended to be predicted by test}
+}}
 \usage{
 data(GMAT)
 }
 \description{
-The \code{GMAT} data set is generated data set based on parameters from Graduate
-Management Admission Test (GMAT) data set (Kingston et al., 1985). First two items were
-considered to function differently in uniform and non-uniform way respectively. The data set
+The \code{GMAT} is a generated dataset based on parameters from Graduate
+Management Admission Test (GMAT, Kingston et al., 1985). First two items were
+considered to function differently in uniform and non-uniform way respectively. The dataset
 represents responses of 2,000 subjects to multiple-choice test of 20 items. A correct answer
 is coded as 1 and incorrect answer as 0. The column \code{group} represents group membership,
-where 0 represents reference group and 1 represents focal group. Groups are the same
+where 0 indicates reference group and 1 indicates focal group. Groups are the same
 size (i.e. 1,000 per group). The distributions of total scores (sum of correct answers) are the
-same for both reference and focal group (Martinkova et al., 2016). The column \code{criterion}
+same for both reference and focal group (Martinkova et al., 2017). The column \code{criterion}
 represents generated continuous variable which is intended to be predicted by test.
 }
 \references{
@@ -28,19 +30,19 @@ Theory Methods to the Graduate Management Admission Test. ETS Research Report Se
 
 Martinkova, P., Drabinova, A., Liaw, Y. L., Sanders, E. A., McFarland, J. L., & Price, R. M. (2017).
 Checking equity: Why Differential Item Functioning Analysis Should Be a Routine Part of Developing Conceptual
-Assessments. CBE-Life Sciences Education, 16(2), \url{https://doi.org/10.1187/cbe.16-10-0307}.
+Assessments. CBE-Life Sciences Education, 16(2), rm2, \url{https://doi.org/10.1187/cbe.16-10-0307}.
 }
 \seealso{
 \code{\link{GMATtest}}, \code{\link{GMATkey}}
 }
 \author{
 Adela Hladka (nee Drabinova) \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }
 \keyword{datasets}

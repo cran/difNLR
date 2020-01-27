@@ -2,19 +2,21 @@
 % Please edit documentation in R/difNLR.R
 \name{plot.difNLR}
 \alias{plot.difNLR}
-\title{ICC and test statistics plots for difNLR object}
+\title{ICC and test statistics plots for \code{"difNLR"} object.}
 \usage{
 \method{plot}{difNLR}(x, plot.type = "cc", item = "all",
   col = c("dodgerblue2", "goldenrod2"), shape = 21, size = 0.8,
   linetype = c(2, 1), title, group.names, ...)
 }
 \arguments{
-\item{x}{an object of "difNLR" class}
+\item{x}{an object of \code{"difNLR"} class.}
 
 \item{plot.type}{character: type of plot to be plotted (either \code{"cc"} for characteristic curve
-(default), or \code{"stat"} for test statistics). See \strong{Details}.}
+(default), or \code{"stat"} for test statistics).}
 
-\item{item}{either character (\code{"all"}), or numeric vector, or single number corresponding to column indicators. See \strong{Details}.}
+\item{item}{numeric or character: either character \code{"all"} to apply for all converged items (default),
+or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
+the column number).}
 
 \item{col}{character: single value, or vector of two values representing colors for plot.}
 
@@ -22,19 +24,25 @@
 
 \item{size}{numeric: single number, or vector of two numbers representing line width in plot.}
 
-\item{linetype}{numeric: single number, or vector of two numbers representing line type in plot for reference and focal group.}
+\item{linetype}{numeric: single number, or vector of two numbers representing line type in plot for
+reference and focal group.}
 
-\item{title}{string: title of plot.}
+\item{title}{string: title of a plot.}
 
 \item{group.names}{character: names of reference and focal group.}
 
 \item{...}{other generic parameters for \code{plot()} function.}
 }
+\value{
+For an option \code{plot.type = "stat"}, returns object of class \code{"ggplot"}. In case of
+\code{plot.type = "cc"}, returns list of objects of class \code{"ggplot"}.
+}
 \description{
+Plot method for an object of \code{"difNLR"} class using R package \pkg{ggplot2}.
+
 Two types of plots are available. The first one is obtained by setting \code{plot.type = "cc"}
-(default). The characteristic curve for item specified in \code{item} option is plotted. For default
-option \code{"all"} of item, characteristic curves of all converged items are plotted. The drawn
-curves represent best model.
+(default). The characteristic curves for an item specified in \code{item} argument are plotted.
+Plotted curves represent the best model.
 
 The second plot is obtained by setting \code{plot.type = "stat"}. The  test statistics
 (either LR-test, or F-test, depends on argument \code{test}) are displayed on the Y axis,
@@ -47,38 +55,44 @@ are used.
 # loading data based on GMAT
 data(GMAT)
 
-Data  <- GMAT[, 1:20]
+Data <- GMAT[, 1:20]
 group <- GMAT[, "group"]
 
 # testing both DIF effects using likelihood-ratio test and
 # 3PL model with fixed guessing for groups
 (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
 
-# graphical devices
+# graphical devices - characteristic curves
 plot(x)
 plot(x, item = x$DIFitems)
+plot(x, item = 1)
+plot(x, item = "Item1")
+
+# graphical devices - test statistics
 plot(x, plot.type = "stat")
 }
 }
 \references{
 Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
-Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517.
+Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
+\url{https://doi.org/10.1111/jedm.12158}.
 
 Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
-Journal of Educational Measurement, 27, 361-370.
+Journal of Educational Measurement, 27(4), 361-370,
+\url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
 }
 \seealso{
 \code{\link[difNLR]{difNLR}}
 }
 \author{
 Adela Hladka (nee Drabinova) \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 
 Karel Zvara \cr
 Faculty of Mathematics and Physics, Charles University \cr

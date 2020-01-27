@@ -5,20 +5,20 @@
 #'
 #' @description Checks whether \code{x} lies in interval defined by bounds in \code{vec}. If it does,
 #' it returns value of \code{x}. In case that value of \code{x} is lower than lower bound specified
-#' in \code{vec}, it returns it value. In case that value of \code{x} is greater than upper bound specified
-#' in \code{vec}, it returns it value.
+#' in \code{vec}, it returns its value. In case that value of \code{x} is greater than upper bound specified
+#' in \code{vec}, it returns its value.
 #'
 #' @usage checkInterval(x, vec)
 #'
 #' @author
 #' Adela Hladka (nee Drabinova) \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' hladka@cs.cas.cz \cr
+#' \email{hladka@@cs.cas.cz} \cr
 #'
 #' Patricia Martinkova \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
-#' martinkova@cs.cas.cz \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @examples
 #' \dontrun{
@@ -28,7 +28,8 @@
 #' }
 #'
 #' @export
-checkInterval <- function(x, vec){
+checkInterval <- function(x, vec) {
   ifelse(x >= vec[1] & x <= vec[2], x,
-         ifelse(x > vec[2], vec[2], vec[1]))
+    ifelse(x > vec[2], vec[2], vec[1])
+  )
 }

@@ -4,9 +4,9 @@
 #' based on non-linear regression. Both uniform and non-uniform DIF effects can be detected when considering
 #' one focal group. The method also allows to test the difference in guessing or inattention parameters
 #' between reference and focal group. DIF detection method is based either on likelihood-ratio test, or on F-test
-#' of submodel. Package also offers method for detection of differential distractor functioning (DDF)
-#' based on multinomial log-linear regression model and newly for ordinal data via adjacent and cumulative
-#' logistic regression models.
+#' of a submodel. Package also offers method for DIF detection among ordinal data using adjacent category logit or
+#' cumulative logit models. Moreover, the difNLR package containts method for detection of differential distractor
+#' functioning (DDF) based on multinomial log-linear regression model.
 #'
 #' @aliases difNLR-package
 #'
@@ -21,26 +21,47 @@
 #' @importFrom msm deltamethod
 #' @importFrom VGAM acat AICvlm BICvlm cumulative lrtest_vglm
 #'
+#' @section Functions:
+#' \itemize{
+#'   \item \code{\link{ddfMLR}}
+#'   \item \code{\link{difNLR}}
+#'   \item \code{\link{difORD}}
+#'   \item \code{\link{estimNLR}}
+#'   \item \code{\link{formulaNLR}}
+#'   \item \code{\link{MLR}}
+#'   \item \code{\link{NLR}}
+#'   \item \code{\link{ORD}}
+#'   \item \code{\link{startNLR}}
+#' }
+#'
+#' @section Datasets:
+#' \itemize{
+#'   \item \code{\link{GMAT}}
+#'   \item \code{\link{GMAT2}}
+#'   \item \code{\link{MSATB}}
+#' }
+#'
 #' @details
 #' Package: difNLR\cr
 #' Type: Package\cr
-#' Version: 1.3.0\cr
-#' Date: 2019-08-19\cr
-#' Depends: R (>= 3.1)
+#' Version: 1.3.1\cr
+#' Date: 2020-01-27\cr
+#' Depends: R (>= 3.1)\cr
 #' Imports: CTT, ggplot2 (>= 2.2.1), grDevices, methods, msm, nnet, plyr, reshape2, stats, VGAM\cr
+#' Suggests: ShinyItemAnalysis\cr
 #' License: GPL-3\cr
-#' BugReports: https://github.com/adelahladka/difNLR/issues
-#' Encoding: UTF-8
+#' BugReports: \url{https://github.com/adelahladka/difNLR/issues}\cr
+#' Encoding: UTF-8\cr
 #'
 #' @author
 #' Adela Hladka (nee Drabinova) \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' Faculty of Mathematics and Physics, Charles University \cr
-#' hladka@cs.cas.cz \cr
+#' \email{hladka@@cs.cas.cz} \cr
 #'
 #' Patricia Martinkova \cr
-#' Institute of Computer Science, The Czech Academy of Sciences \cr
-#' martinkova@cs.cas.cz \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @references
 #' Agresti, A. (2010). Analysis of ordinal categorical data. Second edition. John Wiley & Sons.
@@ -57,11 +78,12 @@
 #' Assessments. CBE-Life Sciences Education, 16(2), \url{https://doi.org/10.1187/cbe.16-10-0307}.
 #'
 #' Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
-#' Journal of Educational Measurement, 27, 361-370.
+#' Journal of Educational Measurement, 27, 361-370, \url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
 #'
 #' Vlckova, K. (2014). Test and Item Fairness (Unpublished master's thesis).
 #'
 #' @note This package was supported by grant funded by Czech Science foundation under number GJ15-15856Y.
+#'
 #' @docType package
 "_PACKAGE"
-#> [1] "_PACKAGE"
+# > [1] "_PACKAGE"

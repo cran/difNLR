@@ -3,9 +3,9 @@
 \docType{data}
 \name{GMAT2key}
 \alias{GMAT2key}
-\title{Key of Correct Answers for \code{GMAT2test} Data Set}
-\format{A data frame with 20 values representing correct answers to items of \code{GMAT2test} data set.
-For more details see \code{\link{GMAT2test}}.}
+\title{Key of correct answers for \code{GMAT2test} dataset.}
+\format{A nominal vector with 20 values representing correct answers to items of \code{GMAT2test}
+dataset. For more details see \code{\link{GMAT2test}}.}
 \usage{
 data(GMAT2key)
 }
@@ -26,12 +26,12 @@ Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54
 }
 \author{
 Adela Hladka (nee Drabinova) \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
 Faculty of Mathematics and Physics, Charles University \cr
-hladka@cs.cas.cz \cr
+\email{hladka@cs.cas.cz} \cr
 
 Patricia Martinkova \cr
-Institute of Computer Science, The Czech Academy of Sciences \cr
-martinkova@cs.cas.cz \cr
+Institute of Computer Science of the Czech Academy of Sciences \cr
+\email{martinkova@cs.cas.cz} \cr
 }
 \keyword{datasets}
