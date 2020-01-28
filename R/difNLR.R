@@ -253,7 +253,7 @@
 #' # Testing both DIF effects using LR test,
 #' # 3PL model with fixed guessing for groups
 #' # and item purification
-#' difNLR(Data, group, focal.name = 1, model = "3PLcg", purify = T)
+#' difNLR(Data, group, focal.name = 1, model = "3PLcg", purify = TRUE)
 #'
 #' # Testing both DIF effects using 3PL model with fixed guessing for groups
 #' # and total score as matching criterion
@@ -1154,13 +1154,13 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
           colour = "Reference",
           linetype = "Reference"
         ),
-        fun = .gNLR,
+        fun = .gNLR_group,
         args = as.list(PARR),
         size = size,
         geom = "line"
         ) +
         stat_function(aes(colour = "Focal", linetype = "Focal"),
-          fun = .gNLR,
+          fun = .gNLR_group,
           args = as.list(PARF),
           size = size,
           geom = "line"
@@ -1799,4 +1799,8 @@ residuals.difNLR <- function(object, item = "all", ...) {
 # private functions
 .gNLR <- function(x, g, a, b, c, d, aDif, bDif, cDif, dDif) {
   return((c + cDif * g) + ((d + dDif * g) - (c + cDif * g)) / (1 + exp(-(a + aDif * g) * (x - (b + bDif * g)))))
+}
+
+.gNLR_group <- function(x, a, b, c, d) {
+  return(c + (d - c) / (1 + exp(-(a * (x - b)))))
 }
