@@ -2,11 +2,17 @@
 % Please edit documentation in R/difNLR.R
 \name{plot.difNLR}
 \alias{plot.difNLR}
-\title{ICC and test statistics plots for \code{"difNLR"} object.}
+\title{ICC and test statistics plots for an object of \code{"difNLR"} class.}
 \usage{
-\method{plot}{difNLR}(x, plot.type = "cc", item = "all",
-  col = c("dodgerblue2", "goldenrod2"), shape = 21, size = 0.8,
-  linetype = c(2, 1), title, group.names, ...)
+\method{plot}{difNLR}(
+  x,
+  plot.type = "cc",
+  item = "all",
+  group.names,
+  draw.empirical = TRUE,
+  draw.CI = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{an object of \code{"difNLR"} class.}
@@ -18,27 +24,25 @@
 or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
 the column number).}
 
-\item{col}{character: single value, or vector of two values representing colors for plot.}
-
-\item{shape}{integer: shape parameter for plot.}
-
-\item{size}{numeric: single number, or vector of two numbers representing line width in plot.}
-
-\item{linetype}{numeric: single number, or vector of two numbers representing line type in plot for
-reference and focal group.}
-
-\item{title}{string: title of a plot.}
-
 \item{group.names}{character: names of reference and focal group.}
+
+\item{draw.empirical}{logical: should empirical probabilities be plotted as points? Default value is \code{TRUE}.}
+
+\item{draw.CI}{logical: should confidence intervals for predicted values be plotted? Default value is \code{FALSE}.}
 
 \item{...}{other generic parameters for \code{plot()} function.}
 }
 \value{
 For an option \code{plot.type = "stat"}, returns object of class \code{"ggplot"}. In case of
 \code{plot.type = "cc"}, returns list of objects of class \code{"ggplot"}.
+
+Outputs can be edited and modified as standard \code{"ggplot"} object including colours, titles, shapes or linetypes.
+
+Note that option \code{draw.CI = TRUE} returns confidence intervals for predicted values as calculated by
+\code{\link[difNLR]{predict.difNLR}}. Confidence intervals may overlap even in case that item functions differently.
 }
 \description{
-Plot method for an object of \code{"difNLR"} class using R package \pkg{ggplot2}.
+Plot method for an object of \code{"difNLR"} class using \pkg{ggplot2}.
 
 Two types of plots are available. The first one is obtained by setting \code{plot.type = "cc"}
 (default). The characteristic curves for an item specified in \code{item} argument are plotted.
@@ -52,28 +56,34 @@ are used.
 }
 \examples{
 \dontrun{
-# loading data based on GMAT
+# Loading data based on GMAT
 data(GMAT)
 
 Data <- GMAT[, 1:20]
 group <- GMAT[, "group"]
 
-# testing both DIF effects using likelihood-ratio test and
+# Testing both DIF effects using likelihood-ratio test and
 # 3PL model with fixed guessing for groups
 (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
 
-# graphical devices - characteristic curves
+# Characteristic curves
 plot(x)
 plot(x, item = x$DIFitems)
 plot(x, item = 1)
 plot(x, item = "Item1")
 
-# graphical devices - test statistics
+# Characteristic curves without empirical probabilities
+plot(x, item = 1, draw.empirical = FALSE)
+
+# Characteristic curves without empirical probabilities but with CI
+plot(x, item = 1, draw.empirical = FALSE, draw.CI = TRUE)
+
+# Graphical devices - test statistics
 plot(x, plot.type = "stat")
 }
 }
 \references{
-Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
+Drabinova, A. & Martinkova, P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
 Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
 \url{https://doi.org/10.1111/jedm.12158}.
 
@@ -82,7 +92,9 @@ Journal of Educational Measurement, 27(4), 361-370,
 \url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
 }
 \seealso{
-\code{\link[difNLR]{difNLR}}
+\code{\link[difNLR]{difNLR}} for DIF detection among binary data using generalized logistic regression model. \cr
+\code{\link[difNLR]{predict.difNLR}} for prediction.
+\code{\link[ggplot2]{ggplot}} for general function to plot a \code{"ggplot"} object.
 }
 \author{
 Adela Hladka (nee Drabinova) \cr

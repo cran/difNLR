@@ -1,6 +1,46 @@
----
-title: "Changes and developments in the difNLR package"
----
+## Changes and developments in the difNLR package
+
+### Changes in version 1.3.3 (2020-04-29)
+
+**_THIS IS A CRAN VERSION_**
+
+#### BUGFIXING
+  * Bug in calculation of standard errors for estimates of `difNLR()` 
+    was fixed.
+  * Bug in coefficients of `difNLR()` for non-converged items including naming 
+    of parameters was fixed (Reported by Jan Netik).
+  * In case that covariance matrix cannot be computed in `NLR()`, function 
+    gives warning and `NA` values for covariance matrix and vector of standard
+    errors are returned.
+    
+#### MAJOR UPDATES
+  * Confidence intervals were added into `predict.difNLR()` method.
+  * Delta method for alternative parametrization is now applied for whole 
+    covariance matrix in `difNLR()`.
+  * Unnecessary arguments of `plot.difNLR()`, `plot.difORD()` and `plot.ddfMLR()`
+    were removed. Change of colours/linetypes/shapes/title can be managed using
+    standard `ggplot2` syntax.
+  * `plot.difNLR()` now offers possibility to turn off drawing of empirical 
+    probabilities using argument `draw.empirical = FALSE`.
+  * `plot.difNLR()` now offers possibility to plot confidence intervals for 
+    predicted values as offered in `predict.difNLR()` using argument 
+    `draw.CI = TRUE`.
+  * Starting values calculated via `startNLR()` were improved for `score` as 
+    matching criterion using argument `match`.
+
+#### DOCUMENTATION
+  * Documentation of the package was updated.
+  * Some typos were fixed.
+  * Documentation of main functions was updated:
+    - S3 methods are now referenced in See Also sections.
+    - S3 methods are now documented in seperate files.
+  * CITATION file was updated.
+  * Formatting was improved.
+
+#### MINOR UPDATES
+  * Legends in `plot.difNLR()`, `plot.difORD()` and `plot.ddfMLR()` were unified.
+  * Colors in `plot.difORD()` and `plot.ddfMLR()` were changed to blind-color
+    friendly palettes.
 
 ------
 

@@ -1,6 +1,6 @@
 #' DIF detection using non-linear regression method.
 #'
-#' @aliases difNLR print.difNLR
+#' @aliases difNLR
 #'
 #' @description Performs DIF detection procedure for dichotomous data based on non-linear
 #' regression model (generalized logistic regression) and either likelihood-ratio or F test
@@ -53,18 +53,11 @@
 #' items/models with convergence issues).
 #' @param nrBo numeric: the maximal number of iterations for calculation of starting values using
 #' bootstraped samples (default is 20).
-#' @param x an object of \code{"difNLR"} class.
-#' @param object an object of \code{"difNLR"} class.
-#' @param item numeric or character: either character \code{"all"} to apply for all converged items (default),
-#' or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
-#' the column number).
-#' @param SE logical: should the standard errors of estimated parameters be also returned? (default is \code{FALSE}).
-#' @param simplify logical: should the estimated parameters be simplified to a matrix? (default is \code{FALSE}).
-#' @param ... other generic parameters for S3 methods.
 #'
-#' @usage difNLR(Data, group, focal.name, model, constraints, type = "all", method = "nls",
-#' match = "zscore", anchor = NULL, purify = FALSE, nrIter = 10, test = "LR", alpha = 0.05,
-#' p.adjust.method = "none", start, initboot = T, nrBo = 20)
+#' @usage
+#' difNLR(Data, group, focal.name, model, constraints, type = "all", method = "nls",
+#'        match = "zscore", anchor = NULL, purify = FALSE, nrIter = 10, test = "LR",
+#'        alpha = 0.05, p.adjust.method = "none", start, initboot = T, nrBo = 20)
 #'
 #' @details
 #' DIF detection procedure based on non-linear regression is the extension of logistic regression
@@ -105,27 +98,12 @@
 #' \code{NA} for both, \code{Data} and \code{group} arguments.
 #'
 #' In case that model considers difference in guessing or inattention parameter, the different parameterization is
-#' used and parameters with standard errors are re-calculated by delta method. However, covariance matrices stick with
-#' alternative parameterization.
+#' used and parameters with standard errors are re-calculated by delta method. However, covariance matrices stick
+#' with alternative parameterization.
 #'
 #' @return The \code{difNLR()} function returns an object of class \code{"difNLR"}. The output
 #' including values of the test statistics, p-values, and items detected as function differently
 #' is displayed by the \code{print()} method.
-#'
-#' Item characteristic curves and graphical representation of DIF statistics can be displayed
-#' with \code{plot()} method. For more details see \code{\link[difNLR]{plot.difNLR}}.
-#' Estimated parameters can be displayed with \code{coef()} method.
-#'
-#' Fitted values and residuals can be extracted by the \code{fitted()} and \code{residuals()} methods
-#' for converged item(s) specified in \code{item} argument.
-#'
-#' Predicted values are produced by the \code{predict()} method for converged item(s)
-#' specified in \code{item} argument. New data can be introduced with \code{match} and \code{group}
-#' arguments. For more details see \code{\link[difNLR]{predict.difNLR}}.
-#'
-#' Log-likelihood, Akaike's information criterion, and Schwarz's Bayesian criterion can be
-#' extracted with methods \code{logLik()}, \code{AIC()}, \code{BIC()} for converged item(s)
-#' specified in \code{item} argument.
 #'
 #' Object of class \code{"difNLR"} is a list with the following components:
 #' \describe{
@@ -170,6 +148,8 @@
 #'   \item{\code{match}}{matching criterion.}
 #' }
 #'
+#' For an object of class \code{"difNLR"} several methods are available (e.g. \code{methods(class = "difNLR")}).
+#'
 #' @author
 #' Adela Hladka (nee Drabinova) \cr
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
@@ -184,7 +164,7 @@
 #' Faculty of Mathematics and Physics, Charles University \cr
 #'
 #' @references
-#' Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
+#' Drabinova, A. & Martinkova, P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
 #' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
 #' \url{https://doi.org/10.1111/jedm.12158}.
 #'
@@ -192,10 +172,21 @@
 #' Journal of Educational Measurement, 27(4), 361-370,
 #' \url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
 #'
-#' @seealso \code{\link[stats]{nls}} \code{\link[stats]{p.adjust}} \code{\link[difNLR]{plot.difNLR}} \code{\link[difNLR]{startNLR}}
+#' @seealso
+#' \code{\link[difNLR]{plot.difNLR}} for graphical representation of item characteristic curves and DIF statistics. \cr
+#' \code{\link[difNLR]{coef.difNLR}} for extraction of item parameters with their standard errors. \cr
+#' \code{\link[difNLR]{predict.difNLR}} for prediction. \cr
+#' \code{\link[difNLR]{fitted.difNLR}} and \code{\link[difNLR]{residuals.difNLR}} for extraction of fitted
+#' values and residuals. \cr
+#' \code{\link[difNLR]{logLik.difNLR}}, \code{\link[difNLR]{AIC.difNLR}}, \code{\link[difNLR]{BIC.difNLR}}
+#' for extraction of loglikelihood and information criteria. \cr
+#'
+#' \code{\link[stats]{p.adjust}} for multiple comparison corrections. \cr
+#' \code{\link[stats]{nls}} for nonlinear least squares estimation. \cr
+#' \code{\link[difNLR]{startNLR}} for calculation of initial values of fitting algorithms in \code{difNLR()}.
 #'
 #' @examples
-#' # loading data based on GMAT
+#' # Loading data based on GMAT
 #' data(GMAT)
 #'
 #' Data <- GMAT[, 1:20]
@@ -204,7 +195,7 @@
 #' # Testing both DIF effects using likelihood-ratio test and
 #' # 3PL model with fixed guessing for groups
 #' (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
-#'
+#' \dontrun{
 #' # Graphical devices
 #' plot(x, item = x$DIFitems)
 #' plot(x, item = "Item1")
@@ -236,11 +227,12 @@
 #' AIC(x)
 #' BIC(x)
 #' logLik(x)
+#'
 #' # AIC, BIC, log-likelihood for the first item
 #' AIC(x, item = 1)
 #' BIC(x, item = 1)
 #' logLik(x, item = 1)
-#' \dontrun{
+#'
 #' # Testing both DIF effects using F test and
 #' # 3PL model with fixed guessing for groups
 #' difNLR(Data, group, focal.name = 1, model = "3PLcg", test = "F")
@@ -511,14 +503,22 @@ difNLR <- function(Data, group, focal.name, model, constraints, type = "all", me
       nlrPAR <- nlrSE <- lapply(
         1:length(PROV$par.m1),
         function(i) {
-          structure(rep(0, length(PROV$par.m1[[i]])),
-            names = names(PROV$par.m1[[i]])
-          )
+          if (i %in% PROV$conv.fail.which) {
+            structure(rep(NA, length(PROV$par.m1[[i]])),
+              names = names(PROV$par.m1[[i]])
+            )
+          } else {
+            structure(rep(0, length(PROV$par.m1[[i]])),
+              names = names(PROV$par.m1[[i]])
+            )
+          }
         }
       )
       for (i in 1:length(PROV$par.m1)) {
-        nlrPAR[[i]][names(PROV$par.m0[[i]])] <- PROV$par.m0[[i]]
-        nlrSE[[i]][names(PROV$se.m0[[i]])] <- PROV$se.m0[[i]]
+        if (!(i %in% PROV$conv.fail.which)) {
+          nlrPAR[[i]][names(PROV$par.m0[[i]])] <- PROV$par.m0[[i]]
+          nlrSE[[i]][names(PROV$se.m0[[i]])] <- PROV$se.m0[[i]]
+        }
       }
 
       if (length(significant) > 0) {
@@ -625,17 +625,26 @@ difNLR <- function(Data, group, focal.name, model, constraints, type = "all", me
         PROV <- prov2
         STATS <- stats2
         significant1 <- which(PROV$adjusted.pval < alpha)
+
         nlrPAR <- nlrSE <- lapply(
           1:length(PROV$par.m1),
           function(i) {
-            structure(rep(0, length(PROV$par.m1[[i]])),
-              names = names(PROV$par.m1[[i]])
-            )
+            if (i %in% PROV$conv.fail.which) {
+              structure(rep(NA, length(PROV$par.m1[[i]])),
+                names = names(PROV$par.m1[[i]])
+              )
+            } else {
+              structure(rep(0, length(PROV$par.m1[[i]])),
+                names = names(PROV$par.m1[[i]])
+              )
+            }
           }
         )
         for (i in 1:length(PROV$par.m1)) {
-          nlrPAR[[i]][names(PROV$par.m0[[i]])] <- PROV$par.m0[[i]]
-          nlrSE[[i]][names(PROV$se.m0[[i]])] <- PROV$se.m0[[i]]
+          if (!(i %in% PROV$conv.fail.which)) {
+            nlrPAR[[i]][names(PROV$par.m0[[i]])] <- PROV$par.m0[[i]]
+            nlrSE[[i]][names(PROV$se.m0[[i]])] <- PROV$se.m0[[i]]
+          }
         }
 
         if (length(significant1) > 0) {
@@ -695,7 +704,6 @@ difNLR <- function(Data, group, focal.name, model, constraints, type = "all", me
   return(resToReturn)
 }
 
-#' @rdname difNLR
 #' @export
 print.difNLR <- function(x, ...) {
   cat(paste("Detection of ",
@@ -825,9 +833,9 @@ print.difNLR <- function(x, ...) {
   }
 }
 
-#' ICC and test statistics plots for \code{"difNLR"} object.
+#' ICC and test statistics plots for an object of \code{"difNLR"} class.
 #'
-#' @description Plot method for an object of \code{"difNLR"} class using R package \pkg{ggplot2}.
+#' @description Plot method for an object of \code{"difNLR"} class using \pkg{ggplot2}.
 #'
 #' Two types of plots are available. The first one is obtained by setting \code{plot.type = "cc"}
 #' (default). The characteristic curves for an item specified in \code{item} argument are plotted.
@@ -845,17 +853,18 @@ print.difNLR <- function(x, ...) {
 #' @param item numeric or character: either character \code{"all"} to apply for all converged items (default),
 #' or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
 #' the column number).
-#' @param col character: single value, or vector of two values representing colors for plot.
-#' @param shape integer: shape parameter for plot.
-#' @param size numeric: single number, or vector of two numbers representing line width in plot.
-#' @param linetype numeric: single number, or vector of two numbers representing line type in plot for
-#' reference and focal group.
-#' @param title string: title of a plot.
+#' @param draw.empirical logical: should empirical probabilities be plotted as points? Default value is \code{TRUE}.
+#' @param draw.CI logical: should confidence intervals for predicted values be plotted? Default value is \code{FALSE}.
 #' @param group.names character: names of reference and focal group.
 #' @param ... other generic parameters for \code{plot()} function.
 #'
 #' @return For an option \code{plot.type = "stat"}, returns object of class \code{"ggplot"}. In case of
 #' \code{plot.type = "cc"}, returns list of objects of class \code{"ggplot"}.
+#'
+#' Outputs can be edited and modified as standard \code{"ggplot"} object including colours, titles, shapes or linetypes.
+#'
+#' Note that option \code{draw.CI = TRUE} returns confidence intervals for predicted values as calculated by
+#' \code{\link[difNLR]{predict.difNLR}}. Confidence intervals may overlap even in case that item functions differently.
 #'
 #' @author
 #' Adela Hladka (nee Drabinova) \cr
@@ -871,7 +880,7 @@ print.difNLR <- function(x, ...) {
 #' Faculty of Mathematics and Physics, Charles University \cr
 #'
 #' @references
-#' Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
+#' Drabinova, A. & Martinkova, P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
 #' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
 #' \url{https://doi.org/10.1111/jedm.12158}.
 #'
@@ -879,57 +888,70 @@ print.difNLR <- function(x, ...) {
 #' Journal of Educational Measurement, 27(4), 361-370,
 #' \url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
 #'
-#' @seealso \code{\link[difNLR]{difNLR}}, \code{\link[ggplot2]{ggplot}}
+#' @seealso
+#' \code{\link[difNLR]{difNLR}} for DIF detection among binary data using generalized logistic regression model. \cr
+#' \code{\link[difNLR]{predict.difNLR}} for prediction.
+#' \code{\link[ggplot2]{ggplot}} for general function to plot a \code{"ggplot"} object.
 #'
 #' @examples
 #' \dontrun{
-#' # loading data based on GMAT
+#' # Loading data based on GMAT
 #' data(GMAT)
 #'
 #' Data <- GMAT[, 1:20]
 #' group <- GMAT[, "group"]
 #'
-#' # testing both DIF effects using likelihood-ratio test and
+#' # Testing both DIF effects using likelihood-ratio test and
 #' # 3PL model with fixed guessing for groups
 #' (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
 #'
-#' # graphical devices - characteristic curves
+#' # Characteristic curves
 #' plot(x)
 #' plot(x, item = x$DIFitems)
 #' plot(x, item = 1)
 #' plot(x, item = "Item1")
 #'
-#' # graphical devices - test statistics
+#' # Characteristic curves without empirical probabilities
+#' plot(x, item = 1, draw.empirical = FALSE)
+#'
+#' # Characteristic curves without empirical probabilities but with CI
+#' plot(x, item = 1, draw.empirical = FALSE, draw.CI = TRUE)
+#'
+#' # Graphical devices - test statistics
 #' plot(x, plot.type = "stat")
 #' }
 #' @export
 plot.difNLR <- function(x, plot.type = "cc", item = "all",
-                        col = c("dodgerblue2", "goldenrod2"), shape = 21,
-                        size = .8, linetype = c(2, 1), title, group.names, ...) {
-  plotstat <- function(x, size = size, title = title) {
+                        group.names, draw.empirical = TRUE, draw.CI = FALSE, ...) {
+  plotstat <- function(x) {
     if (x$conv.fail != 0) {
       if (length(x$conv.fail) == sum(!is.na(x$Sval))) {
-        switch(x$test, "F" = stop("None of items does converge.
-                                  F-statistic values not plotted", call. = FALSE),
-          "LR" = stop("None of items does converge.
-                           LR-statistic values not plotted", call. = FALSE)
+        switch(x$test,
+          "F" = stop(
+            "None of items does converge. F-statistic values not plotted",
+            call. = FALSE
+          ),
+          "LR" = stop(
+            "None of items does converge. LR-statistic values not plotted",
+            call. = FALSE
+          )
         )
       } else {
-        switch(x$test, "F" = warning(paste("Item ", x$conv.fail.which,
-          " does not converge. F-statistic value not plotted",
-          sep = "", collapse = "\n"
-        ), call. = FALSE),
-        "LR" = warning(paste("Item ", x$conv.fail.which,
-          " does not converge. LR-statistic value not plotted",
-          sep = "", collapse = "\n"
-        ), call. = FALSE)
+        switch(x$test,
+          "F" = warning(paste("Item ", x$conv.fail.which,
+            " does not converge. F-statistic value not plotted",
+            sep = "", collapse = "\n"
+          ), call. = FALSE),
+          "LR" = warning(paste("Item ", x$conv.fail.which,
+            " does not converge. LR-statistic value not plotted",
+            sep = "", collapse = "\n"
+          ), call. = FALSE)
         )
       }
     }
 
-    if (missing(title)) {
-      title <- "Non-linear regression DIF detection with none multiple comparison correction"
-    }
+    title <- "Non-linear regression DIF detection with none multiple comparison correction"
+
     n <- dim(x$Data)[1]
     if (x$test == "F") {
       if (dim(unique(x$df))[1] == 1) {
@@ -962,7 +984,7 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
       geom_text() +
       scale_color_manual(values = c("black", "red")) +
       ### critical value
-      geom_hline(yintercept = Sval_critical, size = size) +
+      geom_hline(yintercept = Sval_critical) +
       ### theme
       ggtitle(title) +
       labs(x = "Item", y = switch(x$test,
@@ -987,13 +1009,22 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
   if (missing(group.names)) {
     group.names <- x$group.names
     if (all(group.names %in% c(0, 1))) group.names <- c("Reference", "Focal")
+  } else {
+    if (length(group.names) > 2) {
+      group.names <- group.names[1:2]
+      warning("Only first two values for 'group.names' argument are used.", call. = FALSE)
+    } else {
+      if (length(group.names) < 2) {
+        group.names <- c("Reference", "Focal")
+        warning("Argument 'group.names' need to have length of two. Default value is used.", call. = FALSE)
+      }
+    }
   }
 
-  plotCC <- function(x, item = item,
-                     col = col, shape = shape, size = size,
-                     linetype = linetype, title = title, group.names = group.names) {
+  plotCC <- function(x, item = item) {
     m <- length(x$nlrPAR)
     nams <- colnames(x$Data)
+
     if (class(item) == "character") {
       if (item != "all" & !item %in% nams) {
         stop("Invalid value for 'item'. Item must be either character 'all', or
@@ -1023,16 +1054,6 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
       }
     }
 
-    if (length(col) == 1) {
-      col <- rep(col, 2)
-    } else {
-      if (length(col) > 2) {
-        col <- col[1:2]
-        warning("Length of 'col' is greater than 2. Only first two values are used.",
-          call. = FALSE
-        )
-      }
-    }
     if (any(x$conv.fail.which %in% items)) {
       if (length(setdiff(items, x$conv.fail.which)) == 0) {
         stop(paste("Item ", intersect(x$conv.fail.which, items), " does not converge. Characteristic curve not plotted.",
@@ -1049,26 +1070,6 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
         items <- setdiff(items, x$conv.fail.which)
       }
     }
-    if (length(linetype) != 2) {
-      if (length(linetype) == 1) {
-        linetype <- rep(linetype, 2)
-      } else {
-        linetype <- linetype[1:2]
-        warning("Length of 'linetype' is greater than 2. Only first two values are used.",
-          call. = FALSE
-        )
-      }
-    }
-    if (length(group.names) > 2) {
-      group.names <- group.names[1:2]
-      warning("Only first two values for 'group.names' argument are used.", call. = FALSE)
-    } else {
-      if (length(group.names) < 2) {
-        group.names <- c("Reference", "Focal")
-        warning("Argument 'group.names' need to have length of two. Default value is used.", call. = FALSE)
-      }
-    }
-
 
     if (x$purification) {
       anchor <- c(1:m)[!c(1:m) %in% x$DIFitems]
@@ -1076,7 +1077,6 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
       anchor <- 1:m
     }
 
-    ### Data
     if (length(x$match) > 1) {
       xlab <- "Matching criterion"
       xR <- x$match[x$group == 0]
@@ -1093,86 +1093,97 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
       }
     }
 
-    max_sts <- max(
+    max_match <- max(
       as.numeric(levels(as.factor(xR))),
-      as.numeric(levels(as.factor(xF)))
+      as.numeric(levels(as.factor(xF))),
+      na.rm = TRUE
     )
-    min_sts <- min(
+    min_match <- min(
       as.numeric(levels(as.factor(xR))),
-      as.numeric(levels(as.factor(xF)))
+      as.numeric(levels(as.factor(xF))),
+      na.rm = TRUE
     )
-    alpha <- 0.5
+
     plot_CC <- list()
 
     for (i in items) {
-      hv_R <- data.frame(cbind(
+      df_point_0 <- data.frame(cbind(
         as.numeric(levels(as.factor(xR))),
         tapply(
           x$Data[x$group == 0, i],
           as.factor(xR), mean
         )
       ))
-      hv_F <- data.frame(cbind(
+      df_point_1 <- data.frame(cbind(
         as.numeric(levels(as.factor(xF))),
         tapply(
           x$Data[x$group == 1, i],
           as.factor(xF), mean
         )
       ))
-      hv <- data.frame(rbind(
-        cbind(hv_R, Group = "Reference"),
-        cbind(hv_F, Group = "Focal")
+      df_point <- data.frame(rbind(
+        cbind(df_point_0, group = "0"),
+        cbind(df_point_1, group = "1")
       ))
-      rownames(hv) <- 1:dim(hv)[1]
-      hv$size <- c(table(xR), table(xF))
+      colnames(df_point) <- c("match", "prob", "group")
+      rownames(df_point) <- NULL
+      df_point$size <- c(table(xR), table(xF))
 
-      if (!missing(title)) {
-        TITLE <- title
-      } else {
-        TITLE <- colnames(x$Data)[i]
+      TITLE <- colnames(x$Data)[i]
+
+      df_line <- predict.difNLR(x,
+        item = i,
+        match = rep(
+          seq(floor(min_match),
+            ceiling(max_match),
+            length.out = 100
+          ),
+          2
+        ),
+        group = rep(c(0, 1), each = 100),
+        interval = "confidence"
+      )
+
+      g <- ggplot() +
+        geom_line(
+          data = df_line, aes_string(
+            x = "match", y = "prob",
+            col = "group", linetype = "group"
+          ),
+          size = .8
+        )
+      if (draw.empirical) {
+        g <- g +
+          geom_point(
+            data = df_point, aes_string(
+              x = "match", y = "prob",
+              col = "group", fill = "group",
+              size = "size"
+            ),
+            shape = 21, alpha = 0.5
+          )
+      }
+      if (draw.CI) {
+        g <- g +
+          geom_ribbon(
+            data = df_line, aes_string(
+              x = "match", y = "prob",
+              ymin = "lwr.conf", ymax = "upr.conf",
+              col = "group", fill = "group"
+            ),
+            alpha = 0.25
+          )
       }
 
-      PAR <- data.frame(
-        a = 1, b = 0, c = 0, d = 1,
-        aDif = 0, bDif = 0, cDif = 0, dDif = 0
-      )
-      PAR[names(x$nlrPAR[[i]])] <- x$nlrPAR[[i]]
-      PARR <- PAR[1:4]
-      PARF <- PAR[1:4] + PAR[5:8]
-
-      plot_CC[[i]] <- ggplot(hv, aes_string("X1", "X2")) +
-        ### points
-        geom_point(aes_string(
-          colour = "Group",
-          fill = "Group",
-          size = "size"
-        ),
-        alpha = alpha, shape = shape
-        ) +
-        ### lines
-        stat_function(aes(
-          colour = "Reference",
-          linetype = "Reference"
-        ),
-        fun = .gNLR_group,
-        args = as.list(PARR),
-        size = size,
-        geom = "line"
-        ) +
-        stat_function(aes(colour = "Focal", linetype = "Focal"),
-          fun = .gNLR_group,
-          args = as.list(PARF),
-          size = size,
-          geom = "line"
-        ) +
-        ### style
-        scale_colour_manual(breaks = levels(hv$Group), values = col, name = "Group", labels = group.names) +
-        scale_fill_manual(breaks = levels(hv$Group), values = col, name = "Group", labels = group.names) +
-        scale_linetype_manual(breaks = levels(hv$Group), values = linetype, name = "Group", labels = group.names) +
-        ### theme
+      g <- g +
+        # adjusting colours
+        scale_fill_manual(values = c("dodgerblue2", "goldenrod2"), labels = group.names) +
+        scale_colour_manual(values = c("dodgerblue2", "goldenrod2"), labels = group.names) +
+        scale_linetype_manual(values = c("solid", "dashed"), labels = group.names) +
         ggtitle(TITLE) +
         labs(x = xlab, y = "Probability of correct answer") +
         scale_y_continuous(limits = c(0, 1)) +
+        # theme
         theme_bw() +
         theme(
           axis.line = element_line(colour = "black"),
@@ -1197,6 +1208,7 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
           fill = guide_legend(title = "Group", order = 2),
           linetype = guide_legend(title = "Group", order = 2)
         )
+      plot_CC[[i]] <- g
     }
     plot_CC <- Filter(Negate(function(i) is.null(unlist(i))), plot_CC)
     return(plot_CC)
@@ -1208,18 +1220,15 @@ plot.difNLR <- function(x, plot.type = "cc", item = "all",
     )
   } else {
     if (plot.type == "cc") {
-      plotCC(x,
-        item = item,
-        col = col, shape = shape, size = size,
-        linetype = linetype, title = title, group.names = group.names
-      )
+      plotCC(x, item = item)
     } else {
-      plotstat(x, size = size, title = title)
+      plotstat(x)
     }
   }
 }
 
-#' @rdname difNLR
+#' @rdname residuals.difNLR
+#' @aliases residuals.difNLR
 #' @export
 fitted.difNLR <- function(object, item = "all", ...) {
   ### checking input
@@ -1312,9 +1321,9 @@ fitted.difNLR <- function(object, item = "all", ...) {
   return(FV)
 }
 
-#' Predicted values for \code{"difNLR"} object.
+#' Predicted values for an object of \code{"difNLR"} class.
 #'
-#' @description Predicted values based on \code{"difNLR"} object.
+#' @description S3 method for predictions from the model used in the object if \code{"difNLR"} class.
 #'
 #' @param object an object of \code{"difNLR"} class.
 #' @param item numeric or character: either character \code{"all"} to apply for all converged items (default),
@@ -1322,6 +1331,9 @@ fitted.difNLR <- function(object, item = "all", ...) {
 #' the column number).
 #' @param match numeric: matching criterion for new observations.
 #' @param group numeric: group membership for new observations.
+#' @param interval character: type of interval calculation, either \code{"none"} (default) or \code{"confidence"}
+#' for confidence interval.
+#' @param level numeric: confidence level.
 #' @param ... other generic parameters for \code{predict()} function.
 #'
 #' @author
@@ -1338,7 +1350,7 @@ fitted.difNLR <- function(object, item = "all", ...) {
 #' Faculty of Mathematics and Physics, Charles University \cr
 #'
 #' @references
-#' Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
+#' Drabinova, A. & Martinkova, P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
 #' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
 #' \url{https://doi.org/10.1111/jedm.12158}.
 #'
@@ -1346,11 +1358,13 @@ fitted.difNLR <- function(object, item = "all", ...) {
 #' Journal of Educational Measurement, 27(4), 361-370,
 #' \url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
 #'
-#' @seealso \code{\link[difNLR]{difNLR}}
+#' @seealso
+#' \code{\link[difNLR]{difNLR}} for DIF detection among binary data using generalized logistic regression model. \cr
+#' \code{\link[stats]{predict}} for generic function for prediction.
 #'
 #' @examples
 #' \dontrun{
-#' # loading data based on GMAT
+#' # Loading data based on GMAT
 #' data(GMAT)
 #'
 #' Data <- GMAT[, 1:20]
@@ -1361,7 +1375,7 @@ fitted.difNLR <- function(object, item = "all", ...) {
 #' (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
 #'
 #' # Predicted values
-#' predict(x)
+#' summary(predict(x))
 #' predict(x, item = 1)
 #' predict(x, item = "Item1")
 #'
@@ -1369,13 +1383,18 @@ fitted.difNLR <- function(object, item = "all", ...) {
 #' predict(x, item = 1, match = 0, group = 0) # reference group
 #' predict(x, item = 1, match = 0, group = 1) # focal group
 #'
-#' # Predicted values for new observations - various z-scores
-#' predict(x, item = 1, match = c(-1, 0, 1), group = 0) # reference group
-#' predict(x, item = 1, match = c(-1, 0, 1), group = 1) # focal group
+#' # Predicted values for new observations - various z-scores and groups
+#' new.match <- rep(c(-1, 0, 1), 2)
+#' new.group <- rep(c(0, 1), each = 3)
+#' predict(x, item = 1, match = new.match, group = new.group)
+#'
+#' # Predicted values for new observations with confidence intervals
+#' predict(x, item = 1, match = new.match, group = new.group, interval = "confidence")
+#' predict(x, item = c(2, 4), match = new.match, group = new.group, interval = "confidence")
 #' }
 #'
 #' @export
-predict.difNLR <- function(object, item = "all", match, group, ...) {
+predict.difNLR <- function(object, item = "all", match, group, interval = "none", level = 0.95, ...) {
   ### checking input
   m <- length(object$nlrPAR)
   nams <- colnames(object$Data)
@@ -1455,6 +1474,14 @@ predict.difNLR <- function(object, item = "all", match, group, ...) {
     ITEMS <- items
   }
 
+  if (!interval %in% c("none", "confidence")) {
+    warning(
+      "Only confidence interval is supported. ",
+      call. = FALSE
+    )
+    interval <- "none"
+  }
+
   PAR <- data.frame(
     a = rep(1, m), b = 0, c = 0, d = 1,
     aDif = 0, bDif = 0, cDif = 0, dDif = 0
@@ -1464,26 +1491,150 @@ predict.difNLR <- function(object, item = "all", match, group, ...) {
   }
 
   ### predicted values
-  PV <- as.list(rep(NA, m))
-  PV[ITEMS] <- lapply(ITEMS, function(i) {
-    .gNLR(
-      match, group, PAR[i, "a"], PAR[i, "b"],
-      PAR[i, "c"], PAR[i, "d"],
-      PAR[i, "aDif"], PAR[i, "bDif"],
-      PAR[i, "cDif"], PAR[i, "dDif"]
-    )
+  NEW <- lapply(1:m, function(i) {
+    if (i %in% ITEMS) {
+      .gNLR(
+        match, group, PAR[i, "a"], PAR[i, "b"],
+        PAR[i, "c"], PAR[i, "d"],
+        PAR[i, "aDif"], PAR[i, "bDif"],
+        PAR[i, "cDif"], PAR[i, "dDif"]
+      )
+    } else {
+      NA
+    }
   })
-  PV <- do.call(cbind, PV)
-  colnames(PV) <- colnames(object$Data)
-  if (dim(PV)[1] == dim(object$Data)[1]) {
-    rownames(PV) <- rownames(object$Data)
-  }
-  PV <- PV[, items]
 
-  return(PV)
+  if (interval == "confidence") {
+    DELTA_new <- as.list(rep(NA, m))
+    DELTA_new[ITEMS] <- lapply(ITEMS, function(i) {
+      attr(.delta.gNLR(
+        match, group, PAR[i, "a"], PAR[i, "b"],
+        PAR[i, "c"], PAR[i, "d"],
+        PAR[i, "aDif"], PAR[i, "bDif"],
+        PAR[i, "cDif"], PAR[i, "dDif"]
+      ), "gradient")
+    })
+
+    VCOV_par <- matrix(
+      0,
+      ncol = 8, nrow = 8,
+      dimnames = list(
+        c("a", "b", "c", "d", "aDif", "bDif", "cDif", "dDif"),
+        c("a", "b", "c", "d", "aDif", "bDif", "cDif", "dDif")
+      )
+    )
+    VCOV_par <- lapply(1:m, function(i) VCOV_par)
+    VCOV_par[ITEMS] <- lapply(ITEMS, function(i) {
+      if (i %in% object$DIFitems) {
+        tmp <- colnames(object$covM1[[i]])
+        VCOV_par[[i]][tmp, tmp] <- object$covM1[[i]]
+      } else {
+        tmp <- colnames(object$covM0[[i]])
+        VCOV_par[[i]][tmp, tmp] <- object$covM0[[i]]
+      }
+      return(VCOV_par[[i]])
+    })
+
+    SE_new <- const <- lwr <- upp <- lapply(1:m, function(i) c())
+    SE_new[ITEMS] <- lapply(ITEMS, function(i) {
+      sqrt(diag(DELTA_new[[i]] %*% VCOV_par[[i]] %*% t(DELTA_new[[i]])))
+    })
+
+    alpha <- 1 - level
+    n <- dim(object$Data)[[1]]
+    d <- sapply(1:m, function(i) {
+      ifelse(i %in% object$DIFitems, length(object$parM1[[i]]), length(object$parM0[[i]]))
+    })
+    df <- n - d
+
+    const[ITEMS] <- lapply(ITEMS, function(i) SE_new[[i]] * qt(1 - alpha / 2, df = df)[i])
+
+    lwr[ITEMS] <- lapply(ITEMS, function(i) NEW[[i]] - const[[i]])
+    upp[ITEMS] <- lapply(ITEMS, function(i) NEW[[i]] + const[[i]])
+
+    res <- lapply(ITEMS, function(i) {
+      data.frame(cbind(
+        item = colnames(object$Data)[i],
+        match, group,
+        prob = NEW[[i]],
+        lwr.conf = lwr[[i]],
+        upr.conf = upp[[i]]
+      ))
+    })
+    res <- as.data.frame(do.call(rbind, res))
+    res$match <- as.numeric(paste(res$match))
+    res$prob <- as.numeric(paste(res$prob))
+    res$lwr.conf <- as.numeric(paste(res$lwr.conf))
+    res$upr.conf <- as.numeric(paste(res$upr.conf))
+  } else {
+    res <- lapply(ITEMS, function(i) {
+      data.frame(cbind(
+        item = colnames(object$Data)[i],
+        match, group,
+        prob = NEW[[i]]
+      ))
+    })
+    res <- as.data.frame(do.call(rbind, res))
+    res$match <- as.numeric(paste(res$match))
+    res$prob <- as.numeric(paste(res$prob))
+  }
+
+  return(res)
 }
 
-#' @rdname difNLR
+#' Extract model coefficients from an object of \code{"difNLR"} class.
+#'
+#' @description S3 method for extracting model coefficients from an object of \code{"difNLR"} class.
+#' @aliases coefficients.difNLR
+#'
+#' @param object an object of \code{"difNLR"} class.
+#' @param SE logical: should the standard errors of estimated parameters be also returned? (default is \code{FALSE}).
+#' @param simplify logical: should the estimated parameters be simplified to a matrix? (default is \code{FALSE}).
+#' @param ... other generic parameters for \code{predict()} function.
+#'
+#' @author
+#' Adela Hladka (nee Drabinova) \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' Faculty of Mathematics and Physics, Charles University \cr
+#' \email{hladka@@cs.cas.cz} \cr
+#'
+#' Patricia Martinkova \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
+#'
+#' Karel Zvara \cr
+#' Faculty of Mathematics and Physics, Charles University \cr
+#'
+#' @references
+#' Drabinova, A. & Martinkova, P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
+#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
+#' \url{https://doi.org/10.1111/jedm.12158}.
+#'
+#' Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
+#' Journal of Educational Measurement, 27(4), 361-370,
+#' \url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
+#'
+#' @seealso
+#' \code{\link[difNLR]{difNLR}} for DIF detection among binary data using generalized logistic regression model. \cr
+#' \code{\link[stats]{coef}} for generic function extracting model coefficients.
+#'
+#' @examples
+#' \dontrun{
+#' # Loading data based on GMAT
+#' data(GMAT)
+#'
+#' Data <- GMAT[, 1:20]
+#' group <- GMAT[, "group"]
+#'
+#' # Testing both DIF effects using likelihood-ratio test and
+#' # 3PL model with fixed guessing for groups
+#' (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
+#'
+#' # Coefficients
+#' coef(x)
+#' coef(x, SE = TRUE)
+#' coef(x, SE = TRUE, simplify = TRUE)
+#' }
 #' @export
 coef.difNLR <- function(object, SE = FALSE, simplify = FALSE, ...) {
   if (class(SE) != "logical") {
@@ -1528,7 +1679,69 @@ coef.difNLR <- function(object, SE = FALSE, simplify = FALSE, ...) {
   return(res)
 }
 
-#' @rdname difNLR
+#' Loglikelihood and information criteria for an object of \code{"difNLR"} class.
+#'
+#' @aliases AIC.difNLR BIC.difNLR
+#' @rdname logLik.difNLR
+#'
+#' @description S3 methods for extracting loglikelihood, Akaike's information criterion (AIC) and
+#' Schwarz's Bayesian criterion (BIC) for an object of \code{"difNLR"} class.
+#'
+#' @param object an object of \code{"difNLR"} class.
+#' @param item numeric or character: either character \code{"all"} to apply for all converged items (default),
+#' or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
+#' the column number).
+#' @param ... other generic parameters for S3 methods.
+#'
+#' @author
+#' Adela Hladka (nee Drabinova) \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' Faculty of Mathematics and Physics, Charles University \cr
+#' \email{hladka@@cs.cas.cz} \cr
+#'
+#' Patricia Martinkova \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
+#'
+#' Karel Zvara \cr
+#' Faculty of Mathematics and Physics, Charles University \cr
+#'
+#' @references
+#' Drabinova, A. & Martinkova, P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
+#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
+#' \url{https://doi.org/10.1111/jedm.12158}.
+#'
+#' Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
+#' Journal of Educational Measurement, 27(4), 361-370,
+#' \url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
+#'
+#' @seealso
+#' \code{\link[difNLR]{difNLR}} for DIF detection among binary data using generalized logistic regression model. \cr
+#' \code{\link[stats]{logLik}} for generic function extracting loglikelihood. \cr
+#' \code{\link[stats]{AIC}} for generic function calculating AIC and BIC.
+#'
+#' @examples
+#' \dontrun{
+#' # Loading data based on GMAT
+#' data(GMAT)
+#'
+#' Data <- GMAT[, 1:20]
+#' group <- GMAT[, "group"]
+#'
+#' # Testing both DIF effects using likelihood-ratio test and
+#' # 3PL model with fixed guessing for groups
+#' (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
+#'
+#' # AIC, BIC, log-likelihood
+#' AIC(x)
+#' BIC(x)
+#' logLik(x)
+#'
+#' # AIC, BIC, log-likelihood for the first item
+#' AIC(x, item = 1)
+#' BIC(x, item = 1)
+#' logLik(x, item = 1)
+#' }
 #' @export
 logLik.difNLR <- function(object, item = "all", ...) {
   m <- length(object$nlrPAR)
@@ -1600,7 +1813,8 @@ logLik.difNLR <- function(object, item = "all", ...) {
   return(val)
 }
 
-#' @rdname difNLR
+#' @rdname logLik.difNLR
+#' @aliases BIC.difNLR logLik.difNLR
 #' @export
 AIC.difNLR <- function(object, item = "all", ...) {
   m <- length(object$nlrPAR)
@@ -1665,7 +1879,8 @@ AIC.difNLR <- function(object, item = "all", ...) {
   return(AIC)
 }
 
-#' @rdname difNLR
+#' @rdname logLik.difNLR
+#' @aliases AIC.difNLR logLik.difNLR
 #' @export
 BIC.difNLR <- function(object, item = "all", ...) {
   m <- length(object$nlrPAR)
@@ -1730,8 +1945,66 @@ BIC.difNLR <- function(object, item = "all", ...) {
   return(BIC)
 }
 
-#' @aliases resid.difNLR
-#' @rdname difNLR
+#' Fitted values and residuals for an object of \code{"difNLR"} class.
+#'
+#' @aliases resid.difNLR fitted.difNLR
+#' @rdname residuals.difNLR
+#'
+#' @description S3 methods for extracting fitted values and residuals for an object of \code{"difNLR"} class.
+#'
+#' @param object an object of \code{"difNLR"} class.
+#' @param item numeric or character: either character \code{"all"} to apply for all converged items (default),
+#' or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
+#' the column number).
+#' @param ... other generic parameters for S3 methods.
+#'
+#' @author
+#' Adela Hladka (nee Drabinova) \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' Faculty of Mathematics and Physics, Charles University \cr
+#' \email{hladka@@cs.cas.cz} \cr
+#'
+#' Patricia Martinkova \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
+#'
+#' Karel Zvara \cr
+#' Faculty of Mathematics and Physics, Charles University \cr
+#'
+#' @references
+#' Drabinova, A. & Martinkova, P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
+#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
+#' \url{https://doi.org/10.1111/jedm.12158}.
+#'
+#' Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
+#' Journal of Educational Measurement, 27(4), 361-370,
+#' \url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
+#'
+#' @seealso
+#' \code{\link[difNLR]{difNLR}} for DIF detection among binary data using generalized logistic regression model. \cr
+#' \code{\link[stats]{fitted}} for generic function extracting fitted values. \cr
+#' \code{\link[stats]{residuals}} for generic function extracting residuals.
+#'
+#' @examples
+#' \dontrun{
+#' # Loading data based on GMAT
+#' data(GMAT)
+#'
+#' Data <- GMAT[, 1:20]
+#' group <- GMAT[, "group"]
+#'
+#' # Testing both DIF effects using likelihood-ratio test and
+#' # 3PL model with fixed guessing for groups
+#' (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
+#'
+#' # Fitted values
+#' fitted(x)
+#' fitted(x, item = 1)
+#'
+#' # Residuals
+#' residuals(x)
+#' residuals(x, item = 1)
+#' }
 #' @export
 residuals.difNLR <- function(object, item = "all", ...) {
   ### checking input
@@ -1804,3 +2077,8 @@ residuals.difNLR <- function(object, item = "all", ...) {
 .gNLR_group <- function(x, a, b, c, d) {
   return(c + (d - c) / (1 + exp(-(a * (x - b)))))
 }
+
+.delta.gNLR <- deriv(y ~ (c + cDif * g) + ((d + dDif * g) - (c + cDif * g)) / (1 + exp(-(a + aDif * g) * (x - (b + bDif * g)))),
+  namevec = c("a", "b", "c", "d", "aDif", "bDif", "cDif", "dDif"),
+  function(x, g, a, b, c, d, aDif, bDif, cDif, dDif) {}
+)
