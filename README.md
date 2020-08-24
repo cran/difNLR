@@ -9,9 +9,9 @@ DIF and DDF Detection by Non-Linear Regression Models.
 The difNLR package containts method for detection of differential item functioning (DIF) based on non-linear regression. Both uniform and non-uniform DIF effects can be detected when considering one focal group. The method also allows to test the difference in guessing or inattention parameters between reference and focal group. DIF detection method is based either on likelihood-ratio test, or on F-test of submodel. Package also offers methods for detection of differential distractor functioning (DDF) based on multinomial log-linear regression model and newly methods for DIF detection among ordinal data via adjacent category and cumulative logist regression models.
 
 <p align="center">
-  <img src="inst/DIF_NLR.png" width=33%/> 
-  <img src="inst/DDF_CLRM_cumulative.png" width=33%/> 
-  <img src="inst/DDF_CLRM_category.png" width=33%/> 
+  <img src="inst/DIF_NLR.png" width=32%/> 
+  <img src="inst/DDF_CLRM_cumulative.png" width=32%/> 
+  <img src="inst/DDF_CLRM_category.png" width=32%/> 
 </p>
 
 
@@ -26,13 +26,13 @@ Or you can get the newest development version from GitHub:
 devtools::install_github("adelahladka/difNLR")
 ```
 ## Version
-Current version on [**CRAN**](https://CRAN.R-project.org/package=difNLR) is 1.3.3. The newest development version available on [**GitHub**](https://github.com/drabinova/difNLR) is 1.3.3.
+Current version on [**CRAN**](https://CRAN.R-project.org/package=difNLR) is 1.3.5. The newest development version available on [**GitHub**](https://github.com/adelahladka/difNLR) is 1.3.5.
 
 ## Reference
 To cite `difNLR` package in publications, please, use:
 
   Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection. 
-  The R journal. Under review.
+  The R Journal. Accepted.
 
   Drabinova, A. & Martinkova, P. (2017). Detection of Differential Item Functioning with
   Nonlinear Regression: A Non-IRT Approach Accounting for Guessing. Journal of
