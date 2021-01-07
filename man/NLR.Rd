@@ -6,7 +6,7 @@
 \usage{
 NLR(Data, group, model, constraints = NULL, type = "all", method = "nls",
     match = "zscore", anchor = 1:ncol(Data), start, p.adjust.method = "none", test = "LR",
-    alpha = 0.05, initboot = TRUE, nrBo = 20)
+    alpha = 0.05, initboot = TRUE, nrBo = 20, sandwich = FALSE)
 }
 \arguments{
 \item{Data}{data.frame or matrix: dataset which rows represent scored examinee answers (\code{"1"}
@@ -53,7 +53,8 @@ in these parameters between reference and focal group.}
 \code{"fdr"}, and \code{"none"} (default). For more details see \code{\link[stats]{p.adjust}}.}
 
 \item{test}{character: test to be performed for DIF detection. Can be either \code{"LR"} for
-likelihood ratio test of a submodel (default), or \code{"F"} for F-test of a submodel.}
+likelihood ratio test of a submodel (default), \code{"W"} for Wald test, or \code{"F"} for F-test
+of a submodel.}
 
 \item{alpha}{numeric: significance level (default is 0.05).}
 
@@ -63,6 +64,9 @@ items/models with convergence issues).}
 
 \item{nrBo}{numeric: the maximal number of iterations for calculation of starting values using
 bootstraped samples (default is 20).}
+
+\item{sandwich}{logical: should be sandwich estimator used for covariance matrix of parameters when using
+\code{method = "nls"}? Default is \code{FALSE}.}
 }
 \value{
 A list with the following arguments:
@@ -167,13 +171,15 @@ NLR(Data, group, model = "3PLcg", method = "likelihood")
 
 }
 \references{
-Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
-Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
-\url{https://doi.org/10.1111/jedm.12158}.
+Drabinova, A. & Martinkova, P. (2017). Detection of differential item functioning with nonlinear regression:
+A non-IRT approach accounting for guessing. Journal of Educational Measurement, 54(4), 498--517,
+\doi{10.1111/jedm.12158}.
 
-Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
-Journal of Educational Measurement, 27(4), 361-370,
-\url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
+Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
+The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+
+Swaminathan, H. & Rogers, H. J. (1990). Detecting differential item functioning using logistic regression procedures.
+Journal of Educational Measurement, 27(4), 361--370, \doi{10.1111/j.1745-3984.1990.tb00754.x}
 }
 \seealso{
 \code{\link[stats]{p.adjust}}

@@ -1,5 +1,37 @@
 ## Changes and developments in the difNLR package
 
+### Changes in version 1.3.6/1.3.7 (2021-01-07)
+
+**_THIS IS A CRAN VERSION_**
+
+#### MINOR UPDATES
+  * doi in DESCRIPTION file updated.
+  * doi in help pages were updated. 
+  * CITATION file updated.
+  * References were updated.
+  
+------  
+
+### Changes in version 1.3.5-2 (2020-11-24)
+
+#### BUGFIXING
+  * Empty factor levels were removed from `Data` in `ddfMLR()` to fix bug
+    when plotting.
+
+------  
+
+### Changes in version 1.3.5-1 (2020-09-03)
+
+#### MAJOR UPDATES
+  * Sandwich estimator for covariance matrix in case that `method = "nls"` was 
+    implemented into the `vcov()` method for the output of the `estimNLR()` 
+    function.
+  * Wald test for implemented for the `difNLR()` function.
+  * Sandwich estimator for covariance matrix in case that `method = "nls"` was 
+    implemented into the `difNLR()` function via an argument `sandwich = TRUE`.
+
+------  
+
 ### Changes in version 1.3.4/1.3.5 (2020-08-24)
 
 **_THIS IS A CRAN VERSION_**
@@ -311,20 +343,20 @@
 
 ### Changes in version 1.2.1-2 (2018-03-19)
 #### BUGFIXING
-  * difNLR
+  * `difNLR()`
     - Check for constraints was fixed.
-  * NLR
-    - initboot = F now works properly.
+  * `NLR()`
+    - `initboot = FALSE` now works properly.
 
 ------
 
 ### Changes in version 1.2.1-1 (2018-03-16)
 #### BUGFIXING
-  * difNLR:
+  * `difNLR()`:
     - P-value adjustment is now performed in the last iteration of purification
       as described.
     - In difPur output columns are properly named.
-  * ddfMLR:
+  * `ddfMLR()`:
     - P-value adjustment is now performed in the last iteration of purification
       as described.
     - In difPur output columns are properly named.
@@ -370,9 +402,9 @@
   * `difNLR()` documentation was improved.
 
 #### BUGFIXING:
-    - S3 methods for class `difNLR` can now properly handle items with
-      convergence issues.
-    - `NLR()` now detects DIF correctly with F test.
+  * S3 methods for class `difNLR` can now properly handle items with convergence 
+    issues.
+  * `NLR()` now detects DIF correctly with F test.
 
 #### MINOR UPDATES
   * Typos were fixed.

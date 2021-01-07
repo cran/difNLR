@@ -39,18 +39,21 @@
 #' group. Parameters \code{"aDif"}, \code{"bDif"}, \code{"cDif"}, and \code{"dDif"} are then differences
 #' in these parameters between reference and focal group.
 #' @param test character: test to be performed for DIF detection. Can be either \code{"LR"} for
-#' likelihood ratio test of a submodel (default), or \code{"F"} for F-test of a submodel.
+#' likelihood ratio test of a submodel (default), \code{"W"} for Wald test, or \code{"F"} for F-test
+#' of a submodel.
 #' @param alpha numeric: significance level (default is 0.05).
 #' @param initboot logical: in case of convergence issues, should be starting values re-calculated based on
 #' bootstraped samples? (default is \code{TRUE}; newly calculated initial values are applied only to
 #' items/models with convergence issues).
 #' @param nrBo numeric: the maximal number of iterations for calculation of starting values using
 #' bootstraped samples (default is 20).
+#' @param sandwich logical: should be sandwich estimator used for covariance matrix of parameters when using
+#' \code{method = "nls"}? Default is \code{FALSE}.
 #'
 #' @usage
 #' NLR(Data, group, model, constraints = NULL, type = "all", method = "nls",
 #'     match = "zscore", anchor = 1:ncol(Data), start, p.adjust.method = "none", test = "LR",
-#'     alpha = 0.05, initboot = TRUE, nrBo = 20)
+#'     alpha = 0.05, initboot = TRUE, nrBo = 20, sandwich = FALSE)
 #'
 #' @details
 #' Calculation of the test statistics using DIF detection procedure based on non-linear regression
@@ -129,13 +132,15 @@
 #' Faculty of Mathematics and Physics, Charles University \cr
 #'
 #' @references
-#' Drabinova, A. & Martinkova P. (2017). Detection of Differential Item Functioning with NonLinear Regression:
-#' Non-IRT Approach Accounting for Guessing. Journal of Educational Measurement, 54(4), 498-517,
-#' \url{https://doi.org/10.1111/jedm.12158}.
+#' Drabinova, A. & Martinkova, P. (2017). Detection of differential item functioning with nonlinear regression:
+#' A non-IRT approach accounting for guessing. Journal of Educational Measurement, 54(4), 498--517,
+#' \doi{10.1111/jedm.12158}.
 #'
-#' Swaminathan, H. & Rogers, H. J. (1990). Detecting Differential Item Functioning Using Logistic Regression Procedures.
-#' Journal of Educational Measurement, 27(4), 361-370,
-#' \url{https://doi.org/10.1111/j.1745-3984.1990.tb00754.x}
+#' Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
+#' The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+#'
+#' Swaminathan, H. & Rogers, H. J. (1990). Detecting differential item functioning using logistic regression procedures.
+#' Journal of Educational Measurement, 27(4), 361--370, \doi{10.1111/j.1745-3984.1990.tb00754.x}
 #'
 #' @seealso \code{\link[stats]{p.adjust}}
 #'
@@ -177,7 +182,7 @@
 NLR <- function(Data, group, model, constraints = NULL, type = "all",
                 method = "nls", match = "zscore", anchor = 1:ncol(Data),
                 start, p.adjust.method = "none", test = "LR", alpha = 0.05,
-                initboot = TRUE, nrBo = 20) {
+                initboot = TRUE, nrBo = 20, sandwich = FALSE) {
   if (match[1] == "zscore") {
     x <- scale(apply(as.data.frame(Data[, anchor]), 1, sum))
   } else {
@@ -351,55 +356,14 @@ NLR <- function(Data, group, model, constraints = NULL, type = "all",
   }
 
   if (conv.fail > 0) {
-    warning(paste("Convergence failure in item", conv.fail.which, "\n"), call. = FALSE)
+    message(paste("Convergence failure in item", conv.fail.which, "\n"))
   }
-  # test
-  if (test == "F") {
-    pval <- Fval <- rep(NA, m)
-    n0 <- sapply(1:m, function(i) length(M[[i]]$M0$parameters))
-    n1 <- sapply(1:m, function(i) length(M[[i]]$M1$parameters))
 
-    df <- cbind(n1 - n0, n - n1)
-
-    RSS0 <- rep(NA, m)
-    RSS1 <- rep(NA, m)
-    RSS0[which(!(cfM1 | cfM0))] <- sapply(which(!(cfM1 | cfM0)), function(l) sum(residuals(m0[[l]])^2))
-    RSS1[which(!(cfM1 | cfM0))] <- sapply(which(!(cfM1 | cfM0)), function(l) sum(residuals(m1[[l]])^2))
-
-    Fval <- ((RSS0 - RSS1) / df[, 1]) / (RSS1 / df[, 2])
-    pval <- 1 - pf(Fval, df[, 1], df[, 2])
-  } else {
-    pval <- LRval <- rep(NA, m)
-
-    n0 <- sapply(1:m, function(i) length(M[[i]]$M0$parameters))
-    n1 <- sapply(1:m, function(i) length(M[[i]]$M1$parameters))
-
-    df <- n1 - n0
-
-    LRval[which(!(cfM1 | cfM0))] <- sapply(
-      which(!(cfM1 | cfM0)),
-      function(l) -2 * c(logLik(m0[[l]]) - logLik(m1[[l]]))
-    )
-    pval[which(!(cfM1 | cfM0))] <- sapply(
-      which(!(cfM1 | cfM0)),
-      function(l) (1 - pchisq(LRval[l], df[l]))
-    )
-  }
   # likelihood
   ll.m0 <- ll.m1 <- rep(NA, m)
   ll.m0[which(!cfM0)] <- sapply(m0[which(!cfM0)], logLik)
   ll.m1[which(!cfM1)] <- sapply(m1[which(!cfM1)], logLik)
 
-  # R2 computation
-  # N <- dim(Data)[1]
-  # r2cs <- 1 - exp(-2/N * (ll.m0 - ll.m1)) # Cox and Snell
-  # r2n  <- r2cs / (1 - exp(2*ll.m1/N))     # Nagelkerge
-  #
-  # symnum(r2n, c(0, 0.13, 0.26, 1), symbols = c("A", "B", "C"))  # Zumbo & Thomas
-  # symnum(r2n, c(0, 0.035, 0.07, 1), symbols = c("A", "B", "C")) # Jodoin & Gierl
-
-  # adjusted p-values
-  adjusted.pval <- p.adjust(pval, method = p.adjust.method)
   # parameters
   par.m1 <- se.m1 <- lapply(1:m, function(i) {
     structure(rep(NA, length(M[[i]]$M1$parameters)),
@@ -416,23 +380,19 @@ NLR <- function(Data, group, model, constraints = NULL, type = "all",
 
   # covariance structure
   cov.m0 <- cov.m1 <- as.list(rep(NA, m))
-  extractVCOV <- function(x) {
-    return(tryCatch(vcov(x), error = function(e) NULL))
-  }
-  cov.m1[which(!cfM1)] <- lapply(m1[which(!cfM1)], extractVCOV)
-  cov.m0[which(!cfM0)] <- lapply(m0[which(!cfM0)], extractVCOV)
+  cov.m1[which(!cfM1)] <- lapply(m1[which(!cfM1)], vcov, sandwich)
+  cov.m0[which(!cfM0)] <- lapply(m0[which(!cfM0)], vcov, sandwich)
 
   cov.fail1 <- which(sapply(cov.m1, is.null))
   cov.fail0 <- which(sapply(cov.m0, is.null))
   cov.fail <- sort(union(cov.fail1, cov.fail0))
 
   if (length(cov.fail) > 0) {
-    warning(paste(
+    message(paste(
       "Covariance matrix cannot be computed for item",
       cov.fail,
       "\n"
-    ),
-    call. = FALSE
+    )
     )
   }
   conv.m0 <- setdiff(1:m, unique(c(which(cfM0), which(sapply(cov.m0[which(!cfM0)], function(x) is.null(x))))))
@@ -530,8 +490,70 @@ NLR <- function(Data, group, model, constraints = NULL, type = "all",
 
   names(par.m1) <- names(par.m0) <- names(se.m1) <- names(se.m0) <- names(cov.m0) <- names(cov.m1) <- colnames(Data)
 
+  # test
+  if (test == "F") {
+    pval <- Fval <- rep(NA, m)
+    n0 <- sapply(1:m, function(i) length(M[[i]]$M0$parameters))
+    n1 <- sapply(1:m, function(i) length(M[[i]]$M1$parameters))
+
+    df <- cbind(n1 - n0, n - n1)
+
+    RSS0 <- rep(NA, m)
+    RSS1 <- rep(NA, m)
+    RSS0[which(!(cfM1 | cfM0))] <- sapply(which(!(cfM1 | cfM0)), function(l) sum(residuals(m0[[l]])^2))
+    RSS1[which(!(cfM1 | cfM0))] <- sapply(which(!(cfM1 | cfM0)), function(l) sum(residuals(m1[[l]])^2))
+
+    Fval[which(!(cfM1 | cfM0))] <- sapply(
+      which(!(cfM1 | cfM0)),
+      function(l) ((RSS0[l] - RSS1[l]) / df[l, 1]) / (RSS1[l] / df[l, 2])
+    )
+    pval[which(!(cfM1 | cfM0))] <- sapply(
+      which(!(cfM1 | cfM0)),
+      function(l) (1 - pf(Fval[l], df[l, 1], df[l, 2]))
+    )
+  } else if (test == "LR") {
+    pval <- LRval <- rep(NA, m)
+
+    n0 <- sapply(1:m, function(i) length(M[[i]]$M0$parameters))
+    n1 <- sapply(1:m, function(i) length(M[[i]]$M1$parameters))
+
+    df <- n1 - n0
+
+    LRval[which(!(cfM1 | cfM0))] <- sapply(
+      which(!(cfM1 | cfM0)),
+      function(l) -2 * c(logLik(m0[[l]]) - logLik(m1[[l]]))
+    )
+    pval[which(!(cfM1 | cfM0))] <- sapply(
+      which(!(cfM1 | cfM0)),
+      function(l) (1 - pchisq(LRval[l], df[l]))
+    )
+  } else if (test == "W") {
+    pval <- Wval <- rep(NA, m)
+
+    n0 <- sapply(1:m, function(i) length(M[[i]]$M0$parameters))
+    n1 <- sapply(1:m, function(i) length(M[[i]]$M1$parameters))
+
+    df <- n1 - n0
+
+    Wval[which(!(cfM1 | cfM0))] <- sapply(
+      which(!(cfM1 | cfM0)),
+      function(l) {
+        nams <- which(M[[l]]$M1$parameters == setdiff(M[[l]]$M1$parameters, M[[l]]$M0$parameters))
+        V <- cov.m1[[l]][nams, nams]
+        par <- par.m1[[l]][nams]
+        par %*% solve(V) %*% par
+      }
+    )
+    pval[which(!(cfM1 | cfM0))] <- sapply(
+      which(!(cfM1 | cfM0)),
+      function(l) (1 - pchisq(Wval[l], df[l]))
+    )
+  }
+  # adjusted p-values
+  adjusted.pval <- p.adjust(pval, method = p.adjust.method)
+
   results <- list(
-    Sval = switch(test, "F" = Fval, "LR" = LRval),
+    Sval = switch(test, "F" = Fval, "LR" = LRval, "W" = Wval),
     pval = pval, adjusted.pval = adjusted.pval,
     df = df, test = test,
     par.m0 = par.m0, se.m0 = se.m0, cov.m0 = cov.m0,
