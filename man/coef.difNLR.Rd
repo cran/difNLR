@@ -5,36 +5,50 @@
 \alias{coefficients.difNLR}
 \title{Extract model coefficients from an object of \code{"difNLR"} class.}
 \usage{
-\method{coef}{difNLR}(object, SE = FALSE, simplify = FALSE, ...)
+\method{coef}{difNLR}(object, SE = FALSE, simplify = FALSE, IRTpars = TRUE, CI = 0.95, ...)
 }
 \arguments{
 \item{object}{an object of \code{"difNLR"} class.}
 
-\item{SE}{logical: should the standard errors of estimated parameters be also returned? (default is \code{FALSE}).}
+\item{SE}{logical: should the standard errors of estimated
+parameters be also returned? (default is \code{FALSE}).}
 
-\item{simplify}{logical: should the estimated parameters be simplified to a matrix? (default is \code{FALSE}).}
+\item{simplify}{logical: should the estimated parameters be
+simplified to a matrix? (default is \code{FALSE}).}
 
-\item{...}{other generic parameters for \code{predict()} function.}
+\item{IRTpars}{logical: should the estimated parameters be returned
+in IRT parameterization? (default is \code{TRUE}).}
+
+\item{CI}{numeric: level of confidence interval for parameters,
+default is \code{0.95} for 95\% confidence interval.}
+
+\item{...}{other generic parameters for \code{coef()} function.}
 }
 \description{
-S3 method for extracting model coefficients from an object of \code{"difNLR"} class.
+S3 method for extracting model coefficients from an
+  object of \code{"difNLR"} class.
 }
 \examples{
 \dontrun{
-# Loading data based on GMAT
+# loading data
 data(GMAT)
+Data <- GMAT[, 1:20] # items
+group <- GMAT[, "group"] # group membership variable
 
-Data <- GMAT[, 1:20]
-group <- GMAT[, "group"]
-
-# Testing both DIF effects using likelihood-ratio test and
+# testing both DIF effects using likelihood-ratio test and
 # 3PL model with fixed guessing for groups
 (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
 
-# Coefficients
+# estimated parameters
 coef(x)
+# includes standard errors
 coef(x, SE = TRUE)
+# includes standard errors and simplifies to matrix
 coef(x, SE = TRUE, simplify = TRUE)
+# intercept-slope parameterization
+coef(x, IRTpars = FALSE)
+# intercept-slope parameterization, simplifies to matrix, turn off confidence intervals
+coef(x, IRTpars = FALSE, simplify = TRUE, CI = 0)
 }
 }
 \references{
@@ -43,7 +57,7 @@ A non-IRT approach accounting for guessing. Journal of Educational Measurement, 
 \doi{10.1111/jedm.12158}.
 
 Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
-The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
 
 Swaminathan, H. & Rogers, H. J. (1990). Detecting differential item functioning using logistic regression procedures.
 Journal of Educational Measurement, 27(4), 361--370, \doi{10.1111/j.1745-3984.1990.tb00754.x}

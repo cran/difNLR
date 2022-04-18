@@ -10,12 +10,19 @@
 #' @param group numeric: binary vector of group membership. \code{"0"} for reference group, \code{"1"} for focal group.
 #' @param formula formula: specification of the model. Can be obtained by \code{formulaNLR()} function.
 #' @param method character: method used to estimate parameters. The options are \code{"nls"} for non-linear least
-#' squares (default) and \code{"likelihood"} for maximum likelihood method.
+#' squares (default), \code{"likelihood"} for maximum likelihood method, and \code{"irls"} for maximum likelihood
+#' estimation with iteratively reweighted least squares. See \strong{Details}.
 #' @param lower numeric: lower bounds for parameters of model specified in \code{formula}.
 #' @param upper numeric: upper bounds for parameters of model specified in \code{formula}.
 #' @param start numeric: initial parameters. Can be obtained by \code{startNLR()} function.
 #'
 #' @usage estimNLR(y, match, group, formula, method, lower, upper, start)
+#'
+#' @details
+#' Function offers either non-linear least squares estimation via \code{\link[stats]{nls}} function,
+#' maximum likelihood method with \code{"L-BFGS-B"} method via \code{\link[stats]{optim}} function,
+#' or maximum likelihood method with iteratively reweighted least squares via \code{\link[stats]{glm}}
+#' function.
 #'
 #' @author
 #' Adela Hladka (nee Drabinova) \cr
@@ -27,13 +34,16 @@
 #' Institute of Computer Science of the Czech Academy of Sciences \cr
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
-#' @examples
-#' data(GMAT)
+#' @references
+#' Hladka, A. (2021). Statistical models for detection of differential item functioning. Dissertation thesis.
+#' Faculty of Mathematics and Physics, Charles University.
 #'
-#' # item 1
-#' y <- GMAT[, 1]
-#' match <- scale(rowSums(GMAT[, 1:20]))
-#' group <- GMAT[, "group"]
+#' @examples
+#' # loading data
+#' data(GMAT)
+#' y <- GMAT[, 1] # item 1
+#' match <- scale(rowSums(GMAT[, 1:20])) # standardized total score
+#' group <- GMAT[, "group"] # group membership variable
 #'
 #' # formula for 3PL model with the same guessing
 #' M <- formulaNLR(model = "3PLcg", type = "both")
@@ -42,7 +52,7 @@
 #' start <- startNLR(GMAT[, 1:20], group, model = "3PLcg", parameterization = "classic")
 #' start <- start[[1]][M$M0$parameters]
 #'
-#' # Non-linear least squares
+#' # non-linear least squares
 #' fitNLSM0 <- estimNLR(
 #'   y = y, match = match, group = group,
 #'   formula = M$M0$formula, method = "nls",
@@ -57,7 +67,7 @@
 #' fitted(fitNLSM0)
 #' residuals(fitNLSM0)
 #'
-#' # Maximum likelihood
+#' # maximum likelihood method
 #' fitLKLM0 <- estimNLR(
 #'   y = y, match = match, group = group,
 #'   formula = M$M0$formula, method = "likelihood",
@@ -70,9 +80,22 @@
 #' vcov(fitLKLM0)
 #' fitted(fitLKLM0)
 #' residuals(fitLKLM0)
+#'
+#' # iteratively reweighted least squares for 2PL model
+#' M <- formulaNLR(model = "2PL", parameterization = "logistic")
+#' fitIRLSM1 <- estimNLR(
+#'   y = y, match = match, group = group,
+#'   formula = M$M1$formula, method = "irls"
+#' )
+#' fitIRLSM1
+#'
+#' coef(fitIRLSM1)
+#' logLik(fitIRLSM1)
+#' vcov(fitIRLSM1)
+#' fitted(fitIRLSM1)
+#' residuals(fitIRLSM1)
 #' @keywords DIF
 #' @export
-#'
 estimNLR <- function(y, match, group, formula, method, lower, upper, start) {
   M <- switch(method,
     nls = tryCatch(nls(
@@ -96,9 +119,13 @@ estimNLR <- function(y, match, group, formula, method, lower, upper, start) {
     error = function(e) {},
     finally = ""
     ),
-    IRLS = tryCatch(glm(formula, family = binomial()),
-      error = function(e) {},
-      finally = ""
+    irls = tryCatch(glm(
+      formula = formula,
+      family = binomial(),
+      data = data.frame(y = y, x = match, g = group)
+    ),
+    error = function(e) {},
+    finally = ""
     )
   )
   if (!is.null(M)) {
@@ -154,20 +181,6 @@ lkl <- function(formula, data, par, lower, upper) {
 
 #' @rdname lkl
 #' @export
-print.lkl <- function(x, ...) {
-  cat(
-    "Nonlinear regression model \n",
-    "model: ", paste(x$formula[2], x$formula[1], x$formula[3]), "\n"
-  )
-  print(x$par)
-  cat(
-    "\n",
-    "Algorithm L-BFGS-B"
-  )
-}
-
-#' @rdname lkl
-#' @export
 logLik.lkl <- function(object, ...) {
   -object$value
 }
@@ -192,8 +205,35 @@ residuals.lkl <- function(object, ...) {
 
 #' @rdname estNLR
 #' @export
+print.estNLR <- function(x, ...) {
+  formula <- switch(class(x)[2],
+    "nls" = paste(x$m$formula()[2], x$m$formula()[1], x$m$formula()[3]),
+    "lkl" = paste(x$formula[2], x$formula[1], x$formula[3]),
+    "glm" = paste0(x$formula[2], " ", x$formula[1], " exp(", x$formula[3], ") / (1 + exp(", x$formula[3], "))")
+  )
+  cat(
+    "Nonlinear regression model \n\n",
+    "Model: ", formula, "\n"
+  )
+  pars <- switch(class(x)[2],
+    "nls" = x$m$getPars(),
+    "lkl" = x$par,
+    "glm" = x$coefficients
+  )
+  alg <- switch(class(x)[2],
+    "nls" = "Nonlinear least squares estimation",
+    "lkl" = "Maximum likelihood estimation using L-BFGS-B algorithm",
+    "glm" = "Maximum likelihood estimation using iteratively reweighted least squares algorithm"
+  )
+  cat("\nCoefficients:\n")
+  print(round(pars, 4))
+  cat("\n", alg)
+}
+
+#' @rdname estNLR
+#' @export
 vcov.estNLR <- function(object, sandwich = FALSE, ...) {
-  if (class(object)[2] == "nls") {
+  if (inherits(object, "nls")) {
     if (sandwich) {
       e <- object$m$getEnv()
       y <- e$y
@@ -213,11 +253,21 @@ vcov.estNLR <- function(object, sandwich = FALSE, ...) {
     if (sandwich) {
       message("Sandwich estimator of covariance not available for method = 'likelihood'. ")
     }
-    cov.object <- tryCatch(
-      {
-        solve(object$hessian)},
-      error = function(e) NULL
-    )
+    if (inherits(object, "lkl")) {
+      cov.object <- tryCatch(
+        {
+          solve(object$hessian)
+        },
+        error = function(e) NULL
+      )
+    } else {
+      cov.object <- tryCatch(
+        {
+          vcov(summary(object))
+        },
+        error = function(e) NULL
+      )
+    }
   }
   return(cov.object)
 }
@@ -228,7 +278,7 @@ vcov.estNLR <- function(object, sandwich = FALSE, ...) {
   f <- paste0("(y - ", "(", gsub("y ~ ", "", paste(deparse(formula), collapse = "")), "))^2")
   f <- gsub("  ", "", f)
 
-  psi <- derivative(
+  psi <- calculus::derivative(
     f = f,
     var = names(par)
   )
@@ -243,7 +293,7 @@ vcov.estNLR <- function(object, sandwich = FALSE, ...) {
     )
   )
 
-  hess <- hessian(
+  hess <- calculus::hessian(
     f = f,
     var = names(par)
   )

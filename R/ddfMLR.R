@@ -2,69 +2,84 @@
 #'
 #' @aliases ddfMLR
 #'
-#' @description Performs DDF detection procedure for nominal data based on multinomial
-#' log-linear regression model and likelihood ratio test of a submodel.
+#' @description Performs DDF detection procedure for nominal data
+#'   based on multinomial log-linear regression model and likelihood
+#'   ratio test of a submodel.
 #'
-#' @param Data data.frame or matrix: dataset which rows represent unscored examinee answers (nominal)
-#' and columns correspond to the items. In addition, \code{Data} can hold the vector of
-#' group membership.
-#' @param group numeric or character: a dichotomous vector of the same length as \code{nrow(Data)}
-#' or a column identifier of \code{Data}.
-#' @param focal.name numeric or character: indicates the level of \code{group} which corresponds to
-#' focal group.
-#' @param key character: the answer key. Each element corresponds to the correct answer of one item.
-#' @param type character: type of DDF to be tested. Either \code{"both"} for uniform and non-uniform
-#' DDF (i.e., difference in parameters \code{"a"} and \code{"b"}) (default), or \code{"udif"} for
-#' uniform DDF only (i.e., difference in difficulty parameter \code{"b"}), or \code{"nudif"} for
-#' non-uniform DDF only (i.e., difference in discrimination parameter \code{"a"}). Can be specified
-#' as a single value (for all items) or as an item-specific vector.
-#' @param match numeric or character: matching criterion to be used as an estimate of trait. Can be
-#' either \code{"zscore"} (default, standardized total score), \code{"score"} (total test score),
-#' or vector of the same length as number of observations in \code{Data}.
-#' @param anchor numeric or character: specification of DDF free items. Either \code{NULL} (default),
-#' or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
-#' the column number) determining which items are currently considered as anchor (DDF free) items.
-#' Argument is ignored if \code{match} is not \code{"zscore"} or \code{"score"}.
-#' @param purify logical: should the item purification be applied? (default is \code{FALSE}).
-#' @param nrIter numeric: the maximal number of iterations in the item purification (default is 10).
-#' @param p.adjust.method character: method for multiple comparison correction. Possible values are
-#' \code{"holm"}, \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"}, \code{"BY"},
-#' \code{"fdr"}, and \code{"none"} (default). For more details see \code{\link[stats]{p.adjust}}.
-#' @param parametrization character: parametrization of regression coefficients. Possible options are
-#' \code{"irt"} for difficulty-discrimination parametrization (default) and \code{"classic"} for
-#' intercept-slope parametrization. See \strong{Details}.
+#' @param Data data.frame or matrix: dataset which rows represent
+#'   unscored examinee answers (nominal) and columns correspond to the
+#'   items. In addition, \code{Data} can hold the vector of group
+#'   membership.
+#' @param group numeric or character: a dichotomous vector of the same
+#'   length as \code{nrow(Data)} or a column identifier of
+#'   \code{Data}.
+#' @param focal.name numeric or character: indicates the level of
+#'   \code{group} which corresponds to focal group.
+#' @param key character: the answer key. Each element corresponds to
+#'   the correct answer of one item.
+#' @param type character: type of DDF to be tested. Either
+#'   \code{"both"} for uniform and non-uniform DDF (i.e., difference
+#'   in parameters \code{"a"} and \code{"b"}) (default), or
+#'   \code{"udif"} for uniform DDF only (i.e., difference in
+#'   difficulty parameter \code{"b"}), or \code{"nudif"} for
+#'   non-uniform DDF only (i.e., difference in discrimination
+#'   parameter \code{"a"}). Can be specified as a single value (for
+#'   all items) or as an item-specific vector.
+#' @param match numeric or character: matching criterion to be used as
+#'   an estimate of trait. Can be either \code{"zscore"} (default,
+#'   standardized total score), \code{"score"} (total test score), or
+#'   vector of the same length as number of observations in
+#'   \code{Data}.
+#' @param anchor numeric or character: specification of DDF free
+#'   items. Either \code{NULL} (default), or a vector of item names
+#'   (column names of \code{Data}), or item identifiers (integers
+#'   specifying the column number) determining which items are
+#'   currently considered as anchor (DDF free) items. Argument is
+#'   ignored if \code{match} is not \code{"zscore"} or \code{"score"}.
+#' @param purify logical: should the item purification be applied?
+#'   (default is \code{FALSE}).
+#' @param nrIter numeric: the maximal number of iterations in the item
+#'   purification (default is 10).
+#' @param p.adjust.method character: method for multiple comparison
+#'   correction. Possible values are \code{"holm"}, \code{"hochberg"},
+#'   \code{"hommel"}, \code{"bonferroni"}, \code{"BH"}, \code{"BY"},
+#'   \code{"fdr"}, and \code{"none"} (default). For more details see
+#'   \code{\link[stats]{p.adjust}}.
 #' @param alpha numeric: significance level (default is 0.05).
+#' @param parametrization deprecated. Use
+#'   \code{\link[difNLR]{coef.ddfMLR}} for different
+#'   parameterizations.
 #'
 #' @usage
 #' ddfMLR(Data, group, focal.name, key, type = "both", match = "zscore", anchor = NULL,
-#'        purify = FALSE, nrIter = 10, p.adjust.method = "none", parametrization = "irt",
-#'        alpha = 0.05)
+#'        purify = FALSE, nrIter = 10, p.adjust.method = "none",
+#'        alpha = 0.05, parametrization)
 #'
 #' @details
-#' Performs DDF detection procedure for nominal data based on multinomial
-#' log-linear regression model and likelihood ratio test of submodel. Probability of selection the
-#' \eqn{k}-th category (distractor) is
-#' \deqn{P(y = k) = exp((a_k + a_kDif*g)*(x - b_k - b_kDif*g)))/(1 + \sum exp((a_l + a_lDif*g)*(x - b_l - b_lDif*g))), }
-#' where \eqn{x} is by default standardized total score (also called Z-score) and \eqn{g} is a group
-#' membership. Parameters \eqn{a_k} and \eqn{b_k} are discrimination and difficulty for the \eqn{k}-th
-#' category. Terms \eqn{a_kDif} and \eqn{b_kDif} then represent differences between two groups
-#' (reference and focal) in relevant parameters. Probability of correct answer (specified in argument
+#' Performs DDF detection procedure for nominal data based on
+#' multinomial log-linear regression model and likelihood ratio test
+#' of submodel. Probability of selection the \eqn{k}-th category
+#' (distractor) is
+#' \deqn{P(y = k) = exp((a_k + a_kDif * g) * (x - b_k - b_kDif * g))) / (1 + \sum exp((a_l + a_lDif * g) * (x - b_l - b_lDif * g))), }
+#' where \eqn{x} is by default standardized total score (also called
+#' Z-score) and \eqn{g} is a group membership. Parameters \eqn{a_k}
+#' and \eqn{b_k} are discrimination and difficulty for the \eqn{k}-th
+#' category. Terms \eqn{a_kDif} and \eqn{b_kDif} then represent
+#' differences between two groups (reference and focal) in relevant
+#' parameters. Probability of correct answer (specified in argument
 #' \code{key}) is
-#' \deqn{P(y = k) = 1/(1 + \sum exp((a_l + a_lDif*g)*(x - b_l - b_lDif*g))). }
-#' Parameters are estimated via neural networks. For more details see \code{\link[nnet]{multinom}}.
+#' \deqn{P(y = k) = 1/(1 + \sum exp((a_l + a_lDif * g)*(x - b_l - b_lDif * g))). }
+#' Parameters are estimated via neural networks. For more details see
+#' \code{\link[nnet]{multinom}}.
 #'
-#' Argument \code{parametrization} is a character which specifies parametrization of regression parameters.
-#' Default option is \code{"irt"} which returns IRT parametrization (difficulty-discrimination, see above).
-#' Option \code{"classic"} returns intercept-slope parametrization with effect of group membership and
-#' interaction with matching criterion, i.e. \eqn{b_0k + b_1k*x + b_2k*g + b_3k*x*g} instead of
-#' \eqn{(a_k + a_kDif*g)*(x - b_k - b_kDif*g))}.
+#' Missing values are allowed but discarded for item estimation. They
+#' must be coded as \code{NA} for both, \code{Data} and \code{group}
+#' arguments.
 #'
-#' Missing values are allowed but discarded for item estimation. They must be coded as \code{NA}
-#' for both, \code{Data} and \code{group} arguments.
-#'
-#' @return The \code{ddfMLR()} function returns an object of class \code{"ddfMLR"}. The output
-#' including values of the test statistics, p-values, and items marked as DDF is displayed by the
-#' \code{print()} method.
+#' @return The \code{ddfMLR()} function returns an object of class
+#'   \code{"ddfMLR"}. The output including values of the test
+#'   statistics, p-values, and items marked as DDF is displayed by the
+#'   \code{print()} method.
 #'
 #' A list of class \code{"ddfMLR"} with the following arguments:
 #' \describe{
@@ -117,31 +132,33 @@
 #' @references
 #' Agresti, A. (2010). Analysis of ordinal categorical data. Second edition. John Wiley & Sons.
 #'
+#' Hladka, A. (2021). Statistical models for detection of differential item functioning. Dissertation thesis.
+#' Faculty of Mathematics and Physics, Charles University.
+#'
 #' Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
-#' The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+#' The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
 #'
 #' @seealso
 #' \code{\link[difNLR]{plot.ddfMLR}} for graphical representation of item characteristic curves. \cr
 #' \code{\link[difNLR]{coef.ddfMLR}} for extraction of item parameters with their standard errors. \cr
 #' \code{\link[difNLR]{logLik.ddfMLR}}, \code{\link[difNLR]{AIC.ddfMLR}}, \code{\link[difNLR]{BIC.ddfMLR}}
-#' for extraction of loglikelihood and information criteria. \cr
+#' for extraction of log-likelihood and information criteria. \cr
 #'
 #' \code{\link[stats]{p.adjust}} for multiple comparison corrections. \cr
 #' \code{\link[nnet]{multinom}} for estimation function using neural networks.
 #'
 #' @examples
 #' \dontrun{
-#' # Loading data based on GMAT
+#' # loading data
 #' data(GMATtest, GMATkey)
+#' Data <- GMATtest[, 1:20] # items
+#' group <- GMATtest[, "group"] # group membership variable
+#' key <- GMATkey # correct answers
 #'
-#' Data <- GMATtest[, 1:20]
-#' group <- GMATtest[, "group"]
-#' key <- GMATkey
-#'
-#' # Testing both DDF effects
+#' # testing both DDF effects
 #' (x <- ddfMLR(Data, group, focal.name = 1, key))
 #'
-#' # Graphical devices
+#' # graphical devices
 #' plot(x, item = "Item1", group.names = c("Group 1", "Group 2"))
 #' plot(x, item = x$DDFitems)
 #' plot(x, item = 1)
@@ -156,34 +173,38 @@
 #' BIC(x, item = 1)
 #' logLik(x, item = 1)
 #'
-#' # Estimates
+#' # estimated parameters
 #' coef(x)
 #' coef(x, SE = TRUE)
 #' coef(x, SE = TRUE, simplify = TRUE)
 #'
-#' # Testing both DDF effects with Benjamini-Hochberg adjustment method
+#' # testing both DDF effects with Benjamini-Hochberg adjustment method
 #' ddfMLR(Data, group, focal.name = 1, key, p.adjust.method = "BH")
 #'
-#' # Testing both DDF effects with item purification
+#' # testing both DDF effects with item purification
 #' ddfMLR(Data, group, focal.name = 1, key, purify = TRUE)
 #'
-#' # Testing uniform DDF effects
+#' # testing uniform DDF effects
 #' ddfMLR(Data, group, focal.name = 1, key, type = "udif")
-#' # Testing non-uniform DDF effects
+#' # testing non-uniform DDF effects
 #' ddfMLR(Data, group, focal.name = 1, key, type = "nudif")
 #'
-#' # Testing both DDF effects with total score as matching criterion
+#' # testing both DDF effects with total score as matching criterion
 #' ddfMLR(Data, group, focal.name = 1, key, match = "score")
-#'
-#' # Testing both DDF effects using classic parametrization
-#' ddfMLR(Data, group, focal.name = 1, key, parametrization = "classic")
 #' }
 #'
 #' @keywords DDF
 #' @export
 ddfMLR <- function(Data, group, focal.name, key, type = "both", match = "zscore", anchor = NULL,
-                   purify = FALSE, nrIter = 10, p.adjust.method = "none", parametrization = "irt",
-                   alpha = 0.05) {
+                   purify = FALSE, nrIter = 10, p.adjust.method = "none",
+                   alpha = 0.05, parametrization) {
+  # deprecated args handling
+  if (!missing(parametrization)) {
+    warning("Argument 'parametrization' is deprecated; please use 'coef.difORD()' method for different parameterizations. ",
+      call. = FALSE
+    )
+  }
+
   if (!type %in% c("udif", "nudif", "both") | !is.character(type)) {
     stop("'type' must be either 'udif', 'nudif', or 'both'.",
       call. = FALSE
@@ -194,12 +215,7 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both", match = "zscore"
       call. = FALSE
     )
   }
-  if (!parametrization %in% c("classic", "irt")) {
-    stop("Invalid value for 'parametrization'. Possible values are 'classic' and 'irt'.",
-      call. = FALSE
-    )
-  }
-  ### matching criterion
+  # matching criterion
   if (!(match[1] %in% c("score", "zscore"))) {
     if (is.null(dim(Data))) {
       no <- length(Data)
@@ -211,7 +227,7 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both", match = "zscore"
            of observations in 'Data'.")
     }
   }
-  ### purification
+  # purification
   if (purify & !(match[1] %in% c("score", "zscore"))) {
     stop("Purification not allowed when matching variable is not 'zscore' or 'score'.", call. = FALSE)
   }
@@ -245,7 +261,12 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both", match = "zscore"
         call. = FALSE
       )
     }
-    if (length(key) != dim(DATA)[2]) {
+    if (is.matrix(key) | is.data.frame(key)) {
+      KEY <- paste(unlist(key))
+    } else {
+      KEY <- key
+    }
+    if (length(KEY)[1] != dim(DATA)[2]) {
       stop("Number of items in 'Data' is not equal to the length of 'key'.",
         call. = FALSE
       )
@@ -292,9 +313,10 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both", match = "zscore"
       ANCHOR <- 1:dim(DATA)[2]
     }
     if (!purify | !(match[1] %in% c("zscore", "score")) | !is.null(anchor)) {
-      PROV <- suppressWarnings(MLR(DATA, GROUP,
-        key = key, match = match, anchor = ANCHOR,
-        type = type, p.adjust.method = p.adjust.method, parametrization = parametrization,
+      PROV <- suppressWarnings(MLR(
+        Data = DATA, group = GROUP,
+        key = KEY, match = match, anchor = ANCHOR,
+        type = type, p.adjust.method = p.adjust.method,
         alpha = alpha
       ))
 
@@ -332,23 +354,25 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both", match = "zscore"
         mlrPAR = mlrPAR,
         mlrSE = mlrSE,
         parM0 = PROV$par.m0, parM1 = PROV$par.m1,
+        covM0 = PROV$cov.m0, covM1 = PROV$cov.m1,
         llM0 = PROV$ll.m0, llM1 = PROV$ll.m1,
         AICM0 = PROV$AIC.m0, AICM1 = PROV$AIC.m1,
         BICM0 = PROV$BIC.m0, BICM1 = PROV$BIC.m1,
         DDFitems = DDFitems,
-        type = type, parametrization = parametrization,
+        type = type,
         purification = purify,
         p.adjust.method = p.adjust.method, pval = PROV$pval, adj.pval = PROV$adjusted.pval, df = PROV$df,
         alpha = alpha,
-        Data = DATA, group = GROUP, group.names = group.names, key = key, match = match
+        Data = DATA, group = GROUP, group.names = group.names, key = c(KEY), match = match
       )
     } else {
       nrPur <- 0
       ddfPur <- NULL
       noLoop <- FALSE
-      prov1 <- suppressWarnings(MLR(DATA, GROUP,
-        key = key, type = type,
-        p.adjust.method = p.adjust.method, parametrization = parametrization,
+      prov1 <- suppressWarnings(MLR(
+        Data = DATA, group = GROUP,
+        key = KEY, type = type,
+        p.adjust.method = p.adjust.method,
         alpha = alpha
       ))
       stats1 <- prov1$Sval
@@ -382,9 +406,10 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both", match = "zscore"
                 }
               }
             }
-            prov2 <- suppressWarnings(MLR(DATA, GROUP,
-              key = key, anchor = nodif, type = type,
-              p.adjust.method = p.adjust.method, parametrization = parametrization,
+            prov2 <- suppressWarnings(MLR(
+              Data = DATA, group = GROUP,
+              key = KEY, anchor = nodif, type = type,
+              p.adjust.method = p.adjust.method,
               alpha = alpha
             ))
             stats2 <- prov2$Sval
@@ -405,8 +430,7 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both", match = "zscore"
               if (sum(dif == dif2) == length(dif)) {
                 noLoop <- TRUE
                 break
-              }
-              else {
+              } else {
                 dif <- dif2
               }
             }
@@ -438,15 +462,16 @@ ddfMLR <- function(Data, group, focal.name, key, type = "both", match = "zscore"
         mlrPAR = mlrPAR,
         mlrSE = mlrSE,
         parM0 = PROV$par.m0, parM1 = PROV$par.m1,
+        covM0 = PROV$cov.m0, covM1 = PROV$cov.m1,
         llM0 = PROV$ll.m0, llM1 = PROV$ll.m1,
         AICM0 = PROV$AIC.m0, AICM1 = PROV$AIC.m1,
         BICM0 = PROV$BIC.m0, BICM1 = PROV$BIC.m1,
         DDFitems = DDFitems,
-        type = type, parametrization = parametrization,
+        type = type,
         purification = purify, nrPur = nrPur, ddfPur = ddfPur, conv.puri = noLoop,
         p.adjust.method = p.adjust.method, pval = PROV$pval, adj.pval = PROV$adjusted.pval, df = PROV$df,
         alpha = alpha,
-        Data = DATA, group = GROUP, group.names = group.names, key = key, match = match
+        Data = DATA, group = GROUP, group.names = group.names, key = c(KEY), match = match
       )
     }
     class(RES) <- "ddfMLR"
@@ -480,14 +505,17 @@ print.ddfMLR <- function(x, ...) {
   }
   if (x$p.adjust.method == "none") {
     cat("No p-value adjustment for multiple comparisons\n\n")
-  }
-  else {
+  } else {
     cat(paste(
       "Multiple comparisons made with",
       switch(x$p.adjust.method,
-        holm = "Holm", hochberg = "Hochberg", hommel = "Hommel",
-        bonferroni = "Bonferroni", BH = "Benjamini-Hochberg",
-        BY = "Benjamini-Yekutieli", fdr = "FDR"
+        holm = "Holm",
+        hochberg = "Hochberg",
+        hommel = "Hommel",
+        bonferroni = "Bonferroni",
+        BH = "Benjamini-Hochberg",
+        BY = "Benjamini-Yekutieli",
+        fdr = "FDR"
       ), "adjustment of p-values\n\n"
     ))
   }
@@ -513,13 +541,14 @@ print.ddfMLR <- function(x, ...) {
   cat("\nSignif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
 
   if (is.character(x$DDFitems)) {
-    switch(x$type, both = cat("\nNone of items is detected as DDF"),
+    switch(x$type,
+      both = cat("\nNone of items is detected as DDF"),
       udif = cat("\nNone of items is detected as uniform DDF"),
       nudif = cat("\nNone of items is detected as non-uniform DDF")
     )
-  }
-  else {
-    switch(x$type, both = cat("\nItems detected as DDF items:"),
+  } else {
+    switch(x$type,
+      both = cat("\nItems detected as DDF items:"),
       udif = cat("\nItems detected as uniform DDF items:"),
       nudif = cat("\nItems detected as non-uniform DDF items:")
     )
@@ -529,15 +558,17 @@ print.ddfMLR <- function(x, ...) {
 
 #' ICC plots for an object of \code{"ddfMLR"} class.
 #'
-#' @description Plot method for an object of \code{"ddfMLR"} class using \pkg{ggplot2}.
+#' @description Plot method for an object of \code{"ddfMLR"} class
+#'   using \pkg{ggplot2}.
 #'
-#' The characteristic curves for an item specified in \code{item} argument are plotted.
-#' Plotted curves represent the best model.
+#'   The characteristic curves for an item specified in \code{item}
+#'   argument are plotted. Plotted curves represent the best model.
 #'
 #' @param x an object of \code{"ddfMLR"} class.
-#' @param item numeric or character: either character \code{"all"} to apply for all items (default),
-#' or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
-#' the column number).
+#' @param item numeric or character: either character \code{"all"} to
+#'   apply for all items (default), or a vector of item names (column
+#'   names of \code{Data}), or item identifiers (integers specifying
+#'   the column number).
 #' @param group.names character: names of reference and focal group.
 #' @param ... other generic parameters for \code{plot()} function.
 #'
@@ -559,39 +590,39 @@ print.ddfMLR <- function(x, ...) {
 #'
 #' @examples
 #' \dontrun{
-#' # Loading data based on GMAT
+#' # loading data
 #' data(GMATtest, GMATkey)
+#' Data <- GMATtest[, 1:20] # items
+#' group <- GMATtest[, "group"] # group membership variable
+#' key <- GMATkey # correct answers
 #'
-#' Data <- GMATtest[, 1:20]
-#' group <- GMATtest[, "group"]
-#' key <- GMATkey
-#'
-#' # Testing both DDF effects
+#' # testing both DDF effects
 #' (x <- ddfMLR(Data, group, focal.name = 1, key))
 #'
-#' # Graphical devices
+#' # graphical devices
 #' plot(x, item = "Item1", group.names = c("Group 1", "Group 2"))
 #' plot(x, item = x$DDFitems)
-#' plot(x, item = 1)
+#' plot(x, item = c(3, 1, 5))
 #' }
 #' @export
 plot.ddfMLR <- function(x, item = "all", group.names, ...) {
   m <- length(x$mlrPAR)
   nams <- colnames(x$Data)
-  if (class(item) == "character") {
-    if (item != "all" & !item %in% nams) {
+
+  if (inherits(item, "character")) {
+    if (any(item != "all") & !all(item %in% nams)) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
     }
-    if (item[1] == "all") {
+    if (any(item == "all")) {
       items <- 1:m
     } else {
       items <- which(nams %in% item)
     }
   } else {
-    if (class(item) != "integer" & class(item) != "numeric") {
+    if (!inherits(item, "integer") & !inherits(item, "numeric")) {
       stop("Invalid value for 'item'. Item must be either character 'all', or
            numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
@@ -628,15 +659,15 @@ plot.ddfMLR <- function(x, item = "all", group.names, ...) {
   }
 
   if (x$match[1] == "zscore") {
-    score <- c(scale(unlist(CTT::score(as.data.frame(x$Data[, anchor]), x$key))))
+    matching <- c(scale(.score(as.data.frame(x$Data[, anchor]), x$key[anchor])))
     xlab <- "Standardized total score"
   } else {
     if (x$match[1] == "score") {
-      score <- c(unlist(CTT::score(as.data.frame(x$Data[, anchor]), x$key)))
+      matching <- c(.score(as.data.frame(x$Data[, anchor]), x$key[anchor]))
       xlab <- "Total score"
     } else {
       if (length(x$match) == dim(x$Data)[1]) {
-        score <- x$match
+        matching <- x$match
         xlab <- "Matching criterion"
       } else {
         stop("Invalid value for 'match'. Possible values are 'score', 'zscore' or vector of the same length as number
@@ -645,152 +676,111 @@ plot.ddfMLR <- function(x, item = "all", group.names, ...) {
     }
   }
 
-  sq <- seq(min(score, na.rm = T), max(score, na.rm = T), length.out = 300)
-  sqR <- as.matrix(data.frame(1, sq, 0, 0))
-  sqF <- as.matrix(data.frame(1, sq, 1, sq))
+  match <- seq(min(matching, na.rm = TRUE), max(matching, na.rm = TRUE), length.out = 300)
+  plot_CC <- list()
 
-  plot_CC <- vector("list", length = length(items))
-  for (j in 1:length(items)) {
-    i <- items[[j]]
-
+  for (i in items) {
     TITLE <- colnames(x$Data)[i]
 
-    coefs <- x$mlrPAR[[i]]
-    if (x$parametrization == "irt") {
-      a <- coefs[, "a"]
-      b <- coefs[, "b"]
-      aDIF <- coefs[, "aDIF"]
-      bDIF <- coefs[, "bDIF"]
-      coefs <- cbind(-a * b, a, -a * bDIF - aDIF * b - aDIF * bDIF, aDIF)
-    }
+    df.fitted <- data.frame(rbind(
+      cbind(Group = "0", Match = match, predict(x, item = i, match = match, group = 0)),
+      cbind(Group = "1", Match = match, predict(x, item = i, match = match, group = 1))
+    ))
+    df.fitted <- reshape(
+      data = df.fitted, direction = "long",
+      varying = list(colnames(df.fitted)[-c(1:2)]), v.names = "Probability",
+      idvar = c("Group", "Match"),
+      timevar = "Category", times = colnames(df.fitted)[-c(1:2)]
+    )
+    df.fitted$Category <- factor(df.fitted$Category)
+    df.fitted$Category <- relevel(df.fitted$Category, ref = paste(x$key[i]))
+    levels(df.fitted$Category) <- paste0("P(Y = ", levels(df.fitted$Category), ")")
+    n_cats <- length(levels(df.fitted$Category))
 
-    if (is.null(dim(coefs))) coefs <- matrix(coefs, ncol = length(coefs))
-    if (dim(coefs)[2] == 2) {
-      coefs <- as.matrix(data.frame(coefs, 0, 0))
-    }
-    if (dim(coefs)[2] == 3) {
-      coefs <- as.matrix(data.frame(coefs, 0))
-    }
-
-    prR <- as.data.frame(t(exp(coefs %*% t(sqR))))
-    prF <- as.data.frame(t(exp(coefs %*% t(sqF))))
-    colnames(prR) <- colnames(prF) <- rownames(coefs)
-
-    prR <- sapply(prR, function(x) x / (rowSums(prR) + 1))
-    prF <- sapply(prF, function(x) x / (rowSums(prF) + 1))
-
-    hvR <- data.frame(1 - rowSums(prR), prR, "R", sq)
-    hvF <- data.frame(1 - rowSums(prF), prF, "F", sq)
-
-    if (is.null(rownames(coefs)) | nrow(coefs) == 1) {
-      if (is.null(levels(x$Data[, i]))) {
-        lvls <- sort(unique(x$Data[, i]))
-      } else {
-        lvls <- levels(x$Data[, i])
-      }
-      nams <- lvls[lvls != x$key[i]]
-    } else {
-      nams <- rownames(coefs)
-    }
-
-    colnames(hvR) <- colnames(hvF) <- c(paste(x$key[i]), nams, "group", "score")
-    hv <- rbind(hvR, hvF)
-
-    df <- reshape2::melt(hv, id = c("score", "group"))
-    df$group <- as.factor(df$group)
-
-    df2 <- rbind(
-      data.frame(prop.table(table(x$Data[x$group == 1, i], score[x$group == 1]), 2),
-        table(x$Data[x$group == 1, i], score[x$group == 1]),
+    df.empirical <- rbind(
+      data.frame(prop.table(table(x$Data[x$group == 1, i], matching[x$group == 1]), 2),
+        table(x$Data[x$group == 1, i], matching[x$group == 1]),
         group = "1"
       ),
-      data.frame(prop.table(table(x$Data[x$group == 0, i], score[x$group == 0]), 2),
-        table(x$Data[x$group == 0, i], score[x$group == 0]),
+      data.frame(prop.table(table(x$Data[x$group == 0, i], matching[x$group == 0]), 2),
+        table(x$Data[x$group == 0, i], matching[x$group == 0]),
         group = "0"
       )
     )
-
-    df2$score <- as.numeric(levels(df2$Var2))[df2$Var2]
-    df2$answ <- relevel(df2$Var1, ref = paste(x$key[i]))
-    df2$group <- as.factor(df2$group)
-
-    df$variable <- relevel(df$variable, ref = paste(x$key[i]))
-
-    levels(df$variable) <- paste0("P(Y = ", levels(df$variable), ")")
-    levels(df2$answ) <- paste0("P(Y = ", levels(df2$answ), ")")
+    df.empirical <- data.frame(
+      Group = as.factor(df.empirical$group),
+      Match = as.numeric(paste(df.empirical$Var2)),
+      Category = relevel(df.empirical$Var1, ref = paste(x$key[i])),
+      Count = as.numeric(paste(df.empirical$Freq.1)),
+      Probability = as.numeric(paste(df.empirical$Freq))
+    )
+    levels(df.empirical$Category) <- paste0("P(Y = ", levels(df.empirical$Category), ")")
 
     cbPalette <- c("#ffbe33", "#34a4e5", "#ce7eaa", "#00805e", "#737373", "#f4eb71", "#0072B2", "#D55E00")
-    num.col <- ceiling(length(levels(df$variable)) / 8)
-    cols <- rep(cbPalette, num.col)[1:length(levels(df$variable))]
+    n_col <- ceiling(n_cats / 8)
+    cols <- rep(cbPalette, n_col)[1:n_cats]
 
-    plot_CC[[j]] <- ggplot() +
-      geom_line(
-        data = df,
-        aes_string(
-          x = "score", y = "value",
-          colour = "variable", linetype = "group"
+    plot_CC[[i]] <- ggplot2::ggplot() +
+      ggplot2::geom_line(
+        data = df.fitted,
+        ggplot2::aes_string(
+          x = "Match", y = "Probability",
+          colour = "Category", linetype = "Group"
         ),
         size = 0.8
       ) +
-      geom_point(
-        data = df2,
-        aes_string(
-          x = "score", y = "Freq",
-          colour = "answ", fill = "answ",
-          size = "Freq.1"
+      ggplot2::geom_point(
+        data = df.empirical,
+        ggplot2::aes_string(
+          x = "Match", y = "Probability",
+          colour = "Category", fill = "Category",
+          size = "Count"
         ),
         alpha = 0.5, shape = 21
       ) +
-      ylim(0, 1) +
-      ggtitle(TITLE) +
-      labs(
+      ggplot2::ylim(0, 1) +
+      ggplot2::ggtitle(TITLE) +
+      ggplot2::labs(
         x = xlab,
         y = "Probability of answer"
       ) +
-      scale_linetype_manual(
-        breaks = c("R", "F"), labels = group.names,
+      ggplot2::scale_linetype_manual(
+        breaks = c(0, 1), labels = group.names,
         values = c("solid", "dashed")
       ) +
-      scale_color_manual(values = cols) +
-      scale_fill_manual(values = cols) +
-      theme_bw() +
-      theme(
-        axis.line = element_line(colour = "black"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.background = element_rect(fill = "transparent", colour = NA),
-        legend.key = element_rect(fill = "white", colour = NA),
-        legend.background = element_rect(fill = "transparent", colour = NA),
-        legend.box.background = element_rect(fill = "transparent", colour = NA)
-      ) +
-      ### legend
-      theme(
-        legend.box.just = "top",
-        legend.justification = c("left", "top"),
-        legend.position = c(0.02, 0.98),
-        legend.box = "horizontal",
-        legend.box.margin = margin(3, 3, 3, 3)
-      ) +
-      guides(
-        size = guide_legend(title = "Count", order = 1),
-        colour = guide_legend(title = "Answer", order = 2),
-        fill = guide_legend(title = "Answer", order = 2),
-        linetype = guide_legend(title = "Group", order = 3)
+      ggplot2::scale_color_manual(values = cols) +
+      ggplot2::scale_fill_manual(values = cols) +
+      .plot.theme() +
+      # legend
+      .plot.theme.legend() +
+      ggplot2::guides(
+        size = ggplot2::guide_legend(title = "Count", order = 1),
+        colour = ggplot2::guide_legend(title = "Answer", order = 2),
+        fill = ggplot2::guide_legend(title = "Answer", order = 2),
+        linetype = ggplot2::guide_legend(title = "Group", order = 3)
       )
   }
-  plot_CC <- Filter(Negate(function(i) is.null(unlist(i))), plot_CC)
+  plot_CC <- plot_CC[items]
+  names(plot_CC) <- nams[items]
   return(plot_CC)
 }
 
 #' Extract model coefficients from an object of \code{"ddfMLR"} class.
 #'
-#' @description S3 method for extracting estimated model coefficients from an object of \code{"ddfMLR"} class.
+#' @description S3 method for extracting estimated model coefficients
+#'   from an object of \code{"ddfMLR"} class.
 #' @aliases coefficients.ddfMLR
 #'
 #' @param object an object of \code{"ddfMLR"} class.
-#' @param SE logical: should the standard errors of estimated parameters be also returned? (default is \code{FALSE}).
-#' @param simplify logical: should the estimated parameters be simplified to a matrix? (default is \code{FALSE}).
-#' @param ... other generic parameters for \code{coef()} method.
+#' @param SE logical: should the standard errors of estimated
+#'   parameters be also returned? (default is \code{FALSE}).
+#' @param simplify logical: should the estimated parameters be
+#'   simplified to a matrix? (default is \code{FALSE}).
+#' @param IRTpars logical: should the estimated parameters be returned
+#'   in IRT parameterization? (default is \code{TRUE}).
+#' @param CI numeric: level of confidence interval for parameters,
+#'   default is \code{0.95} for 95\% confidence interval.
+#' @param ... other generic parameters for \code{coef()} function.
 #'
 #' @author
 #' Adela Hladka (nee Drabinova) \cr
@@ -808,31 +798,45 @@ plot.ddfMLR <- function(x, item = "all", group.names, ...) {
 #'
 #' @examples
 #' \dontrun{
-#' # Loading data based on GMAT
+#' # loading data
 #' data(GMATtest, GMATkey)
+#' Data <- GMATtest[, 1:20] # items
+#' group <- GMATtest[, "group"] # group membership variable
+#' key <- GMATkey # correct answers
 #'
-#' Data <- GMATtest[, 1:20]
-#' group <- GMATtest[, "group"]
-#' key <- GMATkey
-#'
-#' # Testing both DDF effects
+#' # testing both DDF effects
 #' (x <- ddfMLR(Data, group, focal.name = 1, key))
 #'
-#' # Estimated parameters
+#' # estimated parameters
 #' coef(x)
+#' # includes standard errors
 #' coef(x, SE = TRUE)
-#' coef(x, simplify = TRUE)
+#' # includes standard errors and simplifies to matrix
 #' coef(x, SE = TRUE, simplify = TRUE)
+#' # intercept-slope parameterization
+#' coef(x, IRTpars = FALSE)
+#' # intercept-slope parameterization, simplifies to matrix, turn off confidence intervals
+#' coef(x, IRTpars = FALSE, simplify = TRUE, CI = 0)
 #' }
 #' @export
-coef.ddfMLR <- function(object, SE = FALSE, simplify = FALSE, ...) {
-  if (class(SE) != "logical") {
-    stop("Invalid value for 'SE'. 'SE' need to be logical. ",
+coef.ddfMLR <- function(object, SE = FALSE, simplify = FALSE, IRTpars = TRUE, CI = 0.95, ...) {
+  if (!inherits(SE, "logical")) {
+    stop("Invalid value for 'SE'. 'SE' needs to be logical. ",
       call. = FALSE
     )
   }
-  if (class(simplify) != "logical") {
-    stop("Invalid value for 'simplify'. 'simplify' need to be logical. ",
+  if (!inherits(simplify, "logical")) {
+    stop("Invalid value for 'simplify'. 'simplify' needs to be logical. ",
+      call. = FALSE
+    )
+  }
+  if (!inherits(IRTpars, "logical")) {
+    stop("Invalid value for 'IRTpars'. 'IRTpars' needs to be logical. ",
+      call. = FALSE
+    )
+  }
+  if (CI > 1 | CI < 0 | !is.numeric(CI)) {
+    stop("Invalid value for 'CI'. 'CI' must be numeric value between 0 and 1. ",
       call. = FALSE
     )
   }
@@ -840,30 +844,73 @@ coef.ddfMLR <- function(object, SE = FALSE, simplify = FALSE, ...) {
   m <- dim(object$Data)[2]
   nams <- colnames(object$Data)
 
-  coefs <- object$mlrPAR
-  names(coefs) <- nams
+  if (!IRTpars) {
+    pars <- object$mlrPAR
+    se <- object$mlrSE
+  } else {
+    mlrPAR <- object$mlrPAR
+    mlrCOV <- ifelse(1:m %in% object$DDFitems, object$covM1, object$covM0)
+    mlrDM <- lapply(1:m, function(i) {
+      .deltamethod.MLR.log2irt(
+        par = mlrPAR[[i]], cov = mlrCOV[[i]]
+      )
+    })
+    se <- lapply(mlrDM, function(x) x$se)
+    pars <- lapply(1:m, function(i) {
+      if (any(is.null(dim(mlrDM[[i]]$par)))) {
+        par_names <- names(mlrDM[[i]]$par)
+      } else {
+        par_names <- colnames(mlrDM[[i]]$par)
+      }
+      matrix(mlrDM[[i]]$par,
+        nrow = nrow(mlrPAR[[i]]), ncol = ncol(mlrPAR[[i]]),
+        dimnames = list(rownames(mlrPAR[[i]]), par_names)
+      )
+    })
+  }
+  cats <- lapply(1:m, function(i) rownames(pars[[i]]))
+  names(pars) <- names(cats) <- names(se) <- nams
 
   if (SE) {
-    se <- object$mlrSE
-    names(se) <- nams
-
-    coefs <- lapply(nams, function(i) rbind(coefs[[i]], se[[i]])[order(c(rownames(coefs[[i]]), rownames(se[[i]]))), ])
-    rownams <- lapply(coefs, function(x) paste(rownames(x), c("estimate", "SE")))
-    coefs <- lapply(coefs, function(x) {
-      i <- which(coefs %in% list(x))
-      rownames(x) <- rownams[[i]]
-      return(x)
+    se_matrix <- lapply(1:m, function(i) {
+      matrix(se[[i]],
+        nrow = nrow(pars[[i]]), ncol = ncol(pars[[i]]),
+        dimnames = list(rownames(pars[[i]]), colnames(pars[[i]]))
+      )
     })
+    coefs <- lapply(1:m, function(i) rbind(pars[[i]], se_matrix[[i]]))
+    coefs <- lapply(1:m, function(i) {
+      rownames(coefs[[i]]) <- paste(rep(c("estimate", "SE"), each = nrow(coefs[[i]]) / 2), cats[[i]], sep = "_")
+      coefs[[i]]
+    })
+  } else {
+    coefs <- pars
+  }
+  names(coefs) <- nams
+
+  if (CI > 0) {
+    alpha <- (1 - CI) / 2
+    CIlow <- lapply(1:m, function(i) pars[[i]] - qnorm(1 - alpha) * se[[i]])
+    CIupp <- lapply(1:m, function(i) pars[[i]] + qnorm(1 - alpha) * se[[i]])
+    coefs <- lapply(1:m, function(i) rbind(coefs[[i]], CIlow[[i]], CIupp[[i]]))
+    names(coefs) <- nams
+    if (SE) {
+      tmp <- c("estimate", "SE", paste0("CI", 100 * alpha), paste0("CI", 100 * (1 - alpha)))
+    } else {
+      tmp <- c("estimate", paste0("CI", 100 * alpha), paste0("CI", 100 * (1 - alpha)))
+    }
+    coefs <- lapply(1:m, function(i) {
+      rownames(coefs[[i]]) <- paste(rep(tmp, each = nrow(coefs[[i]]) / length(tmp)), cats[[i]], sep = "_")
+      coefs[[i]]
+    })
+    names(coefs) <- nams
   }
 
   if (simplify) {
-    catnams <- unlist(lapply(coefs, rownames))
-    resnams <- unlist(lapply(1:m, function(i) rep(nams[i], sapply(coefs, nrow)[i])))
-    resnams <- paste(resnams, catnams)
-    res <- as.data.frame(plyr::ldply(coefs, rbind))
-    rownames(res) <- resnams
+    res <- as.data.frame(plyr::ldply(coefs, rbind, .id = NULL))
+    id <- unlist(lapply(nams, function(i) paste(i, rownames(coefs[[i]]))))
+    rownames(res) <- id
     res[is.na(res)] <- 0
-    if (!SE) res <- res[, -1]
   } else {
     res <- coefs
   }
@@ -871,18 +918,20 @@ coef.ddfMLR <- function(object, SE = FALSE, simplify = FALSE, ...) {
   return(res)
 }
 
-#' Loglikelihood and information criteria for an object of \code{"ddfMLR"} class.
+#' Log-likelihood and information criteria for an object of \code{"ddfMLR"} class.
 #'
 #' @aliases AIC.ddfMLR BIC.ddfMLR
 #' @rdname logLik.ddfMLR
 #'
-#' @description S3 methods for extracting loglikelihood, Akaike's information criterion (AIC) and
-#' Schwarz's Bayesian criterion (BIC) for an object of \code{"ddfMLR"} class.
+#' @description S3 methods for extracting log-likelihood, Akaike's
+#'   information criterion (AIC) and Schwarz's Bayesian criterion
+#'   (BIC) for an object of \code{"ddfMLR"} class.
 #'
 #' @param object an object of \code{"ddfMLR"} class.
-#' @param item numeric or character: either character \code{"all"} to apply for all converged items (default),
-#' or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
-#' the column number).
+#' @param item numeric or character: either character \code{"all"} to
+#'   apply for all converged items (default), or a vector of item
+#'   names (column names of \code{Data}), or item identifiers
+#'   (integers specifying the column number).
 #' @param ... other generic parameters for S3 methods.
 #'
 #' @author
@@ -897,19 +946,18 @@ coef.ddfMLR <- function(object, SE = FALSE, simplify = FALSE, ...) {
 #'
 #' @seealso
 #' \code{\link[difNLR]{ddfMLR}} for DDF detection among nominal data. \cr
-#' \code{\link[stats]{logLik}} for generic function extracting loglikelihood. \cr
+#' \code{\link[stats]{logLik}} for generic function extracting log-likelihood. \cr
 #' \code{\link[stats]{AIC}} for generic function calculating AIC and BIC.
 #'
 #' @examples
 #' \dontrun{
-#' # Loading data based on GMAT
+#' # loading data
 #' data(GMATtest, GMATkey)
+#' Data <- GMATtest[, 1:20] # items
+#' group <- GMATtest[, "group"] # group membership variable
+#' key <- GMATkey # correct answers
 #'
-#' Data <- GMATtest[, 1:20]
-#' group <- GMATtest[, "group"]
-#' key <- GMATkey
-#'
-#' # Testing both DDF effects
+#' # testing both DDF effects
 #' (x <- ddfMLR(Data, group, focal.name = 1, key))
 #'
 #' # AIC, BIC, log-likelihood
@@ -927,37 +975,33 @@ logLik.ddfMLR <- function(object, item = "all", ...) {
   m <- length(object$mlrPAR)
   nams <- colnames(object$Data)
 
-  if (class(item) == "character") {
-    if (item != "all" & !item %in% nams) {
-      stop("Invalid value for 'item'. Item must be either numeric vector or character string 'all' or name of item. ",
+  if (inherits(item, "character")) {
+    if (any(item != "all") & !all(item %in% nams)) {
+      stop("Invalid value for 'item'. Item must be either character 'all', or
+           numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
     }
-  } else {
-    if (class(item) != "integer" & class(item) != "numeric") {
-      stop("Invalid value for 'item'. Item must be either numeric vector or character string 'all' or name of item. ",
-        call. = FALSE
-      )
-    }
-  }
-  if (class(item) == "numeric" & !all(item %in% 1:m)) {
-    stop("Invalid number for 'item'.",
-      call. = FALSE
-    )
-  }
-  if (class(item) == "integer" & !all(item %in% 1:m)) {
-    stop("Invalid value for 'item'. Item must be either numeric vector or character string 'all'. ",
-      call. = FALSE
-    )
-  }
-  if (class(item) == "character") {
-    if (item[1] == "all") {
+    if (any(item == "all")) {
       items <- 1:m
     } else {
       items <- which(nams %in% item)
     }
   } else {
-    items <- item
+    if (!inherits(item, "integer") & !inherits(item, "numeric")) {
+      stop("Invalid value for 'item'. Item must be either character 'all', or
+           numeric vector corresponding to column identifiers, or name of the item.",
+        call. = FALSE
+      )
+    } else {
+      if (!all(item %in% 1:m)) {
+        stop("Invalid number for 'item'.",
+          call. = FALSE
+        )
+      } else {
+        items <- item
+      }
+    }
   }
 
   val <- ifelse(items %in% object$DDFitems,
@@ -982,37 +1026,33 @@ AIC.ddfMLR <- function(object, item = "all", ...) {
   m <- length(object$mlrPAR)
   nams <- colnames(object$Data)
 
-  if (class(item) == "character") {
-    if (item != "all" & !item %in% nams) {
-      stop("Invalid value for 'item'. Item must be either numeric vector or character string 'all' or name of item. ",
+  if (inherits(item, "character")) {
+    if (any(item != "all") & !all(item %in% nams)) {
+      stop("Invalid value for 'item'. Item must be either character 'all', or
+           numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
     }
-  } else {
-    if (class(item) != "integer" & class(item) != "numeric") {
-      stop("Invalid value for 'item'. Item must be either numeric vector or character string 'all' or name of item. ",
-        call. = FALSE
-      )
-    }
-  }
-  if (class(item) == "numeric" & !all(item %in% 1:m)) {
-    stop("Invalid number for 'item'.",
-      call. = FALSE
-    )
-  }
-  if (class(item) == "integer" & !all(item %in% 1:m)) {
-    stop("Invalid value for 'item'. Item must be either numeric vector or character string 'all'. ",
-      call. = FALSE
-    )
-  }
-  if (class(item) == "character") {
-    if (item[1] == "all") {
+    if (any(item == "all")) {
       items <- 1:m
     } else {
       items <- which(nams %in% item)
     }
   } else {
-    items <- item
+    if (!inherits(item, "integer") & !inherits(item, "numeric")) {
+      stop("Invalid value for 'item'. Item must be either character 'all', or
+           numeric vector corresponding to column identifiers, or name of the item.",
+        call. = FALSE
+      )
+    } else {
+      if (!all(item %in% 1:m)) {
+        stop("Invalid number for 'item'.",
+          call. = FALSE
+        )
+      } else {
+        items <- item
+      }
+    }
   }
 
   AIC <- ifelse(items %in% object$DDFitems, object$AICM1[items], object$AICM0[items])
@@ -1026,39 +1066,186 @@ BIC.ddfMLR <- function(object, item = "all", ...) {
   m <- length(object$mlrPAR)
   nams <- colnames(object$Data)
 
-  if (class(item) == "character") {
-    if (item != "all" & !item %in% nams) {
-      stop("Invalid value for 'item'. Item must be either numeric vector or character string 'all' or name of item. ",
+  if (inherits(item, "character")) {
+    if (any(item != "all") & !all(item %in% nams)) {
+      stop("Invalid value for 'item'. Item must be either character 'all', or
+           numeric vector corresponding to column identifiers, or name of the item.",
         call. = FALSE
       )
     }
-  } else {
-    if (class(item) != "integer" & class(item) != "numeric") {
-      stop("Invalid value for 'item'. Item must be either numeric vector or character string 'all' or name of item. ",
-        call. = FALSE
-      )
-    }
-  }
-  if (class(item) == "numeric" & !all(item %in% 1:m)) {
-    stop("Invalid number for 'item'.",
-      call. = FALSE
-    )
-  }
-  if (class(item) == "integer" & !all(item %in% 1:m)) {
-    stop("Invalid value for 'item'. Item must be either numeric vector or character string 'all'. ",
-      call. = FALSE
-    )
-  }
-  if (class(item) == "character") {
-    if (item[1] == "all") {
+    if (any(item == "all")) {
       items <- 1:m
     } else {
       items <- which(nams %in% item)
     }
   } else {
-    items <- item
+    if (!inherits(item, "integer") & !inherits(item, "numeric")) {
+      stop("Invalid value for 'item'. Item must be either character 'all', or
+           numeric vector corresponding to column identifiers, or name of the item.",
+        call. = FALSE
+      )
+    } else {
+      if (!all(item %in% 1:m)) {
+        stop("Invalid number for 'item'.",
+          call. = FALSE
+        )
+      } else {
+        items <- item
+      }
+    }
   }
 
   BIC <- ifelse(items %in% object$DDFitems, object$BICM1[items], object$BICM0[items])
   return(BIC)
+}
+
+#' Predicted values for an object of \code{"ddfMLR"} class.
+#'
+#' @description S3 method for predictions from the model used in the
+#'   object of \code{"ddfMLR"} class.
+#'
+#' @param object an object of \code{"ddfMLR"} class.
+#' @param item numeric or character: either character \code{"all"} to
+#'   apply for all converged items (default), or a vector of item
+#'   names (column names of \code{Data}), or item identifiers
+#'   (integers specifying the column number).
+#' @param match numeric: matching criterion for new observations.
+#' @param group numeric: group membership for new observations.
+#' @param ... other generic parameters for \code{predict()} function.
+#'
+#' @author
+#' Adela Hladka (nee Drabinova) \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{hladka@@cs.cas.cz} \cr
+#'
+#' Patricia Martinkova \cr
+#' Institute of Computer Science of the Czech Academy of Sciences \cr
+#' \email{martinkova@@cs.cas.cz} \cr
+#'
+#' @references
+#' Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
+#' The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+#'
+#' @seealso
+#' \code{\link[difNLR]{ddfMLR}} for DDF detection among nominal data using multinomial log-linear regression model. \cr
+#' \code{\link[stats]{predict}} for generic function for prediction.
+#'
+#' @examples
+#' \dontrun{
+#' # loading data
+#' data(GMATtest, GMATkey)
+#' Data <- GMATtest[, 1:20] # items
+#' group <- GMATtest[, "group"] # group membership variable
+#' key <- GMATkey # correct answers
+#'
+#' # testing both DDF effects
+#' (x <- ddfMLR(Data, group, focal.name = 1, key))
+#'
+#' # fitted values
+#' predict(x, item = 1)
+#'
+#' # predicted values
+#' predict(x, item = 1, match = 0, group = c(0, 1))
+#' predict(x, item = x$DDFitems, match = 0, group = c(0, 1))
+#' }
+#'
+#' @export
+predict.ddfMLR <- function(object, item = "all", match, group, ...) {
+  m <- dim(object$Data)[2]
+  nams <- colnames(object$Data)
+
+  if (inherits(item, "character")) {
+    if (any(item != "all") & !all(item %in% nams)) {
+      stop("Invalid value for 'item'. Item must be either character 'all', or
+           numeric vector corresponding to column identifiers, or name of the item.",
+        call. = FALSE
+      )
+    }
+    if (any(item == "all")) {
+      items <- 1:m
+    } else {
+      items <- which(nams %in% item)
+    }
+  } else {
+    if (!inherits(item, "integer") & !inherits(item, "numeric")) {
+      stop("Invalid value for 'item'. Item must be either character 'all', or
+           numeric vector corresponding to column identifiers, or name of the item.",
+        call. = FALSE
+      )
+    } else {
+      if (!all(item %in% 1:m)) {
+        stop("Invalid number for 'item'.",
+          call. = FALSE
+        )
+      } else {
+        items <- item
+      }
+    }
+  }
+
+  if (object$purification) {
+    anchor <- c(1:m)[!c(1:m) %in% object$DIFitems]
+  } else {
+    anchor <- 1:m
+  }
+
+  if (missing(match)) {
+    if (length(object$match) > 1) {
+      match <- object$match
+    } else {
+      if (object$match == "score") {
+        match <- c(.score(as.data.frame(object$Data[, anchor]), object$key))
+      } else {
+        match <- c(scale(.score(as.data.frame(object$Data[, anchor]), object$key)))
+      }
+    }
+  }
+
+  if (missing(group)) {
+    group <- object$group
+  }
+  if (length(match) != length(group)) {
+    if (length(match) == 1) {
+      match <- rep(match, length(group))
+    } else if (length(group) == 1) {
+      group <- rep(group, length(match))
+    } else {
+      stop("Arguments 'match' and 'group' must be of the same length.",
+        call. = FALSE
+      )
+    }
+  }
+
+  mat <- cbind("(Intercept)" = 1, "x" = match, "group" = group, "x:group" = match * group)
+  coefs_all <- coef(object, IRTpars = FALSE, CI = 0)
+  res <- list()
+
+  for (i in items) {
+    coefs <- coefs_all[[i]]
+
+    if (is.null(dim(coefs))) coefs <- matrix(coefs, ncol = length(coefs))
+    if (dim(coefs)[2] == 2) {
+      coefs <- as.matrix(data.frame(coefs, 0, 0))
+    }
+    if (dim(coefs)[2] == 3) {
+      coefs <- as.matrix(data.frame(coefs, 0))
+    }
+
+    cats <- c(object$key[i], rownames(coefs))
+
+    df.probs <- as.data.frame(t(exp(coefs %*% t(mat))))
+    df.probs <- sapply(df.probs, function(x) x / (rowSums(df.probs) + 1))
+    df.probs <- data.frame(1 - rowSums(df.probs), df.probs)
+    colnames(df.probs) <- cats
+    res[[i]] <- df.probs
+  }
+
+  res <- res[items]
+  names(res) <- nams[items]
+  if (length(res) == 1) {
+    res <- res[[1]]
+  } else {
+    names(res) <- nams[items]
+  }
+  return(res)
 }

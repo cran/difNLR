@@ -4,7 +4,7 @@
 \alias{logLik.ddfMLR}
 \alias{AIC.ddfMLR}
 \alias{BIC.ddfMLR}
-\title{Loglikelihood and information criteria for an object of \code{"ddfMLR"} class.}
+\title{Log-likelihood and information criteria for an object of \code{"ddfMLR"} class.}
 \usage{
 \method{logLik}{ddfMLR}(object, item = "all", ...)
 
@@ -15,26 +15,27 @@
 \arguments{
 \item{object}{an object of \code{"ddfMLR"} class.}
 
-\item{item}{numeric or character: either character \code{"all"} to apply for all converged items (default),
-or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
-the column number).}
+\item{item}{numeric or character: either character \code{"all"} to
+apply for all converged items (default), or a vector of item
+names (column names of \code{Data}), or item identifiers
+(integers specifying the column number).}
 
 \item{...}{other generic parameters for S3 methods.}
 }
 \description{
-S3 methods for extracting loglikelihood, Akaike's information criterion (AIC) and
-Schwarz's Bayesian criterion (BIC) for an object of \code{"ddfMLR"} class.
+S3 methods for extracting log-likelihood, Akaike's
+  information criterion (AIC) and Schwarz's Bayesian criterion
+  (BIC) for an object of \code{"ddfMLR"} class.
 }
 \examples{
 \dontrun{
-# Loading data based on GMAT
+# loading data
 data(GMATtest, GMATkey)
+Data <- GMATtest[, 1:20] # items
+group <- GMATtest[, "group"] # group membership variable
+key <- GMATkey # correct answers
 
-Data <- GMATtest[, 1:20]
-group <- GMATtest[, "group"]
-key <- GMATkey
-
-# Testing both DDF effects
+# testing both DDF effects
 (x <- ddfMLR(Data, group, focal.name = 1, key))
 
 # AIC, BIC, log-likelihood
@@ -50,7 +51,7 @@ logLik(x, item = 1)
 }
 \seealso{
 \code{\link[difNLR]{ddfMLR}} for DDF detection among nominal data. \cr
-\code{\link[stats]{logLik}} for generic function extracting loglikelihood. \cr
+\code{\link[stats]{logLik}} for generic function extracting log-likelihood. \cr
 \code{\link[stats]{AIC}} for generic function calculating AIC and BIC.
 }
 \author{

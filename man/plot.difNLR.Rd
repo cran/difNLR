@@ -56,29 +56,28 @@ are used.
 }
 \examples{
 \dontrun{
-# Loading data based on GMAT
+# loading data
 data(GMAT)
+Data <- GMAT[, 1:20] # items
+group <- GMAT[, "group"] # group membership variable
 
-Data <- GMAT[, 1:20]
-group <- GMAT[, "group"]
-
-# Testing both DIF effects using likelihood-ratio test and
+# testing both DIF effects using likelihood-ratio test and
 # 3PL model with fixed guessing for groups
 (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
 
-# Characteristic curves
+# item characteristic curves
 plot(x)
 plot(x, item = x$DIFitems)
 plot(x, item = 1)
 plot(x, item = "Item1")
 
-# Characteristic curves without empirical probabilities
+# item characteristic curves without empirical probabilities
 plot(x, item = 1, draw.empirical = FALSE)
 
-# Characteristic curves without empirical probabilities but with CI
+# item characteristic curves without empirical probabilities but with CI
 plot(x, item = 1, draw.empirical = FALSE, draw.CI = TRUE)
 
-# Graphical devices - test statistics
+# graphical devices - test statistics
 plot(x, plot.type = "stat")
 }
 }
@@ -88,7 +87,7 @@ A non-IRT approach accounting for guessing. Journal of Educational Measurement, 
 \doi{10.1111/jedm.12158}.
 
 Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
-The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
 
 Swaminathan, H. & Rogers, H. J. (1990). Detecting differential item functioning using logistic regression procedures.
 Journal of Educational Measurement, 27(4), 361--370, \doi{10.1111/j.1745-3984.1990.tb00754.x}

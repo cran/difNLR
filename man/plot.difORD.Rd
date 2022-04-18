@@ -9,12 +9,15 @@
 \arguments{
 \item{x}{an object of \code{"difORD"} class.}
 
-\item{item}{numeric or character: either character \code{"all"} to apply for all converged items (default),
-or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
-the column number).}
+\item{item}{numeric or character: either character \code{"all"} to
+apply for all converged items (default), or a vector of item
+names (column names of \code{Data}), or item identifiers
+(integers specifying the column number).}
 
-\item{plot.type}{character: which plot should be displayed for cumulative logit regression model. Either
-\code{"category"} (default) for category probabilities or \code{"cumulative"} for cumulative probabilities.}
+\item{plot.type}{character: which plot should be displayed for
+cumulative logit regression model. Either \code{"category"}
+(default) for category probabilities or \code{"cumulative"} for
+cumulative probabilities.}
 
 \item{group.names}{character: names of reference and focal group.}
 
@@ -24,27 +27,29 @@ the column number).}
 Returns list of objects of class \code{"ggplot"}.
 }
 \description{
-Plot method for an object of \code{"difORD"} class using \pkg{ggplot2}.
+Plot method for an object of \code{"difORD"} class
+  using \pkg{ggplot2}.
 
-The characteristic curves (category probabilities) for an item specified in \code{item}
-argument are plotted. Plotted curves represent the best model. For cumulative logit model,
-also cumulative probabilities may be plotted.
+  The characteristic curves (category probabilities) for an item
+  specified in \code{item} argument are plotted. Plotted curves
+  represent the best model. For cumulative logit model, also
+  cumulative probabilities may be plotted.
 }
 \examples{
 \dontrun{
-# Loading data
+# loading data
 data(dataMedicalgraded, package = "ShinyItemAnalysis")
-Data <- dataMedicalgraded[, 1:5]
-group <- dataMedicalgraded[, 101]
+Data <- dataMedicalgraded[, 1:5] # items
+group <- dataMedicalgraded[, 101] # group membership variable
 
-# Testing both DIF effects with adjacent category logit model
+# testing both DIF effects with adjacent category logit model
 (x <- difORD(Data, group, focal.name = 1, model = "adjacent"))
 
-# Graphical devices
+# graphical devices
 plot(x, item = 3)
 plot(x, item = "X2003", group.names = c("Group 1", "Group 2"))
 
-# Testing both DIF effects with cumulative logit model
+# testing both DIF effects with cumulative logit model
 (x <- difORD(Data, group, focal.name = 1, model = "cumulative"))
 plot(x, item = 3, plot.type = "cumulative")
 plot(x, item = 3, plot.type = "category")

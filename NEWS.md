@@ -1,5 +1,57 @@
 ## Changes and developments in the difNLR package
 
+### Changes in version 1.4.1 (2022-04-18)
+
+#### MINOR UPDATES
+  * Some typos fixed.
+  * `class` handling was updated. 
+
+------
+
+### Changes in version 1.4.0 (2022-04-16)
+
+*It includes versions 1.3.7-1 - 1.3.7-3*
+
+------
+
+### Changes in version 1.3.7-3 (2022-02-11)
+
+#### BUGFIXING
+  * Option `parameterization = "logistic"` was fixed in `formulaNLR()` 
+    function. 
+    
+#### MAJOR UPDATES
+  * First version of iteratively reweighted least squares algorithm 
+    was implemented in `difNLR()`, `NLR()`, and `estimNLR()` functions.
+  * `coef.difNLR()`, `coef.difORD()`, and `coef.ddfMLR()` methods now 
+    include delta method for IRT and logistic parameterizations. 
+  * `coef.difNLR()`, `coef.difORD()`, and `coef.ddfMLR()` methods now 
+    include calculation of confidence intervals. 
+
+#### MINOR UPDATES
+  * Some typos fixed.
+  * Examples in functions were updated. 
+  * References were updated.
+  * Output of `estimNLR()` function is now unified via `print()` method.
+  * Packages CTT, grDevices, methods are no longer imported. 
+  
+------
+
+### Changes in version 1.3.7-2 (2021-10-05)
+
+#### MAJOR UPDATES
+  * First version of `predicted.difORD()` to compute predicted values for 
+    `difORD` object was implemented. 
+
+------  
+
+### Changes in version 1.3.7-1 (2021-02-16)
+
+#### BUGFIXING
+  * Bug in plotting empirical probabilities in `plot.difNLR()` fixed. 
+
+------  
+
 ### Changes in version 1.3.6/1.3.7 (2021-01-07)
 
 **_THIS IS A CRAN VERSION_**

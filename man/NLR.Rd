@@ -30,7 +30,9 @@ difference in parameters \code{"a"} and \code{"b"}), or combination of parameter
 an item-specific vector.}
 
 \item{method}{character: method used to estimate parameters. The options are \code{"nls"} for
-non-linear least squares (default) and \code{"likelihood"} for maximum likelihood method.}
+non-linear least squares (default), \code{"likelihood"} for maximum likelihood method with
+\code{"L-BFGS-B"} algorithm, or \code{"irls"} for maximum likelihood method with iteratively
+reweighted least squares (available only for \code{model = "2PL"}).}
 
 \item{match}{character or numeric: matching criterion to be used as estimate of trait. Can be
 either \code{"zscore"} (default, standardized total score), \code{"score"} (total test score),
@@ -74,24 +76,24 @@ A list with the following arguments:
   \item{\code{Sval}}{the values of \code{test} statistics.}
   \item{\code{pval}}{the p-values by \code{test}.}
   \item{\code{adjusted.pval}}{adjusted p-values by \code{p.adjust.method}.}
-  \item{\code{df}}{the degress of freedom of \code{test}.}
+  \item{\code{df}}{the degrees of freedom of \code{test}.}
   \item{\code{test}}{used test.}
-  \item{\code{par.m0}}{the matrix of estimated item parameters for m0 model.}
-  \item{\code{se.m0}}{the matrix of standard errors of item parameters for m0 model.}
-  \item{\code{cov.m0}}{list of covariance matrices of item parameters for m0 model.}
-  \item{\code{par.m1}}{the matrix of estimated item parameters for m1 model.}
-  \item{\code{se.m1}}{the matrix of standard errors of item parameters for m1 model.}
-  \item{\code{cov.m1}}{list of covariance matrices of item parameters for m1 model.}
+  \item{\code{par.m0}}{the matrix of estimated item parameters for null model.}
+  \item{\code{se.m0}}{the matrix of standard errors of item parameters for null model.}
+  \item{\code{cov.m0}}{list of covariance matrices of item parameters for null model.}
+  \item{\code{par.m1}}{the matrix of estimated item parameters for alternative model.}
+  \item{\code{se.m1}}{the matrix of standard errors of item parameters for alternative model.}
+  \item{\code{cov.m1}}{list of covariance matrices of item parameters for alternative model.}
   \item{\code{conv.fail}}{numeric: number of convergence issues.}
   \item{\code{conv.fail.which}}{the indicators of the items which did not converge.}
-  \item{\code{ll.m0}}{log-likelihood of m0 model.}
-  \item{\code{ll.m1}}{log-likelihood of m1 model.}
+  \item{\code{ll.m0}}{log-likelihood of null model.}
+  \item{\code{ll.m1}}{log-likelihood of alternative model.}
   \item{\code{startBo0}}{the binary matrix. Columns represents iterations of initial values
-  re-calculations, rows represents items. The value of 0 means no convergence issue in m0 model,
-  1 means convergence issue in m0 model.}
+  re-calculations, rows represents items. The value of 0 means no convergence issue in null model,
+  1 means convergence issue in null model.}
   \item{\code{startBo1}}{the binary matrix. Columns represents iterations of initial values
-  re-calculations, rows represents items. The value of 0 means no convergence issue in m1 model,
-  1 means convergence issue in m1 model.}
+  re-calculations, rows represents items. The value of 0 means no convergence issue in alternative model,
+  1 means convergence issue in alternative model.}
 }
 }
 \description{
@@ -104,7 +106,7 @@ Calculation of the test statistics using DIF detection procedure based on non-li
 
 The unconstrained form of 4PL generalized logistic regression model for probability of correct
 answer (i.e., \eqn{y = 1}) is
-\deqn{P(y = 1) = (c + cDif*g) + (d + dDif*g - c - cDif*g)/(1 + exp(-(a + aDif*g)*(x - b - bDif*g))), }
+\deqn{P(y = 1) = (c + cDif * g) + (d + dDif * g - c - cDif * g) / (1 + exp(-(a + aDif * g) * (x - b - bDif * g))), }
 where \eqn{x} is by default standardized total score (also called Z-score) and \eqn{g} is a group membership.
 Parameters \eqn{a}, \eqn{b}, \eqn{c}, and \eqn{d} are discrimination, difficulty, guessing, and inattention.
 Terms \eqn{aDif}, \eqn{bDif}, \eqn{cDif}, and \eqn{dDif} then represent differences between two groups
@@ -133,25 +135,24 @@ parameters should be fixed for both groups. For example, choice \code{"ad"} mean
 (parameter \code{"a"}) and inattention (parameter \code{"d"}) are fixed for both groups and other parameters
 (\code{"b"} and \code{"c"}) are not. The \code{NA} value for \code{constraints} means no constraints.
 
-In case that model considers difference in guessing or inattention parameter, the different parameterization is
+In case that the model considers a difference in guessing or inattention parameter, different parameterization is
 used and parameters with standard errors are re-calculated by delta method.
 }
 \examples{
 \dontrun{
-# loading data based on GMAT
+# loading data
 data(GMAT)
+Data <- GMAT[, 1:20] # items
+group <- GMAT[, "group"] # group membership variable
 
-Data <- GMAT[, 1:20]
-group <- GMAT[, "group"]
-
-# Testing both DIF effects using LR test (default)
+# testing both DIF effects using LR test (default)
 # and model with fixed guessing for both groups
 NLR(Data, group, model = "3PLcg")
 
-# Using F test
+# using F test
 NLR(Data, group, model = "3PLcg", test = "F")
 
-# Testing both DIF effects with Benjamini-Hochberg correction
+# testing both DIF effects with Benjamini-Hochberg correction
 NLR(Data, group, model = "3PLcg", p.adjust.method = "BH")
 
 # 4PL model with the same guessing and inattention
@@ -165,8 +166,11 @@ NLR(Data, group, model = "2PL", type = "nudif")
 # to test difference in b
 NLR(Data, group, model = "4PL", constraints = "ac", type = "b")
 
-# using maximum likelihood estimation method
+# using maximum likelihood estimation method with L-BFGS-B algorithm
 NLR(Data, group, model = "3PLcg", method = "likelihood")
+
+# using maximum likelihood estimation method with iteratively reweighted least squares algorithm
+NLR(Data, group, model = "2PL", method = "irls")
 }
 
 }
@@ -175,8 +179,11 @@ Drabinova, A. & Martinkova, P. (2017). Detection of differential item functionin
 A non-IRT approach accounting for guessing. Journal of Educational Measurement, 54(4), 498--517,
 \doi{10.1111/jedm.12158}.
 
+Hladka, A. (2021). Statistical models for detection of differential item functioning. Dissertation thesis.
+Faculty of Mathematics and Physics, Charles University.
+
 Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
-The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
 
 Swaminathan, H. & Rogers, H. J. (1990). Detecting differential item functioning using logistic regression procedures.
 Journal of Educational Measurement, 27(4), 361--370, \doi{10.1111/j.1745-3984.1990.tb00754.x}

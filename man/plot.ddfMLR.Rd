@@ -9,8 +9,9 @@
 \arguments{
 \item{x}{an object of \code{"ddfMLR"} class.}
 
-\item{item}{numeric or character: either character \code{"all"} to apply for all items (default),
-or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
+\item{item}{numeric or character: either character \code{"all"} to
+apply for all items (default), or a vector of item names (column
+names of \code{Data}), or item identifiers (integers specifying
 the column number).}
 
 \item{group.names}{character: names of reference and focal group.}
@@ -21,27 +22,27 @@ the column number).}
 Returns list of objects of class \code{"ggplot"}.
 }
 \description{
-Plot method for an object of \code{"ddfMLR"} class using \pkg{ggplot2}.
+Plot method for an object of \code{"ddfMLR"} class
+  using \pkg{ggplot2}.
 
-The characteristic curves for an item specified in \code{item} argument are plotted.
-Plotted curves represent the best model.
+  The characteristic curves for an item specified in \code{item}
+  argument are plotted. Plotted curves represent the best model.
 }
 \examples{
 \dontrun{
-# Loading data based on GMAT
+# loading data
 data(GMATtest, GMATkey)
+Data <- GMATtest[, 1:20] # items
+group <- GMATtest[, "group"] # group membership variable
+key <- GMATkey # correct answers
 
-Data <- GMATtest[, 1:20]
-group <- GMATtest[, "group"]
-key <- GMATkey
-
-# Testing both DDF effects
+# testing both DDF effects
 (x <- ddfMLR(Data, group, focal.name = 1, key))
 
-# Graphical devices
+# graphical devices
 plot(x, item = "Item1", group.names = c("Group 1", "Group 2"))
 plot(x, item = x$DDFitems)
-plot(x, item = 1)
+plot(x, item = c(3, 1, 5))
 }
 }
 \seealso{

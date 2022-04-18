@@ -13,16 +13,12 @@
 #'
 #' @aliases difNLR-package
 #'
-#' @import ggplot2
 #' @importFrom calculus derivative hessian
-#' @importFrom CTT score
-#' @importFrom grDevices hcl
-#' @importFrom methods is
+#' @import ggplot2
 #' @importFrom msm deltamethod
 #' @importFrom nnet multinom
 #' @importFrom plyr ldply
-#' @importFrom reshape2 melt
-#' @importFrom stats AIC as.formula anova BIC binomial coef complete.cases deriv3 deviance fitted glm logLik na.omit nls optim p.adjust p.adjust.methods pf pchisq rbinom relevel residuals rnorm sd setNames symnum qf qchisq qt quantile vcov
+#' @importFrom stats AIC as.formula anova BIC binomial coef complete.cases deriv3 deviance fitted glm logLik na.omit nls optim p.adjust p.adjust.methods pf pchisq predict rbinom relevel reshape residuals rnorm sd setNames symnum qf qchisq qnorm qt quantile vcov
 #' @importFrom VGAM acat AICvlm BICvlm cumulative lrtest_vglm
 #'
 #' @section Functions:
@@ -48,10 +44,10 @@
 #' @details
 #' Package: difNLR\cr
 #' Type: Package\cr
-#' Version: 1.3.7\cr
-#' Date: 2021-01-07\cr
+#' Version: 1.4.1\cr
+#' Date: 2022-04-18\cr
 #' Depends: R (>= 3.1)\cr
-#' Imports: CTT, ggplot2 (>= 2.2.1), grDevices, methods, msm, nnet, plyr, reshape2, stats, VGAM\cr
+#' Imports: calculus, ggplot2 (>= 2.2.1), msm, nnet, plyr, stats, VGAM\cr
 #' Suggests: ShinyItemAnalysis\cr
 #' License: GPL-3\cr
 #' BugReports: \url{https://github.com/adelahladka/difNLR/issues}\cr
@@ -74,8 +70,11 @@
 #' A non-IRT approach accounting for guessing. Journal of Educational Measurement, 54(4), 498--517,
 #' \doi{10.1111/jedm.12158}.
 #'
+#' Hladka, A. (2021). Statistical models for detection of differential item functioning. Dissertation thesis.
+#' Faculty of Mathematics and Physics, Charles University.
+#'
 #' Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
-#' The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+#' The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
 #'
 #' Kingston, N., Leary, L., & Wightman, L. (1985). An exploratory study of the applicability of item response theory
 #' methods to the Graduate Management Admission Test. ETS Research Report Series, 1985(2): 1--64.
@@ -87,7 +86,7 @@
 #' Swaminathan, H. & Rogers, H. J. (1990). Detecting differential item functioning using logistic regression procedures.
 #' Journal of Educational Measurement, 27(4), 361--370, \doi{10.1111/j.1745-3984.1990.tb00754.x}
 #'
-#' Vlckova, K. (2014). Test and item fairness (Unpublished master's thesis).
+#' Vlckova, K. (2014). Test and item fairness. Master's thesis. Faculty of Mathematics and Physics, Charles University.
 #'
 #' @note This package was supported by grant funded by Czech Science foundation under number GJ15-15856Y.
 #'

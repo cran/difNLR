@@ -17,51 +17,53 @@
 \arguments{
 \item{object}{an object of \code{"difNLR"} class.}
 
-\item{item}{numeric or character: either character \code{"all"} to apply for all converged items (default),
-or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
-the column number).}
+\item{item}{numeric or character: either character \code{"all"} to
+apply for all converged items (default), or a vector of item
+names (column names of \code{Data}), or item identifiers
+(integers specifying the column number).}
 
 \item{match}{numeric: matching criterion for new observations.}
 
 \item{group}{numeric: group membership for new observations.}
 
-\item{interval}{character: type of interval calculation, either \code{"none"} (default) or \code{"confidence"}
-for confidence interval.}
+\item{interval}{character: type of interval calculation, either
+\code{"none"} (default) or \code{"confidence"} for confidence
+interval.}
 
 \item{level}{numeric: confidence level.}
 
 \item{...}{other generic parameters for \code{predict()} function.}
 }
 \description{
-S3 method for predictions from the model used in the object if \code{"difNLR"} class.
+S3 method for predictions from the model used in the
+  object of \code{"difNLR"} class.
 }
 \examples{
 \dontrun{
-# Loading data based on GMAT
+# loading data
 data(GMAT)
+Data <- GMAT[, 1:20] # items
+group <- GMAT[, "group"] # group membership variable
 
-Data <- GMAT[, 1:20]
-group <- GMAT[, "group"]
-
-# Testing both DIF effects using likelihood-ratio test and
+# testing both DIF effects using likelihood-ratio test and
 # 3PL model with fixed guessing for groups
 (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
 
-# Predicted values
+# predicted values
 summary(predict(x))
 predict(x, item = 1)
 predict(x, item = "Item1")
 
-# Predicted values for new observations - average score
+# predicted values for new observations - average score
 predict(x, item = 1, match = 0, group = 0) # reference group
 predict(x, item = 1, match = 0, group = 1) # focal group
 
-# Predicted values for new observations - various z-scores and groups
+# predicted values for new observations - various z-scores and groups
 new.match <- rep(c(-1, 0, 1), 2)
 new.group <- rep(c(0, 1), each = 3)
 predict(x, item = 1, match = new.match, group = new.group)
 
-# Predicted values for new observations with confidence intervals
+# predicted values for new observations with confidence intervals
 predict(x, item = 1, match = new.match, group = new.group, interval = "confidence")
 predict(x, item = c(2, 4), match = new.match, group = new.group, interval = "confidence")
 }
@@ -73,7 +75,7 @@ A non-IRT approach accounting for guessing. Journal of Educational Measurement, 
 \doi{10.1111/jedm.12158}.
 
 Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
-The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
 
 Swaminathan, H. & Rogers, H. J. (1990). Detecting differential item functioning using logistic regression procedures.
 Journal of Educational Measurement, 27(4), 361--370, \doi{10.1111/j.1745-3984.1990.tb00754.x}

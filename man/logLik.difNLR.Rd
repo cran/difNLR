@@ -4,7 +4,7 @@
 \alias{logLik.difNLR}
 \alias{AIC.difNLR}
 \alias{BIC.difNLR}
-\title{Loglikelihood and information criteria for an object of \code{"difNLR"} class.}
+\title{Log-likelihood and information criteria for an object of \code{"difNLR"} class.}
 \usage{
 \method{logLik}{difNLR}(object, item = "all", ...)
 
@@ -22,18 +22,17 @@ the column number).}
 \item{...}{other generic parameters for S3 methods.}
 }
 \description{
-S3 methods for extracting loglikelihood, Akaike's information criterion (AIC) and
+S3 methods for extracting log-likelihood, Akaike's information criterion (AIC) and
 Schwarz's Bayesian criterion (BIC) for an object of \code{"difNLR"} class.
 }
 \examples{
 \dontrun{
-# Loading data based on GMAT
+# loading data
 data(GMAT)
+Data <- GMAT[, 1:20] # items
+group <- GMAT[, "group"] # group membership variable
 
-Data <- GMAT[, 1:20]
-group <- GMAT[, "group"]
-
-# Testing both DIF effects using likelihood-ratio test and
+# testing both DIF effects using likelihood-ratio test and
 # 3PL model with fixed guessing for groups
 (x <- difNLR(Data, group, focal.name = 1, model = "3PLcg"))
 
@@ -54,14 +53,14 @@ A non-IRT approach accounting for guessing. Journal of Educational Measurement, 
 \doi{10.1111/jedm.12158}.
 
 Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
-The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
 
 Swaminathan, H. & Rogers, H. J. (1990). Detecting differential item functioning using logistic regression procedures.
 Journal of Educational Measurement, 27(4), 361--370, \doi{10.1111/j.1745-3984.1990.tb00754.x}
 }
 \seealso{
 \code{\link[difNLR]{difNLR}} for DIF detection among binary data using generalized logistic regression model. \cr
-\code{\link[stats]{logLik}} for generic function extracting loglikelihood. \cr
+\code{\link[stats]{logLik}} for generic function extracting log-likelihood. \cr
 \code{\link[stats]{AIC}} for generic function calculating AIC and BIC.
 }
 \author{

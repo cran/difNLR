@@ -5,55 +5,70 @@
 \title{DDF detection for nominal data.}
 \usage{
 ddfMLR(Data, group, focal.name, key, type = "both", match = "zscore", anchor = NULL,
-       purify = FALSE, nrIter = 10, p.adjust.method = "none", parametrization = "irt",
-       alpha = 0.05)
+       purify = FALSE, nrIter = 10, p.adjust.method = "none",
+       alpha = 0.05, parametrization)
 }
 \arguments{
-\item{Data}{data.frame or matrix: dataset which rows represent unscored examinee answers (nominal)
-and columns correspond to the items. In addition, \code{Data} can hold the vector of
-group membership.}
+\item{Data}{data.frame or matrix: dataset which rows represent
+unscored examinee answers (nominal) and columns correspond to the
+items. In addition, \code{Data} can hold the vector of group
+membership.}
 
-\item{group}{numeric or character: a dichotomous vector of the same length as \code{nrow(Data)}
-or a column identifier of \code{Data}.}
+\item{group}{numeric or character: a dichotomous vector of the same
+length as \code{nrow(Data)} or a column identifier of
+\code{Data}.}
 
-\item{focal.name}{numeric or character: indicates the level of \code{group} which corresponds to
-focal group.}
+\item{focal.name}{numeric or character: indicates the level of
+\code{group} which corresponds to focal group.}
 
-\item{key}{character: the answer key. Each element corresponds to the correct answer of one item.}
+\item{key}{character: the answer key. Each element corresponds to
+the correct answer of one item.}
 
-\item{type}{character: type of DDF to be tested. Either \code{"both"} for uniform and non-uniform
-DDF (i.e., difference in parameters \code{"a"} and \code{"b"}) (default), or \code{"udif"} for
-uniform DDF only (i.e., difference in difficulty parameter \code{"b"}), or \code{"nudif"} for
-non-uniform DDF only (i.e., difference in discrimination parameter \code{"a"}). Can be specified
-as a single value (for all items) or as an item-specific vector.}
+\item{type}{character: type of DDF to be tested. Either
+\code{"both"} for uniform and non-uniform DDF (i.e., difference
+in parameters \code{"a"} and \code{"b"}) (default), or
+\code{"udif"} for uniform DDF only (i.e., difference in
+difficulty parameter \code{"b"}), or \code{"nudif"} for
+non-uniform DDF only (i.e., difference in discrimination
+parameter \code{"a"}). Can be specified as a single value (for
+all items) or as an item-specific vector.}
 
-\item{match}{numeric or character: matching criterion to be used as an estimate of trait. Can be
-either \code{"zscore"} (default, standardized total score), \code{"score"} (total test score),
-or vector of the same length as number of observations in \code{Data}.}
+\item{match}{numeric or character: matching criterion to be used as
+an estimate of trait. Can be either \code{"zscore"} (default,
+standardized total score), \code{"score"} (total test score), or
+vector of the same length as number of observations in
+\code{Data}.}
 
-\item{anchor}{numeric or character: specification of DDF free items. Either \code{NULL} (default),
-or a vector of item names (column names of \code{Data}), or item identifiers (integers specifying
-the column number) determining which items are currently considered as anchor (DDF free) items.
-Argument is ignored if \code{match} is not \code{"zscore"} or \code{"score"}.}
+\item{anchor}{numeric or character: specification of DDF free
+items. Either \code{NULL} (default), or a vector of item names
+(column names of \code{Data}), or item identifiers (integers
+specifying the column number) determining which items are
+currently considered as anchor (DDF free) items. Argument is
+ignored if \code{match} is not \code{"zscore"} or \code{"score"}.}
 
-\item{purify}{logical: should the item purification be applied? (default is \code{FALSE}).}
+\item{purify}{logical: should the item purification be applied?
+(default is \code{FALSE}).}
 
-\item{nrIter}{numeric: the maximal number of iterations in the item purification (default is 10).}
+\item{nrIter}{numeric: the maximal number of iterations in the item
+purification (default is 10).}
 
-\item{p.adjust.method}{character: method for multiple comparison correction. Possible values are
-\code{"holm"}, \code{"hochberg"}, \code{"hommel"}, \code{"bonferroni"}, \code{"BH"}, \code{"BY"},
-\code{"fdr"}, and \code{"none"} (default). For more details see \code{\link[stats]{p.adjust}}.}
-
-\item{parametrization}{character: parametrization of regression coefficients. Possible options are
-\code{"irt"} for difficulty-discrimination parametrization (default) and \code{"classic"} for
-intercept-slope parametrization. See \strong{Details}.}
+\item{p.adjust.method}{character: method for multiple comparison
+correction. Possible values are \code{"holm"}, \code{"hochberg"},
+\code{"hommel"}, \code{"bonferroni"}, \code{"BH"}, \code{"BY"},
+\code{"fdr"}, and \code{"none"} (default). For more details see
+\code{\link[stats]{p.adjust}}.}
 
 \item{alpha}{numeric: significance level (default is 0.05).}
+
+\item{parametrization}{deprecated. Use
+\code{\link[difNLR]{coef.ddfMLR}} for different
+parameterizations.}
 }
 \value{
-The \code{ddfMLR()} function returns an object of class \code{"ddfMLR"}. The output
-including values of the test statistics, p-values, and items marked as DDF is displayed by the
-\code{print()} method.
+The \code{ddfMLR()} function returns an object of class
+  \code{"ddfMLR"}. The output including values of the test
+  statistics, p-values, and items marked as DDF is displayed by the
+  \code{print()} method.
 
 A list of class \code{"ddfMLR"} with the following arguments:
 \describe{
@@ -94,44 +109,43 @@ A list of class \code{"ddfMLR"} with the following arguments:
 For an object of class \code{"ddfMLR"} several methods are available (e.g. \code{methods(class = "ddfMLR")}).
 }
 \description{
-Performs DDF detection procedure for nominal data based on multinomial
-log-linear regression model and likelihood ratio test of a submodel.
+Performs DDF detection procedure for nominal data
+  based on multinomial log-linear regression model and likelihood
+  ratio test of a submodel.
 }
 \details{
-Performs DDF detection procedure for nominal data based on multinomial
-log-linear regression model and likelihood ratio test of submodel. Probability of selection the
-\eqn{k}-th category (distractor) is
-\deqn{P(y = k) = exp((a_k + a_kDif*g)*(x - b_k - b_kDif*g)))/(1 + \sum exp((a_l + a_lDif*g)*(x - b_l - b_lDif*g))), }
-where \eqn{x} is by default standardized total score (also called Z-score) and \eqn{g} is a group
-membership. Parameters \eqn{a_k} and \eqn{b_k} are discrimination and difficulty for the \eqn{k}-th
-category. Terms \eqn{a_kDif} and \eqn{b_kDif} then represent differences between two groups
-(reference and focal) in relevant parameters. Probability of correct answer (specified in argument
+Performs DDF detection procedure for nominal data based on
+multinomial log-linear regression model and likelihood ratio test
+of submodel. Probability of selection the \eqn{k}-th category
+(distractor) is
+\deqn{P(y = k) = exp((a_k + a_kDif * g) * (x - b_k - b_kDif * g))) / (1 + \sum exp((a_l + a_lDif * g) * (x - b_l - b_lDif * g))), }
+where \eqn{x} is by default standardized total score (also called
+Z-score) and \eqn{g} is a group membership. Parameters \eqn{a_k}
+and \eqn{b_k} are discrimination and difficulty for the \eqn{k}-th
+category. Terms \eqn{a_kDif} and \eqn{b_kDif} then represent
+differences between two groups (reference and focal) in relevant
+parameters. Probability of correct answer (specified in argument
 \code{key}) is
-\deqn{P(y = k) = 1/(1 + \sum exp((a_l + a_lDif*g)*(x - b_l - b_lDif*g))). }
-Parameters are estimated via neural networks. For more details see \code{\link[nnet]{multinom}}.
+\deqn{P(y = k) = 1/(1 + \sum exp((a_l + a_lDif * g)*(x - b_l - b_lDif * g))). }
+Parameters are estimated via neural networks. For more details see
+\code{\link[nnet]{multinom}}.
 
-Argument \code{parametrization} is a character which specifies parametrization of regression parameters.
-Default option is \code{"irt"} which returns IRT parametrization (difficulty-discrimination, see above).
-Option \code{"classic"} returns intercept-slope parametrization with effect of group membership and
-interaction with matching criterion, i.e. \eqn{b_0k + b_1k*x + b_2k*g + b_3k*x*g} instead of
-\eqn{(a_k + a_kDif*g)*(x - b_k - b_kDif*g))}.
-
-Missing values are allowed but discarded for item estimation. They must be coded as \code{NA}
-for both, \code{Data} and \code{group} arguments.
+Missing values are allowed but discarded for item estimation. They
+must be coded as \code{NA} for both, \code{Data} and \code{group}
+arguments.
 }
 \examples{
 \dontrun{
-# Loading data based on GMAT
+# loading data
 data(GMATtest, GMATkey)
+Data <- GMATtest[, 1:20] # items
+group <- GMATtest[, "group"] # group membership variable
+key <- GMATkey # correct answers
 
-Data <- GMATtest[, 1:20]
-group <- GMATtest[, "group"]
-key <- GMATkey
-
-# Testing both DDF effects
+# testing both DDF effects
 (x <- ddfMLR(Data, group, focal.name = 1, key))
 
-# Graphical devices
+# graphical devices
 plot(x, item = "Item1", group.names = c("Group 1", "Group 2"))
 plot(x, item = x$DDFitems)
 plot(x, item = 1)
@@ -146,41 +160,41 @@ AIC(x, item = 1)
 BIC(x, item = 1)
 logLik(x, item = 1)
 
-# Estimates
+# estimated parameters
 coef(x)
 coef(x, SE = TRUE)
 coef(x, SE = TRUE, simplify = TRUE)
 
-# Testing both DDF effects with Benjamini-Hochberg adjustment method
+# testing both DDF effects with Benjamini-Hochberg adjustment method
 ddfMLR(Data, group, focal.name = 1, key, p.adjust.method = "BH")
 
-# Testing both DDF effects with item purification
+# testing both DDF effects with item purification
 ddfMLR(Data, group, focal.name = 1, key, purify = TRUE)
 
-# Testing uniform DDF effects
+# testing uniform DDF effects
 ddfMLR(Data, group, focal.name = 1, key, type = "udif")
-# Testing non-uniform DDF effects
+# testing non-uniform DDF effects
 ddfMLR(Data, group, focal.name = 1, key, type = "nudif")
 
-# Testing both DDF effects with total score as matching criterion
+# testing both DDF effects with total score as matching criterion
 ddfMLR(Data, group, focal.name = 1, key, match = "score")
-
-# Testing both DDF effects using classic parametrization
-ddfMLR(Data, group, focal.name = 1, key, parametrization = "classic")
 }
 
 }
 \references{
 Agresti, A. (2010). Analysis of ordinal categorical data. Second edition. John Wiley & Sons.
 
+Hladka, A. (2021). Statistical models for detection of differential item functioning. Dissertation thesis.
+Faculty of Mathematics and Physics, Charles University.
+
 Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression models for DIF and DDF detection.
-The R journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
+The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
 }
 \seealso{
 \code{\link[difNLR]{plot.ddfMLR}} for graphical representation of item characteristic curves. \cr
 \code{\link[difNLR]{coef.ddfMLR}} for extraction of item parameters with their standard errors. \cr
 \code{\link[difNLR]{logLik.ddfMLR}}, \code{\link[difNLR]{AIC.ddfMLR}}, \code{\link[difNLR]{BIC.ddfMLR}}
-for extraction of loglikelihood and information criteria. \cr
+for extraction of log-likelihood and information criteria. \cr
 
 \code{\link[stats]{p.adjust}} for multiple comparison corrections. \cr
 \code{\link[nnet]{multinom}} for estimation function using neural networks.
