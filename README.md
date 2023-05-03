@@ -1,6 +1,7 @@
 # difNLR
 DIF and DDF Detection by Non-Linear Regression Models.
 
+[![R-CMD-check](https://github.com/adelahladka/difNLR/workflows/R-CMD-check/badge.svg)](https://github.com/adelahladka/difNLR/actions)
 ![GHversion](https://img.shields.io/github/release/adelahladka/difNLR.svg)
 [![version](https://www.r-pkg.org/badges/version/difNLR)](https://CRAN.R-project.org/package=difNLR)
 ![cranlogs](https://cranlogs.r-pkg.org/badges/difNLR)
@@ -36,8 +37,8 @@ devtools::install_github("adelahladka/difNLR")
 ```
 ## Version
 Current version on [**CRAN**](https://CRAN.R-project.org/package=difNLR) is
-1.4.0. The newest development version available on
-[**GitHub**](https://github.com/adelahladka/difNLR) is 1.4.0.
+1.4.2-1. The newest development version available on
+[**GitHub**](https://github.com/adelahladka/difNLR) is 1.4.2-1.
 
 ## Reference
 To cite `difNLR` package in publications, please, use:
@@ -56,5 +57,5 @@ You can try some functionalities of the `difNLR` package
 application and package and its DIF/Fairness section.
   
 ## Getting help
-In case you find any bug or just need help with `difNLR` package, you can leave
+In case you find any bug or just need help with the `difNLR` package, you can leave
 your message as an issue here or directly contact us at hladka@cs.cas.cz

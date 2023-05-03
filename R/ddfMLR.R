@@ -685,7 +685,7 @@ plot.ddfMLR <- function(x, item = "all", group.names, ...) {
     df.fitted <- data.frame(rbind(
       cbind(Group = "0", Match = match, predict(x, item = i, match = match, group = 0)),
       cbind(Group = "1", Match = match, predict(x, item = i, match = match, group = 1))
-    ))
+    ), check.names = FALSE)
     df.fitted <- reshape(
       data = df.fitted, direction = "long",
       varying = list(colnames(df.fitted)[-c(1:2)]), v.names = "Probability",
@@ -723,18 +723,18 @@ plot.ddfMLR <- function(x, item = "all", group.names, ...) {
     plot_CC[[i]] <- ggplot2::ggplot() +
       ggplot2::geom_line(
         data = df.fitted,
-        ggplot2::aes_string(
-          x = "Match", y = "Probability",
-          colour = "Category", linetype = "Group"
+        ggplot2::aes(
+          x = .data$Match, y = .data$Probability,
+          colour = .data$Category, linetype = .data$Group
         ),
-        size = 0.8
+        linewidth = 0.8
       ) +
       ggplot2::geom_point(
         data = df.empirical,
-        ggplot2::aes_string(
-          x = "Match", y = "Probability",
-          colour = "Category", fill = "Category",
-          size = "Count"
+        ggplot2::aes(
+          x = .data$Match, y = .data$Probability,
+          colour = .data$Category, fill = .data$Category,
+          size = .data$Count
         ),
         alpha = 0.5, shape = 21
       ) +

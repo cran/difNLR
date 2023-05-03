@@ -150,6 +150,11 @@ startNLR <- function(Data, group, model, match = "zscore", parameterization = "a
 
     breaks <- unique(quantile(covar, (0:3) / 3, na.rm = TRUE))
     lb <- length(breaks) - 1
+    if (lb < 2) {
+      stop("Not enough complete observations to compute starting values.",
+           call. = FALSE
+      )
+    }
     Q3 <- cut(covar, breaks, include.lowest = TRUE)
     levels(Q3) <- LETTERS[1:lb]
 
@@ -173,10 +178,10 @@ startNLR <- function(Data, group, model, match = "zscore", parameterization = "a
   }
 
   if (match[1] == "zscore") {
-    MATCH <- scale(apply(Data, 1, sum))
+    MATCH <- scale(apply(Data, 1, sum, na.rm = TRUE))
   } else {
     if (match[1] == "score") {
-      MATCH <- as.numeric(apply(Data, 1, sum))
+      MATCH <- as.numeric(apply(Data, 1, sum, na.rm = TRUE))
     } else {
       if (length(match) == dim(Data)[1]) {
         MATCH <- match
@@ -299,6 +304,11 @@ startNLR <- function(Data, group, model, match = "zscore", parameterization = "a
         )[i, ]
       )
     })
+  }
+
+  if (any(sapply(results, function(x) sum(is.na(x))) > 0)) {
+    stop(paste("Not enough complete observations to compute starting values for items:",
+               paste(colnames(Data)[sapply(results, function(x) sum(is.na(x))) > 0], collapse = ", ")), call. = FALSE)
   }
 
   return(results)

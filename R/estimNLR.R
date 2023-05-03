@@ -2,8 +2,9 @@
 #'
 #' @aliases estimNLR
 #'
-#' @description Estimates parameters of non-linear regression models for DIF detection using either
-#' non-linear least squares or maximum likelihood method.
+#' @description Estimates parameters of non-linear regression models
+#'   for DIF detection using either non-linear least squares or
+#'   maximum likelihood method.
 #'
 #' @param y numeric: binary vector of responses.
 #' @param match numeric: vector of matching criterion.
@@ -19,10 +20,11 @@
 #' @usage estimNLR(y, match, group, formula, method, lower, upper, start)
 #'
 #' @details
-#' Function offers either non-linear least squares estimation via \code{\link[stats]{nls}} function,
-#' maximum likelihood method with \code{"L-BFGS-B"} method via \code{\link[stats]{optim}} function,
-#' or maximum likelihood method with iteratively reweighted least squares via \code{\link[stats]{glm}}
-#' function.
+#' Function offers either non-linear least squares estimation via
+#' \code{\link[stats]{nls}} function, maximum likelihood method with
+#' \code{"L-BFGS-B"} method via \code{\link[stats]{optim}} function,
+#' or maximum likelihood method with iteratively reweighted least
+#' squares via \code{\link[stats]{glm}} function.
 #'
 #' @author
 #' Adela Hladka (nee Drabinova) \cr
@@ -35,8 +37,9 @@
 #' \email{martinkova@@cs.cas.cz} \cr
 #'
 #' @references
-#' Hladka, A. (2021). Statistical models for detection of differential item functioning. Dissertation thesis.
-#' Faculty of Mathematics and Physics, Charles University.
+#' Hladka, A. (2021). Statistical models for detection of differential
+#' item functioning. Dissertation thesis. Faculty of Mathematics and
+#' Physics, Charles University.
 #'
 #' @examples
 #' # loading data
@@ -129,7 +132,7 @@ estimNLR <- function(y, match, group, formula, method, lower, upper, start) {
     )
   )
   if (!is.null(M)) {
-    class(M) <- c("estNLR", class(M))
+    class(M) <- c("estimNLR", class(M))
   }
   return(M)
 }
@@ -147,7 +150,7 @@ estimNLR <- function(y, match, group, formula, method, lower, upper, start) {
   h. <- parse(text = as.character(formula)[3])
   h <- eval(h., envir = param)
 
-  l <- -sum((y * log(h)) + ((1 - y) * log(1 - h)), na.rm = T)
+  l <- -sum((y * log(h)) + ((1 - y) * log(1 - h)), na.rm = TRUE)
   return(l)
 }
 
@@ -203,9 +206,10 @@ residuals.lkl <- function(object, ...) {
   object$data$y - object$fitted
 }
 
-#' @rdname estNLR
+#' @rdname estimNLR
+#' @param x an object of \code{"estimNLR"} class.
 #' @export
-print.estNLR <- function(x, ...) {
+print.estimNLR <- function(x, ...) {
   formula <- switch(class(x)[2],
     "nls" = paste(x$m$formula()[2], x$m$formula()[1], x$m$formula()[3]),
     "lkl" = paste(x$formula[2], x$formula[1], x$formula[3]),
@@ -230,9 +234,14 @@ print.estNLR <- function(x, ...) {
   cat("\n", alg)
 }
 
-#' @rdname estNLR
+#' @rdname estimNLR
+#' @param object an object of \code{"estimNLR"} class.
+#' @param sandwich logical: should be sandwich estimator used for covariance
+#'   matrix of parameters when using \code{method = "nls"}? Default is
+#'   \code{FALSE}.
+#' @param ... other generic parameters for S3 methods.
 #' @export
-vcov.estNLR <- function(object, sandwich = FALSE, ...) {
+vcov.estimNLR <- function(object, sandwich = FALSE, ...) {
   if (inherits(object, "nls")) {
     if (sandwich) {
       e <- object$m$getEnv()

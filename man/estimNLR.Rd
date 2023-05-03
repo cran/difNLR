@@ -2,9 +2,15 @@
 % Please edit documentation in R/estimNLR.R
 \name{estimNLR}
 \alias{estimNLR}
+\alias{print.estimNLR}
+\alias{vcov.estimNLR}
 \title{Non-Linear Regression DIF models estimation.}
 \usage{
 estimNLR(y, match, group, formula, method, lower, upper, start)
+
+\method{print}{estimNLR}(x, ...)
+
+\method{vcov}{estimNLR}(object, sandwich = FALSE, ...)
 }
 \arguments{
 \item{y}{numeric: binary vector of responses.}
@@ -24,16 +30,28 @@ estimation with iteratively reweighted least squares. See \strong{Details}.}
 \item{upper}{numeric: upper bounds for parameters of model specified in \code{formula}.}
 
 \item{start}{numeric: initial parameters. Can be obtained by \code{startNLR()} function.}
+
+\item{x}{an object of \code{"estimNLR"} class.}
+
+\item{...}{other generic parameters for S3 methods.}
+
+\item{object}{an object of \code{"estimNLR"} class.}
+
+\item{sandwich}{logical: should be sandwich estimator used for covariance
+matrix of parameters when using \code{method = "nls"}? Default is
+\code{FALSE}.}
 }
 \description{
-Estimates parameters of non-linear regression models for DIF detection using either
-non-linear least squares or maximum likelihood method.
+Estimates parameters of non-linear regression models
+  for DIF detection using either non-linear least squares or
+  maximum likelihood method.
 }
 \details{
-Function offers either non-linear least squares estimation via \code{\link[stats]{nls}} function,
-maximum likelihood method with \code{"L-BFGS-B"} method via \code{\link[stats]{optim}} function,
-or maximum likelihood method with iteratively reweighted least squares via \code{\link[stats]{glm}}
-function.
+Function offers either non-linear least squares estimation via
+\code{\link[stats]{nls}} function, maximum likelihood method with
+\code{"L-BFGS-B"} method via \code{\link[stats]{optim}} function,
+or maximum likelihood method with iteratively reweighted least
+squares via \code{\link[stats]{glm}} function.
 }
 \examples{
 # loading data
@@ -93,8 +111,9 @@ fitted(fitIRLSM1)
 residuals(fitIRLSM1)
 }
 \references{
-Hladka, A. (2021). Statistical models for detection of differential item functioning. Dissertation thesis.
-Faculty of Mathematics and Physics, Charles University.
+Hladka, A. (2021). Statistical models for detection of differential
+item functioning. Dissertation thesis. Faculty of Mathematics and
+Physics, Charles University.
 }
 \author{
 Adela Hladka (nee Drabinova) \cr
