@@ -155,9 +155,10 @@
 #' Data <- Anxiety[, paste0("R", 1:29)] # items
 #' group <- Anxiety[, "gender"] # group membership variable
 #'
+#' \dontrun{
 #' # testing both DIF effects with adjacent category logit model
 #' (x <- difORD(Data, group, focal.name = 1, model = "adjacent"))
-#' \dontrun{
+#'
 #' # graphical devices
 #' plot(x, item = 6)
 #' plot(x, item = "R6")
