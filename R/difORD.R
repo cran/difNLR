@@ -7,7 +7,7 @@
 #'   logit model and likelihood ratio test of a submodel.
 #'
 #' @param Data data.frame or matrix: dataset which rows represent
-#'   ordinaly scored examinee answers and columns correspond to the
+#'   ordinally scored examinee answers and columns correspond to the
 #'   items. In addition, \code{Data} can hold the vector of group
 #'   membership.
 #' @param group numeric or character: a dichotomous vector of the same
@@ -155,10 +155,9 @@
 #' Data <- Anxiety[, paste0("R", 1:29)] # items
 #' group <- Anxiety[, "gender"] # group membership variable
 #'
-#' \dontrun{
 #' # testing both DIF effects with adjacent category logit model
 #' (x <- difORD(Data, group, focal.name = 1, model = "adjacent"))
-#'
+#' \dontrun{
 #' # graphical devices
 #' plot(x, item = 6)
 #' plot(x, item = "R6")

@@ -5,25 +5,28 @@
 \alias{difNLR-package}
 \title{DIF and DDF Detection by Non-Linear Regression Models.}
 \description{
-The difNLR package contains method for detection of differential
-  item functioning (DIF) based on non-linear regression. Both uniform and
-  non-uniform DIF effects can be detected when considering one focal group.
-  The method also allows to test the difference in guessing or inattention
-  parameters between reference and focal group. DIF detection method is based
-  either on likelihood-ratio test, F-test, or Wald's test of a submodel.
-  Package also offers methods for detection of differential distractor
-  functioning (DDF) based on multinomial log-linear regression model and
-  newly methods for DIF detection among ordinal data via adjacent category
-  logit and cumulative logit regression models.
+The difNLR package provides methods for detecting differential
+  item functioning (DIF) using non-linear regression models. Both uniform and
+  non-uniform DIF effects can be detected when considering a single focal
+  group. Additionally, the method allows for testing differences in guessing
+  or inattention parameters between the reference and focal group. DIF
+  detection is performed using either a likelihood-ratio test, an F-test, or
+  Wald's test of a submodel. The software offers a variety of algorithms for
+  estimating item parameters.
+
+  Furthermore, the difNLR package includes methods for detecting differential
+  distractor functioning (DDF) using multinomial log-linear regression model.
+  It also introduces DIF detection approaches for ordinal data via adjacent
+  category logit and cumulative logit regression models.
 }
 \details{
 Package: difNLR\cr
 Type: Package\cr
-Version: 1.5.0\cr
-Date: 2024-12-19\cr
+Version: 1.5.1-1\cr
+Date: 2025-03-03\cr
 Depends: R (>= 4.0.0)\cr
 Imports: calculus, ggplot2 (>= 3.4.0), msm, nnet, plyr, stats, VGAM\cr
-Suggests: ShinyItemAnalysis\cr
+Suggests: ShinyItemAnalysis, testthat (>= 3.0.0)\cr
 License: GPL-3\cr
 BugReports: \url{https://github.com/adelahladka/difNLR/issues}\cr
 Encoding: UTF-8\cr
@@ -69,7 +72,7 @@ Hladka, A. & Martinkova, P. (2020). difNLR: Generalized logistic regression mode
 The R Journal, 12(1), 300--323, \doi{10.32614/RJ-2020-014}.
 
 Hladka, A., Martinkova, P., & Brabec, M. (2024). New iterative algorithms for estimation of item functioning.
-Journal of Educational and Behavioral Statistics. Accepted.
+Journal of Educational and Behavioral Statistics. Online first, \doi{10.3102/10769986241312354}.
 
 Kingston, N., Leary, L., & Wightman, L. (1985). An exploratory study of the applicability of item response theory
 methods to the Graduate Management Admission Test. ETS Research Report Series, 1985(2): 1--64.

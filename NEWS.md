@@ -1,6 +1,49 @@
 ## Changes and developments in the difNLR package
 
+------
+
+### Changes in version 1.5.1-1 (2025-03-03)
+
+**_THIS IS A CRAN VERSION_**
+
+*It includes versions 1.5.0-1 - 1.5.0-2*
+
+------
+
+### Changes in version 1.5.0-2 (2025-02-27)
+
+#### BUGFIXING
+  * Bug in `formulaNLR()` when `type = "b"` fixed. 
+  * Bug in `estimNLR()` when `method = "plf"` fixed. 
+  * Bug in `NLR()` calculating SEs when no item is converged fixed. 
+  
+#### MAJOR UPDATES
+  * Testing with the `testthat` package has been started. 
+  
+#### MINOR UPDATES
+  * References updated.
+  
+------
+
+### Changes in version 1.5.0-1 (2025-02-17)
+
+#### BUGFIXING
+  * Bug in re-calculation of starting values in the `NLR()` function was fixed.
+  * Bugs in `coef.difNLR()` when convergence issues are present were fixed. 
+    Thanks to Jan Netik.
+
+#### MINOR UPDATES
+  * Warnings and messages in the `NLR()` and `difNLR()` functions were updated.
+  * Documentation of the `coef.difNLR()` was updated.
+  * Some typos were fixed.
+  * README file was updated.
+  * Description of the package was updated. 
+
+------
+
 ### Changes in version 1.5.0 (2024-12-14)
+
+**_THIS IS A CRAN VERSION_**
 
 #### BUGFIXING
   * Bug caused by mixing two parametrization in `predict.difNLR()` was fixed. 
