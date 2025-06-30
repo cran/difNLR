@@ -86,6 +86,7 @@ A list of class \code{"ddfMLR"} with the following arguments:
   \item{\code{DDFitems}}{either the column identifiers of the items which were detected as DDF, or
   \code{"No DDF item detected"} in case no item was detected as DDF.}
   \item{\code{type}}{character: type of DDF that was tested.}
+  \item{\code{anchor}}{DIF free items specified by the \code{anchor} and \code{purify}.}
   \item{\code{purification}}{\code{purify} value.}
   \item{\code{nrPur}}{number of iterations in item purification process. Returned only if \code{purify}
   is \code{TRUE}.}
@@ -150,6 +151,11 @@ plot(x, item = "Item1", group.names = c("Group 1", "Group 2"))
 plot(x, item = x$DDFitems)
 plot(x, item = 1)
 
+# estimated parameters
+coef(x)
+coef(x, SE = TRUE)
+coef(x, SE = TRUE, simplify = TRUE)
+
 # AIC, BIC, log-likelihood
 AIC(x)
 BIC(x)
@@ -159,11 +165,6 @@ logLik(x)
 AIC(x, item = 1)
 BIC(x, item = 1)
 logLik(x, item = 1)
-
-# estimated parameters
-coef(x)
-coef(x, SE = TRUE)
-coef(x, SE = TRUE, simplify = TRUE)
 
 # testing both DDF effects with Benjamini-Hochberg adjustment method
 ddfMLR(Data, group, focal.name = 1, key, p.adjust.method = "BH")
