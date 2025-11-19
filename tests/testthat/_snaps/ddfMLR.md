@@ -217,50 +217,47 @@
 ---
 
     Code
-      (fit5 <- ddfMLR(Data, group, key, focal.name = 1, type = "udif"))
+      (fit5 <- ddfMLR(Data, group, key, focal.name = 1, type = "nudif"))
     Output
-      Detection of uniform Differential Distractor Functioning
-      using multinomial log-linear regression model
+      Detection of non-uniform Differential Distractor
+      Functioning using multinomial log-linear regression model
       
       Likelihood-ratio chi-square statistics
       
       Item purification was not applied
       No p-value adjustment for multiple comparisons
       
-             Chisq-value P-value    
-      Item1  74.7785      0.0000 ***
-      Item2  15.0722      0.0018 ** 
-      Item3   0.6117      0.8937    
-      Item4   3.1795      0.3648    
-      Item5   1.3389      0.7199    
-      Item6   0.2546      0.9683    
-      Item7   7.4301      0.0594 .  
-      Item8   2.7892      0.4253    
-      Item9   8.6917      0.0337 *  
-      Item10  1.6848      0.6403    
-      Item11  1.6566      0.6466    
-      Item12  5.8329      0.1200    
-      Item13  1.5170      0.6783    
-      Item14  2.6428      0.4500    
-      Item15  1.2535      0.7402    
-      Item16  0.5613      0.9052    
-      Item17  3.8170      0.2819    
-      Item18  7.9086      0.0479 *  
-      Item19  1.7105      0.6346    
-      Item20  3.6070      0.3072    
+             Chisq-value P-value   
+      Item1   2.0776      0.5565   
+      Item2  13.1232      0.0044 **
+      Item3   5.5326      0.1367   
+      Item4   3.6324      0.3040   
+      Item5   2.9123      0.4054   
+      Item6   3.3587      0.3396   
+      Item7   1.1938      0.7545   
+      Item8   7.2887      0.0632 . 
+      Item9   5.8527      0.1190   
+      Item10  2.3139      0.5099   
+      Item11  4.5949      0.2040   
+      Item12  1.1248      0.7711   
+      Item13  2.1244      0.5470   
+      Item14  3.3333      0.3430   
+      Item15  0.9516      0.8130   
+      Item16  1.7117      0.6343   
+      Item17  0.1473      0.9856   
+      Item18  0.1660      0.9829   
+      Item19  5.7138      0.1264   
+      Item20  1.4180      0.7013   
       
       Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
       
-      Items detected as uniform DDF items:
-       Item1
+      Items detected as non-uniform DDF items:
        Item2
-       Item9
-       Item18
 
 ---
 
     Code
-      (fit6 <- ddfMLR(Data, group, key, focal.name = 1, match = "score"))
+      (fit6a <- ddfMLR(Data, group, key, focal.name = 1, match = "score"))
     Output
       Detection of both types of Differential Distractor
       Functioning using multinomial log-linear regression model
@@ -298,6 +295,400 @@
        Item1
        Item2
        Item9
+
+---
+
+    Code
+      (fit6b <- ddfMLR(Data, group, key, focal.name = 1, match = "restscore"))
+    Output
+      Detection of both types of Differential Distractor
+      Functioning using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was not applied
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value    
+      Item1  66.7914      0.0000 ***
+      Item2  17.0707      0.0090 ** 
+      Item3   1.5722      0.9546    
+      Item4   4.5993      0.5961    
+      Item5   3.2362      0.7787    
+      Item6   2.7091      0.8444    
+      Item7  11.9540      0.0630 .  
+      Item8   9.0643      0.1700    
+      Item9  14.2390      0.0271 *  
+      Item10  1.9505      0.9242    
+      Item11  5.7238      0.4548    
+      Item12  8.7458      0.1884    
+      Item13  5.2862      0.5077    
+      Item14  3.9816      0.6792    
+      Item15  1.7944      0.9376    
+      Item16  0.7592      0.9931    
+      Item17  4.0807      0.6658    
+      Item18  8.7010      0.1911    
+      Item19  8.0824      0.2321    
+      Item20  4.9291      0.5529    
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      Items detected as DDF items:
+       Item1
+       Item2
+       Item9
+
+---
+
+    Code
+      (fit6c <- ddfMLR(Data, group, key, focal.name = 1, match = "zrestscore"))
+    Output
+      Detection of both types of Differential Distractor
+      Functioning using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was not applied
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value    
+      Item1  66.7913      0.0000 ***
+      Item2  17.0707      0.0090 ** 
+      Item3   1.5710      0.9546    
+      Item4   4.5993      0.5961    
+      Item5   3.2362      0.7787    
+      Item6   2.7091      0.8444    
+      Item7  11.9540      0.0630 .  
+      Item8   9.0643      0.1700    
+      Item9  14.2390      0.0271 *  
+      Item10  1.9505      0.9242    
+      Item11  5.7243      0.4548    
+      Item12  8.7459      0.1884    
+      Item13  5.2862      0.5077    
+      Item14  3.9816      0.6792    
+      Item15  1.7760      0.9391    
+      Item16  0.7592      0.9931    
+      Item17  4.0808      0.6657    
+      Item18  8.7010      0.1911    
+      Item19  8.0824      0.2321    
+      Item20  4.9291      0.5529    
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      Items detected as DDF items:
+       Item1
+       Item2
+       Item9
+
+---
+
+    Code
+      (fit6d <- ddfMLR(Data, group, key, focal.name = 1, match = match))
+    Output
+      Detection of both types of Differential Distractor
+      Functioning using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was not applied
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value    
+      Item1  76.8561      0.0000 ***
+      Item2  28.1954      0.0001 ***
+      Item3   6.1443      0.4072    
+      Item4   6.8119      0.3386    
+      Item5   4.2511      0.6427    
+      Item6   3.6133      0.7288    
+      Item7   8.6239      0.1959    
+      Item8  10.0779      0.1214    
+      Item9  14.5445      0.0241 *  
+      Item10  3.9987      0.6768    
+      Item11  6.2523      0.3955    
+      Item12  6.9576      0.3248    
+      Item13  3.6414      0.7251    
+      Item14  5.9761      0.4259    
+      Item15  2.2053      0.8999    
+      Item16  2.2730      0.8930    
+      Item17  3.9642      0.6815    
+      Item18  8.0746      0.2327    
+      Item19  7.4241      0.2834    
+      Item20  5.0249      0.5406    
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      Items detected as DDF items:
+       Item1
+       Item2
+       Item9
+
+---
+
+    Code
+      (fit6e <- ddfMLR(Data, group, key, focal.name = 1, match = match))
+    Output
+      Detection of both types of Differential Distractor
+      Functioning using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was not applied
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value    
+      Item1  76.8561      0.0000 ***
+      Item2  28.1954      0.0001 ***
+      Item3   6.1443      0.4072    
+      Item4   6.8119      0.3386    
+      Item5   4.2511      0.6427    
+      Item6   3.6133      0.7288    
+      Item7   8.6239      0.1959    
+      Item8  10.0779      0.1214    
+      Item9  14.5445      0.0241 *  
+      Item10  3.9987      0.6768    
+      Item11  6.2523      0.3955    
+      Item12  6.9576      0.3248    
+      Item13  3.6414      0.7251    
+      Item14  5.9761      0.4259    
+      Item15  2.2053      0.8999    
+      Item16  2.2730      0.8930    
+      Item17  3.9642      0.6815    
+      Item18  8.0746      0.2327    
+      Item19  7.4241      0.2834    
+      Item20  5.0249      0.5406    
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      Items detected as DDF items:
+       Item1
+       Item2
+       Item9
+
+---
+
+    Code
+      (fit6f <- ddfMLR(Data, group, key, focal.name = 1, match = match))
+    Output
+      Detection of both types of Differential Distractor
+      Functioning using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was not applied
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value    
+      Item1  76.8561      0.0000 ***
+      Item2  28.1954      0.0001 ***
+      Item3   6.1443      0.4072    
+      Item4   6.8119      0.3386    
+      Item5   4.2511      0.6427    
+      Item6   3.6133      0.7288    
+      Item7   8.6239      0.1959    
+      Item8  10.0779      0.1214    
+      Item9  14.5445      0.0241 *  
+      Item10  3.9987      0.6768    
+      Item11  6.2523      0.3955    
+      Item12  6.9576      0.3248    
+      Item13  3.6414      0.7251    
+      Item14  5.9761      0.4259    
+      Item15  2.2053      0.8999    
+      Item16  2.2730      0.8930    
+      Item17  3.9642      0.6815    
+      Item18  8.0746      0.2327    
+      Item19  7.4241      0.2834    
+      Item20  5.0249      0.5406    
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      Items detected as DDF items:
+       Item1
+       Item2
+       Item9
+
+# ddfMLR - other examples
+
+    Code
+      (fit7 <- ddfMLR(Data[, -c(1, 2, 9)], group, key[-c(1, 2, 9)], focal.name = 1))
+    Output
+      Detection of both types of Differential Distractor
+      Functioning using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was not applied
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value 
+      Item3  6.7634      0.3433  
+      Item4  6.7449      0.3451  
+      Item5  4.8937      0.5575  
+      Item6  5.4903      0.4826  
+      Item7  5.1100      0.5298  
+      Item8  9.1139      0.1673  
+      Item10 2.5269      0.8654  
+      Item11 6.6844      0.3510  
+      Item12 8.0727      0.2328  
+      Item13 2.6738      0.8485  
+      Item14 5.7490      0.4519  
+      Item15 1.2392      0.9749  
+      Item16 2.4622      0.8727  
+      Item17 2.2130      0.8991  
+      Item18 6.8336      0.3365  
+      Item19 5.9072      0.4337  
+      Item20 7.6451      0.2653  
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      None of items is detected as DDF
+
+---
+
+    Code
+      (ddfMLR(Data[, -c(1, 2, 9)], group, key[-c(1, 2, 9)], focal.name = 1, type = "udif")
+      )
+    Output
+      Detection of uniform Differential Distractor Functioning
+      using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was not applied
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value  
+      Item3  0.0216      0.9992   
+      Item4  1.6362      0.6512   
+      Item5  2.0260      0.5670   
+      Item6  1.6303      0.6525   
+      Item7  4.1188      0.2489   
+      Item8  2.3454      0.5039   
+      Item10 0.7928      0.8512   
+      Item11 3.3095      0.3463   
+      Item12 6.4080      0.0934  .
+      Item13 0.5654      0.9043   
+      Item14 0.9990      0.8015   
+      Item15 0.3491      0.9505   
+      Item16 0.7187      0.8688   
+      Item17 1.9951      0.5734   
+      Item18 6.5128      0.0892  .
+      Item19 0.1852      0.9799   
+      Item20 6.8088      0.0782  .
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      None of items is detected as uniform DDF
+
+---
+
+    Code
+      (ddfMLR(Data[, -c(1, 2, 9)], group, key[-c(1, 2, 9)], focal.name = 1, type = "nudif")
+      )
+    Output
+      Detection of non-uniform Differential Distractor
+      Functioning using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was not applied
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value  
+      Item3  6.7418      0.0806  .
+      Item4  5.1086      0.1640   
+      Item5  2.8678      0.4125   
+      Item6  3.8599      0.2770   
+      Item7  0.9912      0.8034   
+      Item8  6.7685      0.0797  .
+      Item10 1.7342      0.6294   
+      Item11 3.3749      0.3374   
+      Item12 1.6647      0.6448   
+      Item13 2.1084      0.5502   
+      Item14 4.7500      0.1910   
+      Item15 0.8901      0.8278   
+      Item16 1.7435      0.6273   
+      Item17 0.2179      0.9746   
+      Item18 0.3209      0.9561   
+      Item19 5.7220      0.1259   
+      Item20 0.8363      0.8408   
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      None of items is detected as non-uniform DDF
+
+---
+
+    Code
+      (fit8 <- ddfMLR(Data[, -c(1, 2)], group, key[-c(1, 2)], focal.name = 1))
+    Output
+      Detection of both types of Differential Distractor
+      Functioning using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was not applied
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value  
+      Item3   7.4689      0.2796  
+      Item4   5.3957      0.4941  
+      Item5   3.7386      0.7120  
+      Item6   5.1795      0.5210  
+      Item7   4.9378      0.5518  
+      Item8  10.2735      0.1136  
+      Item9  13.9733      0.0299 *
+      Item10  3.2824      0.7727  
+      Item11  7.0852      0.3130  
+      Item12  7.9399      0.2425  
+      Item13  2.6033      0.8567  
+      Item14  5.8612      0.4389  
+      Item15  0.9417      0.9877  
+      Item16  2.4880      0.8698  
+      Item17  2.3042      0.8897  
+      Item18  6.6418      0.3552  
+      Item19  5.6685      0.4613  
+      Item20  7.9571      0.2413  
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      Items detected as DDF items:
+       Item9
+
+---
+
+    Code
+      ddfMLR(Data[, -c(1, 2, 9)], group, key[-c(1, 2, 9)], focal.name = 1, purify = TRUE)
+    Output
+      Detection of both types of Differential Distractor
+      Functioning using multinomial log-linear regression model
+      
+      Likelihood-ratio chi-square statistics
+      
+      Item purification was applied with 0 iteration
+      No p-value adjustment for multiple comparisons
+      
+             Chisq-value P-value 
+      Item3  6.7634      0.3433  
+      Item4  6.7449      0.3451  
+      Item5  4.8937      0.5575  
+      Item6  5.4903      0.4826  
+      Item7  5.1100      0.5298  
+      Item8  9.1139      0.1673  
+      Item10 2.5269      0.8654  
+      Item11 6.6844      0.3510  
+      Item12 8.0727      0.2328  
+      Item13 2.6738      0.8485  
+      Item14 5.7490      0.4519  
+      Item15 1.2392      0.9749  
+      Item16 2.4622      0.8727  
+      Item17 2.2130      0.8991  
+      Item18 6.8336      0.3365  
+      Item19 5.9072      0.4337  
+      Item20 7.6451      0.2653  
+      
+      Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+      
+      None of items is detected as DDF
 
 # testing paper code - R Journal 2020 - generated data
 
